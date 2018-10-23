@@ -23,7 +23,7 @@ import static com.github.adminfaces.template.util.Assert.has;
 @ViewScoped
 public class ServicoForm implements Serializable {
 
-	private Long id;
+	private Integer id;
 	private Servico servico;
 
 	@Inject
@@ -40,11 +40,11 @@ public class ServicoForm implements Serializable {
 		}
 	}
 
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 	
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

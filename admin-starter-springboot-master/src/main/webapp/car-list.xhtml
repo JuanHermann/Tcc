@@ -18,7 +18,7 @@
 	</ui:define>
 
 	<ui:define name="description">
-        Find cars by name, price and model
+        Serviços que são realizados na sua empresa.
     </ui:define>
 
 	<ui:define name="body">
@@ -58,17 +58,17 @@
 							icon="fa fa-search" />
 					</p:splitButton>
 
-
+					<p:separator />
 
 
 					<p:dataTable value="#{servicoBean.lista}" var="servico"
 						emptyMessage="Nenhuma categoria cadastrada" rowKey="#{servico.id}"
 						selection="#{servicoBean.objeto}" selectionMode="single"
 						widgetVar="table">
-						<f:facet name="header">servico</f:facet>
 						<p:ajax event="rowSelect" listener="#{servicoBean.onRowSelect}"
 							update="@form" />
-							<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+						<p:column selectionMode="multiple"
+							style="width:16px;text-align:center" />
 						<p:column headerText="CÃ³digo">
 							<p:outputLabel value="#{servico.id}" />
 						</p:column>

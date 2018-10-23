@@ -7,18 +7,19 @@
 	xmlns:adm="http://github.com/adminfaces"
 	template="#{layoutMB.template}">
 
-	<ui:define name="metadata">
-		<ui:param name="title" value="Serviços" />
+	<ui:define name="title"> <!-- metada -->
+		<ui:param name="title" value="Lista de Serviços" />
 		<!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
 		<style type="text/css">
 .ui-datatable .ui-datatable-header {
 	text-align: right !important;
 }
-</style>
+</style> 
 	</ui:define>
+	
 
 	<ui:define name="description">
-        Cadastre os serviços que serão prestados aos seus clientes.
+        Serviços que são realizados na sua empresa.
     </ui:define>
 
 	<ui:define name="body">
@@ -29,61 +30,64 @@
 						<p:commandButton action="servico-form?faces-redirect=true"
 							icon="fa fa-plus" value="Novo" styleClass="btn-primary" />
 						<p:spacer width="5" />
-
+						<p:commandButton value="Deletar Selecionado" icon="fa fa-trash"
+							styleClass="btn-danger" 
+							process="@this" update="@form">
+							<p:confirm header="Confirmation" message="Are you sure?"
+								icon="ui-icon-danger" />
 						</p:commandButton>
-						<p:spacer width="5" />
-
 					</div>
 
-					<p:splitButton value="Novo"
-						action="servico-form?faces-redirect=true" icon="fa fa-plus"
-						styleClass="hidden-md hidden-lg btn-primary">
-						<p:menuitem value="Deletar selecionado"
-							action="#{servicoForm.delete}" process="@this" update="@form"
-							icon="fa fa-trash">
-							<p:confirm header="Confirmação"
-								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
-						</p:menuitem>
-
+					<p:splitButton value="New" action="car-form?faces-redirect=true"
+						icon="fa fa-plus" styleClass="hidden-md hidden-lg btn-primary">
+						<p:menuitem value="teste"/>
+						<p:menuitem value="teste"/>
+						<p:menuitem value="teste"/>
 					</p:splitButton>
 
 					<p:separator />
+
+
 					<p:dataTable value="#{servicoBean.lista}" var="servico"
 						emptyMessage="Nenhuma categoria cadastrada" rowKey="#{servico.id}"
 						selection="#{servicoBean.objeto}" selectionMode="single"
 						widgetVar="table">
-						<f:facet name="header">servico</f:facet>
-						<p:ajax event="rowSelect" listener="#{servicoBean.onRowSelect}"
-							update="@form" />
-						<p:column headerText="CÃ³digo">
-							<p:outputLabel value="#{servico.codigo}" />
-						</p:column>
+						
+						<f:facet name="header">
+                            Encontre um Serviço pelo seu nome : <p:inputNumber id="inptId"
+								decimalPlaces="0" value="#{carListMB.id}" />
+							<p:spacer height="5" />
+							<p:commandButton id="brFind" value="Buscar"
+								action="#{carListMB.findCarById(carListMB.id)}" process="@form"
+								update="@form" styleClass="btn-flat bg-black btn-states"
+								partialSubmit="true" />
+						</f:facet>
+						<p:column selectionMode="multiple" width="5%"
+							styleClass="align-center" />
+					
 						<p:column headerText="Nome">
 							<p:outputLabel value="#{servico.nome}" />
 						</p:column>
-						<p:column headerText="DescriÃ§Ã£o">
-							<p:outputLabel value="#{servico.preco}" />
+						<p:column headerText="Tempo">
+							<p:outputLabel value="#{servico.tempo}" />
+						</p:column>
+						<p:column headerText="Valor">
+							R$ <p:outputLabel value="#{servico.valor}" />
 						</p:column>
 
 					</p:dataTable>
-
 				</div>
 			</div>
-			<!-- Confirmar Modal Excluir -->
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
 				styleClass="box-danger box-solid">
-				<p:commandButton value="Sim" type="button"
+				<p:commandButton value="Yes" type="button"
 					styleClass="btn-material btn-primary ui-confirmdialog-yes"
 					icon="fa fa-check" />
-				<p:commandButton value="Não" type="button"
+				<p:commandButton value="No" type="button"
 					styleClass="btn-material btn-danger ui-confirmdialog-no"
 					icon="fa fa-close" />
 			</p:confirmDialog>
-
 		</h:form>
-
-
-
 
 
 	</ui:define>

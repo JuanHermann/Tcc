@@ -66,7 +66,7 @@ public class ServicoForm implements Serializable {
 	}
 
 	public void save() {
-		String msg;
+		String msg;		
 		servicoService.save(servico);
 		msg = "Servico " + servico.getNome() + " created successfully";
 

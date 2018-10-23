@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="#{layoutMB.template}">
+
+    <ui:define name="head-end">
+        <ui:param name="renderBreadCrumb" value="false"/>
+    </ui:define>
+
+    <ui:define name="title">
+        <h2 class="align-center">
+            Agenda
+        </h2>
+
+
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form>
+            <p:schedule value="#{indexBean.eventModel}" locale="pt"></p:schedule>
+        </h:form>
+
+
+
+
+
+    </ui:define>
+
+
+
+</ui:composition>

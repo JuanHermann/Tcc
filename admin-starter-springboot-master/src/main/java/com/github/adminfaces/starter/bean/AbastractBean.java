@@ -15,6 +15,8 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 	private final Class<M> modelClass;
 	@Autowired
 	private R repository;
+	@Autowired
+	private ContextBean context;
 	private boolean registroSelecionado;
 
 	AbastractBean(Class<M> modelClass) {
@@ -46,6 +48,15 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 		return registroSelecionado;
 	}
 
+	
+	public void alterar() {
+		if(objeto == null) {
+			context.addMensagemErro("Selecione um registro");
+		}else {
+			registroSelecionado = false;
+		}
+	}
+
 
 
 	public void setRegistroSelecionado(boolean registroSelecionado) {
@@ -60,11 +71,27 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 		lista = repository.findAll();
 	}
 
+	public void novo() throws InstantiationException, IllegalAccessException{
+		objeto = modelClass.newInstance();
+		registroSelecionado = false;
+	}
+	
 	public void onRowSelect(SelectEvent event) {
 		registroSelecionado = true;
 	}
 	
-
+	public void remover() {
+		if(objeto == null) {
+			context.addMensagemErro("Selecione m registro");
+			
+		}else {
+			repository.delete(objeto);
+			objeto=null;
+			registroSelecionado=false;
+			listar();
+		}
+	}
+	
 	public void salvar() {
 		repository.save(objeto);
 		objeto=null;

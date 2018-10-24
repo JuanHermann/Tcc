@@ -7,16 +7,18 @@
 	xmlns:adm="http://github.com/adminfaces"
 	template="#{layoutMB.template}">
 
-	<ui:define name="title"> <!-- metada -->
+
+
+	<ui:define name="title">		<!-- metada -->
 		<ui:param name="title" value="Lista de Serviços" />
 		<!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
 		<style type="text/css">
 .ui-datatable .ui-datatable-header {
 	text-align: right !important;
 }
-</style> 
+</style>
 	</ui:define>
-	
+
 
 	<ui:define name="description">
         Serviços que são realizados na sua empresa.
@@ -31,8 +33,7 @@
 							icon="fa fa-plus" value="Novo" styleClass="btn-primary" />
 						<p:spacer width="5" />
 						<p:commandButton value="Deletar Selecionado" icon="fa fa-trash"
-							styleClass="btn-danger" 
-							process="@this" update="@form">
+							styleClass="btn-danger" process="@this" update="@form">
 							<p:confirm header="Confirmation" message="Are you sure?"
 								icon="ui-icon-danger" />
 						</p:commandButton>
@@ -40,9 +41,9 @@
 
 					<p:splitButton value="New" action="car-form?faces-redirect=true"
 						icon="fa fa-plus" styleClass="hidden-md hidden-lg btn-primary">
-						<p:menuitem value="teste"/>
-						<p:menuitem value="teste"/>
-						<p:menuitem value="teste"/>
+						<p:menuitem value="teste" />
+						<p:menuitem value="teste" />
+						<p:menuitem value="teste" />
 					</p:splitButton>
 
 					<p:separator />
@@ -52,10 +53,10 @@
 						emptyMessage="Nenhuma categoria cadastrada" rowKey="#{servico.id}"
 						selection="#{servicoBean.objeto}" selectionMode="single"
 						widgetVar="table">
-						
+
 						<f:facet name="header">
-                            Encontre um Serviço pelo seu nome : <p:inputNumber id="inptId"
-								decimalPlaces="0" value="#{carListMB.id}" />
+                            Encontre um Serviço pelo seu nome : <p:inputNumber
+								id="inptId" decimalPlaces="0" value="#{carListMB.id}" />
 							<p:spacer height="5" />
 							<p:commandButton id="brFind" value="Buscar"
 								action="#{carListMB.findCarById(carListMB.id)}" process="@form"
@@ -64,7 +65,7 @@
 						</f:facet>
 						<p:column selectionMode="multiple" width="5%"
 							styleClass="align-center" />
-					
+
 						<p:column headerText="Nome">
 							<p:outputLabel value="#{servico.nome}" />
 						</p:column>

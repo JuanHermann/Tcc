@@ -15,8 +15,6 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 	private final Class<M> modelClass;
 	@Autowired
 	private R repository;
-	@Autowired
-	private ContextBean context;
 	private boolean registroSelecionado;
 
 	AbastractBean(Class<M> modelClass) {
@@ -51,7 +49,7 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 	
 	public void alterar() {
 		if(objeto == null) {
-			context.addMensagemErro("Selecione um registro");
+			System.out.println("Selecione um registro");
 		}else {
 			registroSelecionado = false;
 		}
@@ -82,7 +80,7 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 	
 	public void remover() {
 		if(objeto == null) {
-			context.addMensagemErro("Selecione m registro");
+			System.out.println("Selecione m registro");
 			
 		}else {
 			repository.delete(objeto);

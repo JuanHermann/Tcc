@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+      xmlns:app="http://java.sun.com/jsf/composite/components"
+	template="#{layoutMB.template}">
+
+	<ui:define name="title">
+        Cadastro de Serviços
+    </ui:define>
+    
+<ui:define name="body">
+	<h:form>
+		<p:panelGrid>
+			<p:row>
+				<p:column><p:outputLabel value="CÃ³digo" /></p:column>
+				<p:column>
+					<p:outputLabel value="#{servicoBean.objeto.codigo}" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column><p:outputLabel value="Nome" for="nome" /></p:column>
+				<p:column>
+					<p:inputText id="nome" value="#{servicoBean.objeto.nome}"
+						required="true" requiredMessage="Informe o nome"
+						validatorMessage="Tamanho mÃ¡ximo: 30 caracteres">
+						<f:validateLength maximum="30" />
+					</p:inputText>
+					<p:message for="nome" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column><p:outputLabel value="DescriÃ§Ã£o" for="descricao"/></p:column>
+				<p:column>
+					<p:inputText id="descricao" 
+						value="#{servicoBean.objeto.descricao}"
+						validatorMessage="Tamanho mÃ¡ximo: 100 caracteres">
+						<f:validateLength maximum="100" />
+					</p:inputText>
+					<p:message for="descricao" />	
+				</p:column>
+			</p:row>
+		</h:form>
+	<!--  <h:form id="frmTable">
+		<p:dataTable value="#{servicoBean.lista}" var="servico" 
+			emptyMessage="Nenhuma servico cadastrada" rowKey="#{servico.codigo}"
+			selection="#{servicoBean.objeto}" selectionMode="single"
+			widgetVar="table">
+			<f:facet name="header">Categorias</f:facet>
+			<p:ajax event="rowSelect" listener="#{servicoBean.onRowSelect}"
+				update="@form" />
+			<p:column headerText="CÃ³digo">
+				<p:outputLabel  value="#{servico.codigo}"/>
+			</p:column>
+			<p:column headerText="Nome">
+				<p:outputLabel  value="#{servico.nome}"/>
+			</p:column>
+			<p:column headerText="DescriÃ§Ã£o">
+				<p:outputLabel  value="#{servico.descricao}"/>
+			</p:column>
+			<f:facet name="footer">
+				<p:commandButton value="Novo" action="#{servicoBean.novo()}"
+					process="@this" update="@form :#{p:component('dlgForm')}" 
+					resetValues="true" oncomplete="PF('table').unselectAllRows();" />
+				<p:commandButton value="Alterar" action="#{servicoBean.alterar()}" 
+					process="@form" update="@form :#{p:component('dlgForm')}" 
+					resetValues="true" disabled="#{!servicoBean.registroSelecionado}"
+					oncomplete="PF('table').unselectAllRows();" />
+				<p:commandButton value="Remover" action="#{servicoBean.remover()}" 
+					process="@form" update="@form" 
+					disabled="#{!servicoBean.registroSelecionado}"
+					oncomplete="PF('table').unselectAllRows();">
+					<p:confirm header="AtenÃ§Ã£o" icon="ui-icon-alert" 
+						message="Deseja remover essa servico?" />
+				</p:commandButton>
+			</f:facet>
+		</p:dataTable>
+	</h:form> -->
+</ui:define>
+</ui:composition>

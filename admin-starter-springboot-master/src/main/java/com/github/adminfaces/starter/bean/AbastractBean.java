@@ -2,6 +2,8 @@ package com.github.adminfaces.starter.bean;
 
 
 
+import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
+
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -74,7 +76,6 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 	}
 	public void novo() throws InstantiationException, IllegalAccessException{
 		objeto = modelClass.newInstance();
-		registroSelecionado = false;
 	}
 	
 	public void onRowSelect(SelectEvent event) {
@@ -93,17 +94,13 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 		}
 	}
 	
-	public void salvar() {
-		repository.save(objeto);
-		objeto=null;
-		listar();
-	}
-	
-	public void init() throws InstantiationException, IllegalAccessException {
+	public void salvar() throws InstantiationException, IllegalAccessException {
+		repository.save(objeto);		
+		addDetailMessage("Salvo com sucesso");
 		objeto = modelClass.newInstance();
+		
 	}
 	
-	
-	
+		
 	
 }

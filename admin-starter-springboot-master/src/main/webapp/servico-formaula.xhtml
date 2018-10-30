@@ -15,38 +15,37 @@
 
 	<ui:define name="body">
 
-
+		<h:inputHidden value="#{servicoBean.novo()}" />
 
 		<h:form id="form" prependId="false">
 
-			<h:inputHidden value="#{servicoBean.novo()}" />
+
 
 			<div class="box box-primary">
 				<div class="box-header with-border">
 					<div id="main-buttons" class="hidden-sm hidden-xs">
 
 
-						<p:commandButton value="Salvar" action="#{servicoBean.salvar}"
+						<p:commandButton value="Salvar" action="#{servicoBean.salvar()}"
 							update="@form" icon="fa fa-check" styleClass="btn-primary" />
 						<p:spacer width="5" />
 						<p:commandButton value="Limpar" action="#{servicoBean.novo()}"
 							process="@this" icon="fa fa-refresh" styleClass="btn-success"
 							update="@form" resetValues="true" />
 						<p:spacer width="5" />
-						<p:commandButton value="Deletar"
-							action="#{servicoBean.remover()}" process="@this"
-							icon="fa fa-trash" styleClass="btn-danger">
+						<p:commandButton value="Deletar" action="#{servicoBean.remover()}"
+							process="@this" icon="fa fa-trash" styleClass="btn-danger">
 							<f:setPropertyActionListener value="true"
 								target="#{facesContext.externalContext.flash.keepMessages}" />
 							<p:confirm header="Confirmação"
 								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
 						</p:commandButton>
 						<p:spacer width="5" />
-						<p:commandButton value="Back" immediate="true"
+						<p:commandButton value="Voltar" immediate="true"
 							action="servico-list?faces-redirect=true" process="@this"
 							icon="fa fa-reply" />
 					</div>
-					<p:splitButton value="Salvar" action="#{servicoBean.salvar}"
+					<p:splitButton value="Salvar" action="#{servicoBean.salvar()}"
 						update="@form" icon="fa fa-check"
 						styleClass="hidden-md hidden-lg btn-primary">
 						<p:menuitem value="Limpar" action="#{servicoBean.novo()}"
@@ -73,20 +72,24 @@
 							<p:outputLabel value="Nome" for="nome" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="nome" value="#{servicoBean.objeto.nome}" />
+							<p:inputText id="nome" value="#{servicoBean.objeto.nome}"
+								required="true" />
 						</div>
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel value="Tempo" for="tempo" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputMask mask="99:99:99" id="tempo"
-								value="#{servicoBean.objeto.tempo}" />
+							  <p:inputMask mask="99:99:99" id="tempo" required="true" converter="#{timeConverter}"
+								value="#{servicoBean.objeto.tempo}" /> 
+							<!--<p:inputText id="tempo" converter="#{timeConverter}"
+								value="#{servicoBean.objeto.tempo}" />-->
 						</div>
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel value="Valor" for="valor" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="valor" value="#{servicoBean.objeto.valor}">
+							<p:inputText id="valor" value="#{servicoBean.objeto.valor}"
+								required="true">
 								<f:convertNumber pattern="#,##0.00" />
 							</p:inputText>
 						</div>

@@ -17,7 +17,7 @@
 }
 </style>
 	</ui:define>
-	
+
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
 	</ui:define>
@@ -34,8 +34,8 @@
 						<p:commandButton action="servico-formaula?faces-redirect=true"
 							icon="fa fa-plus" value="Novo" styleClass="btn-primary">
 							<f:actionListener binding="#{servicoBean.novo()}" />
-							</p:commandButton>
-						
+						</p:commandButton>
+
 						<p:spacer width="5" />
 						<p:commandButton value="Deletar Selecionado" icon="fa fa-trash"
 							styleClass="btn-danger" process="@this" update="@form">

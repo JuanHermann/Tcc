@@ -22,7 +22,7 @@ public class Servico implements Serializable {
     @Column(nullable = false)
     private Double valor;
 
-    @Column(length = 200,nullable = false)
+    @Column(length = 200,nullable = true)
     private String descricao;
 
     public Long getId() {

@@ -7,9 +7,7 @@
 	xmlns:adm="http://github.com/adminfaces"
 	template="#{layoutMB.template}">
 
-	<ui:define name="head-end">
-		<ui:param name="renderBreadCrumb" value="false" />
-	</ui:define>
+
 
 	<ui:define name="metadata">
 		<ui:param name="title" value="Lista de Serviços" />
@@ -19,7 +17,10 @@
 }
 </style>
 	</ui:define>
-
+	
+	<ui:define name="head-end">
+		<ui:param name="renderBreadCrumb" value="false" />
+	</ui:define>
 
 	<ui:define name="description">
         Serviços que são realizados na sua empresa.
@@ -30,8 +31,11 @@
 			<div class="box box-primary">
 				<div class="box-header with-border">
 					<div id="main-buttons" class="hidden-sm hidden-xs">
-						<p:commandButton action="servico-form?faces-redirect=true"
-							icon="fa fa-plus" value="Novo" styleClass="btn-primary" />
+						<p:commandButton action="servico-formaula?faces-redirect=true"
+							icon="fa fa-plus" value="Novo" styleClass="btn-primary">
+							<f:actionListener binding="#{servicoBean.novo()}" />
+							</p:commandButton>
+						
 						<p:spacer width="5" />
 						<p:commandButton value="Deletar Selecionado" icon="fa fa-trash"
 							styleClass="btn-danger" process="@this" update="@form">

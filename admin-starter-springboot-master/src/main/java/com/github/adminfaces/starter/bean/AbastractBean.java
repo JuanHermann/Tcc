@@ -1,17 +1,16 @@
 package com.github.adminfaces.starter.bean;
 
-import static com.github.adminfaces.template.util.Assert.has;
+
 
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.omnifaces.util.Faces;
+
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.github.adminfaces.starter.model.Servico;
 
 public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 
@@ -29,7 +28,6 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 	@PostConstruct
 	public void inicializar() {
 		listar();
-		
 	}
 
 	public M getObjeto() {
@@ -74,7 +72,6 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 	public void listar() {
 		lista = repository.findAll();
 	}
-
 	public void novo() throws InstantiationException, IllegalAccessException{
 		objeto = modelClass.newInstance();
 		registroSelecionado = false;

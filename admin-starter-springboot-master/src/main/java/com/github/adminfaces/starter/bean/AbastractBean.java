@@ -1,7 +1,5 @@
 package com.github.adminfaces.starter.bean;
 
-
-
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 import static com.github.adminfaces.template.util.Assert.has;
 
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.github.adminfaces.starter.model.Car;
-
 
 public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 
@@ -44,20 +41,18 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 		}
 		listar();
 	}
-	
-	public void init() throws InstantiationException, IllegalAccessException {
-        if(Faces.isAjaxRequest()){
-           return;
-        }
-        if (has(id)) {
-            objeto = (M) repository.findById(id).orElse(null);
-        } else {
-        	objeto = modelClass.newInstance();
-        }
-    }
 
-	
-	
+	public void init() throws InstantiationException, IllegalAccessException {
+		if (Faces.isAjaxRequest()) {
+			return;
+		}
+		if (has(id)) {
+			objeto = (M) repository.findById(id).orElse(null);
+		} else {
+			objeto = modelClass.newInstance();
+		}
+	}
+
 	public M getObjeto() {
 		return objeto;
 	}
@@ -78,53 +73,51 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 		return registroSelecionado;
 	}
 
-	
 	public void alterar() {
-		if(objeto == null) {
+		if (objeto == null) {
 			System.out.println("Selecione um registro");
-		}else {
+		} else {
 			registroSelecionado = false;
 		}
 	}
-
-
 
 	public void setRegistroSelecionado(boolean registroSelecionado) {
 		this.registroSelecionado = registroSelecionado;
 	}
 
 	protected void carregarLookups() {
-		
+
 	}
-	
+
 	public void listar() {
 		lista = repository.findAll();
 	}
-	public void novo() throws InstantiationException, IllegalAccessException{
+
+	public void novo() throws InstantiationException, IllegalAccessException {
 		objeto = modelClass.newInstance();
 	}
-	
+
 	public void onRowSelect(SelectEvent event) {
 		registroSelecionado = true;
 	}
-	
-	public void remover() {
-		if(objeto == null) {
-			System.out.println("Selecione m registro");
-			
-		}else {
+
+	public void remover() throws InstantiationException, IllegalAccessException {
+		if (objeto == null) {
+			addDetailMessage("Nenhum registro para Excluir");
+
+		} else {
 			repository.delete(objeto);
 			addDetailMessage("Excluido com sucesso");
-			objeto=null;
-			listar();
+			novo();
 		}
 	}
-	
+
 	public void salvar() throws InstantiationException, IllegalAccessException {
-		repository.save(objeto);		
+
+		repository.save(objeto);
+
 		addDetailMessage("Salvo com sucesso");
 		objeto = modelClass.newInstance();
-		
 	}
 
 	public Integer getId() {
@@ -134,7 +127,5 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
-		
-	
+
 }

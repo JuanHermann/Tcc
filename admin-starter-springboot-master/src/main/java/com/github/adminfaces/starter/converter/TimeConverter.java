@@ -39,9 +39,9 @@ public class TimeConverter implements Converter {
 
 	@Override
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
-		if (value != null && value instanceof LocalDate) {
-			
-			return "11:11:11";
+		if (value != null && value instanceof Time) {
+			Time time = (Time) value;
+			return time.toString();
 		} else {
 			return null;
 		}

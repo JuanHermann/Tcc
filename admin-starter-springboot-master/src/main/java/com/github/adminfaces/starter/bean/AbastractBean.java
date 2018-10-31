@@ -3,19 +3,23 @@ package com.github.adminfaces.starter.bean;
 
 
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
+import static com.github.adminfaces.template.util.Assert.has;
 
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-
+import org.omnifaces.util.Faces;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.github.adminfaces.starter.model.Car;
+
 
 public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 
+	private Integer id;
 	private M objeto;
 	private List<M> lista;
 	private final Class<M> modelClass;
@@ -31,7 +35,20 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 	public void inicializar() {
 		listar();
 	}
+	
+	public void init() throws InstantiationException, IllegalAccessException {
+        if(Faces.isAjaxRequest()){
+           return;
+        }
+        if (has(id)) {
+            objeto = (M) repository.findById(id);
+        } else {
+        	objeto = modelClass.newInstance();
+        }
+    }
 
+	
+	
 	public M getObjeto() {
 		return objeto;
 	}
@@ -88,8 +105,8 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 			
 		}else {
 			repository.delete(objeto);
+			addDetailMessage("Excluido com sucesso");
 			objeto=null;
-			registroSelecionado=false;
 			listar();
 		}
 	}

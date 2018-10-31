@@ -1,6 +1,9 @@
 package com.github.adminfaces.starter.bean;
 
 
+import static com.github.adminfaces.template.util.Assert.has;
+
+import org.omnifaces.util.Faces;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

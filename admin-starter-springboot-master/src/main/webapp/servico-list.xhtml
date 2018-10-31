@@ -9,14 +9,7 @@
 
 
 
-	<ui:define name="metadata">
-		<ui:param name="title" value="Lista de Serviços" />
-		<style type="text/css">
-.ui-datatable .ui-datatable-header {
-	text-align: right !important;
-}
-</style>
-	</ui:define>
+	
 
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
@@ -31,7 +24,7 @@
 			<div class="box box-primary">
 				<div class="box-header with-border">
 					<div id="main-buttons" class="hidden-sm hidden-xs">
-						<p:commandButton action="servico-formaula?faces-redirect=true"
+						<p:commandButton action="servico-form?faces-redirect=true"
 							icon="fa fa-plus" value="Novo" styleClass="btn-primary">
 							<f:actionListener binding="#{servicoBean.novo()}" />
 						</p:commandButton>
@@ -72,7 +65,10 @@
 							styleClass="align-center" />
 
 						<p:column headerText="Nome">
-							<p:outputLabel value="#{servico.nome}" />
+							
+							<p:link value="#{servico.nome}" outcome="servico-form.xhtml">
+								<f:param name="id" value="#{servico.id}" />
+							</p:link>
 						</p:column>
 						<p:column headerText="Tempo">
 							<p:outputLabel value="#{servico.tempo}" />

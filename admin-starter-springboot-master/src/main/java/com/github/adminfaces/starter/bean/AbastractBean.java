@@ -19,7 +19,7 @@ import com.github.adminfaces.starter.model.Car;
 
 public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 
-	private Integer id;
+	private Integer id = 0;
 	private M objeto;
 	private List<M> lista;
 	private final Class<M> modelClass;
@@ -33,6 +33,15 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 
 	@PostConstruct
 	public void inicializar() {
+		try {
+			novo();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		listar();
 	}
 	
@@ -41,7 +50,7 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
            return;
         }
         if (has(id)) {
-            objeto = (M) repository.findById(id);
+            objeto = (M) repository.findById(id).orElse(null);
         } else {
         	objeto = modelClass.newInstance();
         }
@@ -116,6 +125,14 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 		addDetailMessage("Salvo com sucesso");
 		objeto = modelClass.newInstance();
 		
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
 		

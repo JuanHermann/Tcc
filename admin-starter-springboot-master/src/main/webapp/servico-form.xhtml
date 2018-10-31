@@ -15,11 +15,10 @@
 
 	<ui:define name="body">
 		<f:metadata>
-			<f:viewParam name="id" value="#{servicoBean.objeto.id}" />
+			<f:viewParam name="id" value="#{servicoBean.id}" />
 			<f:viewAction action="#{servicoBean.init}" />
 		</f:metadata>
 
-		<h:inputHidden value="#{servicoBean.novo()}" />
 
 		<h:form id="form" prependId="false">
 
@@ -68,7 +67,7 @@
 							<p:outputLabel for="id" value="ID" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="id" value="#{servicoForm.servico.id}" size="4"
+							<p:inputText id="id" value="#{servicoBean.objeto.id}" size="4"
 								readonly="true" styleClass="form-control" style="width: 100%" />
 						</div>
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">

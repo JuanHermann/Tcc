@@ -41,7 +41,7 @@ public class TimeConverter implements Converter {
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
 		if (value != null && value instanceof LocalDate) {
 			
-			return "teste do return ";
+			return "11:11:11";
 		} else {
 			return null;
 		}

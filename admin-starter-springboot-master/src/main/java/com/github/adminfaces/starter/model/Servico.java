@@ -11,7 +11,7 @@ public class Servico implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
-    private Long id;
+    private Integer id;
 
     @Column(length = 100,nullable = false)
     private String nome;
@@ -25,15 +25,17 @@ public class Servico implements Serializable {
     @Column(length = 200,nullable = true)
     private String descricao;
 
-    public Long getId() {
-        return id;
-    }
+    
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Integer getId() {
+		return id;
+	}
 
-    public String getNome() {
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getNome() {
         return nome;
     }
 

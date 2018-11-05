@@ -25,19 +25,17 @@
 				<div class="box-header with-border">
 					<div id="main-buttons" class="hidden-sm hidden-xs">
 						<p:commandButton action="servico-form?faces-redirect=true"
-							icon="fa fa-plus" value="Novo" styleClass="btn-primary">
-							<f:actionListener binding="#{servicoBean.novo()}" />
-						</p:commandButton>
+							icon="fa fa-plus" value="Novo" styleClass="btn-primary"/>
 
 						<p:spacer width="5" />
 						<p:commandButton value="Deletar Selecionado" icon="fa fa-trash"
 							styleClass="btn-danger" process="@this" update="@form">
-							<p:confirm header="Confirmation" message="Are you sure?"
+							<p:confirm header="Confirmation" message="Você tem Certeza?"
 								icon="ui-icon-danger" />
 						</p:commandButton>
 					</div>
 
-					<p:splitButton value="New" action="car-form?faces-redirect=true"
+					<p:splitButton value="Novo" action="servico-form?faces-redirect=true"
 						icon="fa fa-plus" styleClass="hidden-md hidden-lg btn-primary">
 						<p:menuitem value="teste" />
 						<p:menuitem value="teste" />

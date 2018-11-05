@@ -12,7 +12,6 @@ import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.github.adminfaces.starter.model.Car;
 
 public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 
@@ -30,15 +29,6 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 
 	@PostConstruct
 	public void inicializar() {
-		try {
-			novo();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		listar();
 	}
 
@@ -107,17 +97,20 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 
 		} else {
 			repository.delete(objeto);
+			objeto = modelClass.newInstance();
 			addDetailMessage("Excluido com sucesso");
-			novo();
 		}
 	}
 
 	public void salvar() throws InstantiationException, IllegalAccessException {
+		if (objeto == null) {
+			addDetailMessage("Objeto nulo");
+		} else {
+			repository.save(objeto);
+			addDetailMessage("Salvo com sucesso");
+			objeto = modelClass.newInstance();
+		}
 
-		repository.save(objeto);
-
-		addDetailMessage("Salvo com sucesso");
-		objeto = modelClass.newInstance();
 	}
 
 	public Integer getId() {

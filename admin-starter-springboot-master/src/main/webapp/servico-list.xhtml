@@ -9,7 +9,7 @@
 
 
 
-	
+
 
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
@@ -20,12 +20,15 @@
     </ui:define>
 
 	<ui:define name="body">
+		<f:metadata>
+			<f:viewAction action="#{servicoList.listar}" />
+		</f:metadata>
 		<h:form>
 			<div class="box box-primary">
 				<div class="box-header with-border">
 					<div id="main-buttons" class="hidden-sm hidden-xs">
 						<p:commandButton action="servico-form?faces-redirect=true"
-							icon="fa fa-plus" value="Novo" styleClass="btn-primary"/>
+							icon="fa fa-plus" value="Novo" styleClass="btn-primary" />
 
 						<p:spacer width="5" />
 						<p:commandButton value="Deletar Selecionado" icon="fa fa-trash"
@@ -35,24 +38,28 @@
 						</p:commandButton>
 					</div>
 
-					<p:splitButton value="Novo" action="servico-form?faces-redirect=true"
-						icon="fa fa-plus" styleClass="hidden-md hidden-lg btn-primary">
-						<p:menuitem value="teste" />
-						<p:menuitem value="teste" />
-						<p:menuitem value="teste" />
+					<p:splitButton value="Novo"
+						action="servico-form?faces-redirect=true" icon="fa fa-plus"
+						styleClass="hidden-md hidden-lg btn-primary">
+						<p:menuitem  value="Deletar Selecionado"
+							icon="fa fa-trash" styleClass="btn-danger" process="@this"
+							update="@form">
+							<p:confirm header="Confirmation" message="Você tem Certeza?"
+								icon="ui-icon-danger" />
+						</p:menuitem>
 					</p:splitButton>
 
 					<p:separator />
 
 
-					<p:dataTable value="#{servicoBean.lista}" var="servico"
+					<p:dataTable value="#{servicoList.lista}" var="servico"
 						emptyMessage="Nenhuma categoria cadastrada" rowKey="#{servico.id}"
-						selection="#{servicoBean.objeto}" selectionMode="single"
+						selection="#{servicoList.objeto}" selectionMode="single"
 						widgetVar="table">
 
 						<f:facet name="header">
-                            Encontre um Serviço pelo seu nome : <p:inputNumber
-								id="inptId" decimalPlaces="0" value="#{carListMB.id}" />
+                            Encontre um Serviço pelo seu nome :
+                             <p:inputText id="inptId" decimalPlaces="0" value="#{carListMB.id}" />
 							<p:spacer height="5" />
 							<p:commandButton id="brFind" value="Buscar"
 								action="#{carListMB.findCarById(carListMB.id)}" process="@form"
@@ -63,7 +70,7 @@
 							styleClass="align-center" />
 
 						<p:column headerText="Nome">
-							
+
 							<p:link value="#{servico.nome}" outcome="servico-form.xhtml">
 								<f:param name="id" value="#{servico.id}" />
 							</p:link>
@@ -74,6 +81,7 @@
 						<p:column headerText="Valor">
 							R$ <p:outputLabel value="#{servico.valor}" />
 						</p:column>
+						<f:facet name="paginatorBottomRight"></f:facet>
 
 					</p:dataTable>
 				</div>

@@ -13,25 +13,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
+public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> {
 
 	private Integer id = 0;
 	private M objeto;
-	private List<M> lista;
 	private final Class<M> modelClass;
 	@Autowired
 	private R repository;
-	private boolean registroSelecionado;
 
-	AbastractBean(Class<M> modelClass) {
+	AbastractFormBean(Class<M> modelClass) {
 		this.modelClass = modelClass;
 	}
 
-	@PostConstruct
-	public void inicializar() {
-		listar();
-	}
-
+	
+    @PostConstruct
 	public void init() throws InstantiationException, IllegalAccessException {
 		if (Faces.isAjaxRequest()) {
 			return;
@@ -39,7 +34,7 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 		if (has(id)) {
 			objeto = (M) repository.findById(id).orElse(null);
 		} else {
-			objeto = modelClass.newInstance();
+			novo();
 		}
 	}
 
@@ -51,44 +46,8 @@ public abstract class AbastractBean<M, R extends JpaRepository<M, Integer>> {
 		this.objeto = objeto;
 	}
 
-	public List<M> getLista() {
-		return lista;
-	}
-
-	public void setLista(List<M> lista) {
-		this.lista = lista;
-	}
-
-	public boolean isRegistroSelecionado() {
-		return registroSelecionado;
-	}
-
-	public void alterar() {
-		if (objeto == null) {
-			System.out.println("Selecione um registro");
-		} else {
-			registroSelecionado = false;
-		}
-	}
-
-	public void setRegistroSelecionado(boolean registroSelecionado) {
-		this.registroSelecionado = registroSelecionado;
-	}
-
-	protected void carregarLookups() {
-
-	}
-
-	public void listar() {
-		lista = repository.findAll();
-	}
-
 	public void novo() throws InstantiationException, IllegalAccessException {
 		objeto = modelClass.newInstance();
-	}
-
-	public void onRowSelect(SelectEvent event) {
-		registroSelecionado = true;
 	}
 
 	public void remover() throws InstantiationException, IllegalAccessException {

@@ -3,12 +3,9 @@ package com.github.adminfaces.starter.bean;
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 import static com.github.adminfaces.template.util.Assert.has;
 
-import java.util.List;
-
 import javax.annotation.PostConstruct;
 
 import org.omnifaces.util.Faces;
-import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -28,13 +25,11 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 	
     @PostConstruct
 	public void init() throws InstantiationException, IllegalAccessException {
-		if (Faces.isAjaxRequest()) {
-			return;
-		}
-		if (has(id)) {
-			objeto = (M) repository.findById(id).orElse(null);
-		} else {
+		if (id==0) {
 			novo();
+		} else {
+
+			objeto = (M) repository.findById(id).orElse(null);
 		}
 	}
 
@@ -56,8 +51,10 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 
 		} else {
 			repository.delete(objeto);
-			objeto = modelClass.newInstance();
+			
 			addDetailMessage("Excluido com sucesso");
+			
+			novo();
 		}
 	}
 

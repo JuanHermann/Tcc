@@ -1,13 +1,9 @@
 package com.github.adminfaces.starter.bean;
 
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
-import static com.github.adminfaces.template.util.Assert.has;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
-import org.omnifaces.util.Faces;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,16 +25,7 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 
 	
 
-	public void init() throws InstantiationException, IllegalAccessException {
-		if (Faces.isAjaxRequest()) {
-			return;
-		}
-		if (has(id)) {
-			objeto = (M) repository.findById(id).orElse(null);
-		} else {
-			novo();
-		}
-	}
+
 
 	public M getObjeto() {
 		return objeto;
@@ -95,16 +82,7 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 		}
 	}
 
-	public void salvar() throws InstantiationException, IllegalAccessException {
-		if (objeto == null) {
-			addDetailMessage("Objeto nulo");
-		} else {
-			repository.save(objeto);
-			addDetailMessage("Salvo com sucesso");
-			objeto = modelClass.newInstance();
-		}
 
-	}
 
 	public Integer getId() {
 		return id;

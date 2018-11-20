@@ -41,9 +41,8 @@
 					<p:splitButton value="Novo"
 						action="servico-form?faces-redirect=true" icon="fa fa-plus"
 						styleClass="hidden-md hidden-lg btn-primary">
-						<p:menuitem  value="Deletar Selecionado"
-							icon="fa fa-trash" styleClass="btn-danger" process="@this"
-							update="@form">
+						<p:menuitem value="Deletar Selecionado" icon="fa fa-trash"
+							process="@this" update="@form">
 							<p:confirm header="Confirmation" message="Você tem Certeza?"
 								icon="ui-icon-danger" />
 						</p:menuitem>
@@ -53,35 +52,49 @@
 
 
 					<p:dataTable value="#{servicoList.lista}" var="servico"
-						emptyMessage="Nenhuma categoria cadastrada" rowKey="#{servico.id}"
-						selection="#{servicoList.objeto}" selectionMode="single"
-						widgetVar="table">
+						id="servicoDT" emptyMessage="Nenhuma categoria cadastrada"
+						rowKey="#{servico.id}" selection="#{servicoList.registrosSelecionados}"
+						selectionMode="single" widgetVar="table" rows="15"
+						paginator="true" paginatorPosition="bottom"
+						paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15,20,40">
+						
+						<p:ajax event="rowSelectCheckbox"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="rowUnselectCheckbox"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="rowSelect"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="rowUnselect"
+							update="@(.ui-button, .ui-confirm-dialog)" />
 
 						<f:facet name="header">
                             Encontre um Serviço pelo seu nome :
-                             <p:inputText id="inptId" decimalPlaces="0" value="#{carListMB.id}" />
+                             <p:inputText id="inptId" decimalPlaces="0"
+								value="#{carListMB.id}" />
 							<p:spacer height="5" />
 							<p:commandButton id="brFind" value="Buscar"
 								action="#{carListMB.findCarById(carListMB.id)}" process="@form"
 								update="@form" styleClass="btn-flat bg-black btn-states"
 								partialSubmit="true" />
 						</f:facet>
+						
 						<p:column selectionMode="multiple" width="5%"
 							styleClass="align-center" />
 
 						<p:column headerText="Nome">
-
 							<p:link value="#{servico.nome}" outcome="servico-form.xhtml">
 								<f:param name="id" value="#{servico.id}" />
 							</p:link>
 						</p:column>
+						
 						<p:column headerText="Tempo">
 							<p:outputLabel value="#{servico.tempo}" />
 						</p:column>
+						
 						<p:column headerText="Valor">
 							R$ <p:outputLabel value="#{servico.valor}" />
 						</p:column>
-						<f:facet name="paginatorBottomRight"></f:facet>
 
 					</p:dataTable>
 				</div>

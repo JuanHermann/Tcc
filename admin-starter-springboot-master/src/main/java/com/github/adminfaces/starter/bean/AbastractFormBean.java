@@ -51,10 +51,9 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 
 		} else {
 			repository.delete(objeto);
-			
-			addDetailMessage("Excluido com sucesso");
-			
 			novo();
+			addDetailMessage("Excluido com sucesso");		
+			
 		}
 	}
 
@@ -76,5 +75,9 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
+	public boolean isNew() {
+        return modelClass == null || id== 0;
+    }
 
 }

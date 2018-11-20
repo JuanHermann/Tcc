@@ -17,15 +17,11 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 	private final Class<M> modelClass;
 	@Autowired
 	private R repository;
-	private boolean registroSelecionado;
+    private List<M> registrosSelecionados;
 
 	AbastractListBean(Class<M> modelClass) {
 		this.modelClass = modelClass;
 	}
-
-	
-
-
 
 	public M getObjeto() {
 		return objeto;
@@ -43,16 +39,12 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 		this.lista = lista;
 	}
 
-	public boolean isRegistroSelecionado() {
-		return registroSelecionado;
+	public List<M> getRegistrosSelecionados() {
+		return registrosSelecionados;
 	}
 
-	public void setRegistroSelecionado(boolean registroSelecionado) {
-		this.registroSelecionado = registroSelecionado;
-	}
-
-	protected void carregarLookups() {
-
+	public void setRegistrosSelecionados(List<M> registrosSelecionados) {
+		this.registrosSelecionados = registrosSelecionados;
 	}
 
 	public void listar() {
@@ -67,9 +59,6 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 		objeto = modelClass.newInstance();
 	}
 
-	public void onRowSelect(SelectEvent event) {
-		registroSelecionado = true;
-	}
 
 	public void remover() throws InstantiationException, IllegalAccessException {
 		if (objeto == null) {

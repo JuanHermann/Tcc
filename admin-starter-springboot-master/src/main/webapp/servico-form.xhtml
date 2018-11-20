@@ -31,12 +31,12 @@
 						<p:commandButton value="Salvar" action="#{servicoForm.salvar()}"
 							update="@form" icon="fa fa-check" styleClass="btn-primary" />
 						<p:spacer width="5" />
-						<p:commandButton value="Limpar" action="#{servicoForm.novo()}"
+						<p:commandButton value="Limpar" action="#{servicoForm.novo()}" rendered="#{servicoForm.isNew()}"
 							process="@this" icon="fa fa-refresh" styleClass="btn-success"
 							update="@form" resetValues="true" />
 						<p:spacer width="5" />
-						<p:commandButton value="Deletar" action="#{servicoForm.remover()}"
-							process="@this" icon="fa fa-trash" styleClass="btn-danger">
+						<p:commandButton value="Deletar" action="#{servicoForm.remover()}" rendered="#{not servicoForm.isNew()}"
+							process="@this" icon="fa fa-trash" styleClass="btn-danger" update="@form" resetValues="true">
 							<f:setPropertyActionListener value="true"
 								target="#{facesContext.externalContext.flash.keepMessages}" />
 							<p:confirm header="Confirmação"
@@ -50,11 +50,11 @@
 					<p:splitButton value="Salvar" action="#{servicoForm.salvar()}"
 						update="@form" icon="fa fa-check"
 						styleClass="hidden-md hidden-lg btn-primary">
-						<p:menuitem value="Limpar" action="#{servicoForm.novo()}"
+						<p:menuitem value="Limpar" action="#{servicoForm.novo()}" rendered="#{servicoForm.isNew()}"
 							process="@this" update="@form" resetValues="true"
 							icon="fa fa-refresh" />
-						<p:menuitem value="Deletar" action="#{servicoForm.remover()}"
-							process="@this" icon="fa fa-trash">
+						<p:menuitem value="Deletar" action="#{servicoForm.remover()}" rendered="#{not servicoForm.isNew()}"
+							process="@this" icon="fa fa-trash" update="@form" resetValues="true">
 							<p:confirm header="Confirmação"
 								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
 						</p:menuitem>

@@ -76,8 +76,6 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 		this.id = id;
 	}
 	
-	public boolean isNew() {
-        return modelClass == null || id== 0;
-    }
+	
 
 }

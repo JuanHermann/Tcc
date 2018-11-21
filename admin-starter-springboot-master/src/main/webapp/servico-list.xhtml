@@ -10,7 +10,6 @@
 
 
 
-
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
 	</ui:define>
@@ -20,9 +19,7 @@
     </ui:define>
 
 	<ui:define name="body">
-		<f:metadata>
-			<f:viewAction action="#{servicoList.listar}" />
-		</f:metadata>
+
 		<h:form>
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -52,46 +49,42 @@
 
 
 					<p:dataTable value="#{servicoList.lista}" var="servico"
-						id="servicoDT" emptyMessage="Nenhuma categoria cadastrada"
-						rowKey="#{servico.id}" selection="#{servicoList.registrosSelecionados}"
+						id="servicoDT" emptyMessage="Nenhum serviço cadastrado"
+						rowKey="#{servico.id}"
+						selection="#{servicoList.registrosSelecionados}"
 						selectionMode="single" widgetVar="table" rows="15"
 						paginator="true" paginatorPosition="bottom"
 						paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15,20,40">
-						
+
 						<p:ajax event="rowSelectCheckbox"
-							update="@(.ui-button, .ui-confirm-dialog)" />
+							listener="#{servicoList.onRowSelect}" update="@form" />
 						<p:ajax event="rowUnselectCheckbox"
-							update="@(.ui-button, .ui-confirm-dialog)" />
-						<p:ajax event="rowSelect"
-							update="@(.ui-button, .ui-confirm-dialog)" />
-						<p:ajax event="rowUnselect"
-							update="@(.ui-button, .ui-confirm-dialog)" />
+							listener="#{servicoList.unRowSelect}" update="@form" />
+						<p:ajax event="toggleSelect"
+							listener="#{servicoList.onRowSelectAll}" update="@form"  />
 
 						<f:facet name="header">
                             Encontre um Serviço pelo seu nome :
-                             <p:inputText id="inptId" decimalPlaces="0"
-								value="#{carListMB.id}" />
+                             <p:inputText value="#{servicoList.nome}" />
 							<p:spacer height="5" />
-							<p:commandButton id="brFind" value="Buscar"
-								action="#{carListMB.findCarById(carListMB.id)}" process="@form"
-								update="@form" styleClass="btn-flat bg-black btn-states"
-								partialSubmit="true" />
+							<p:commandButton value="Buscar" action="#{servicoList.buscar}"
+								process="@form" update="@form"
+								styleClass="btn-flat bg-black btn-states" partialSubmit="true" />
 						</f:facet>
-						
-						<p:column selectionMode="multiple" width="5%"
-							styleClass="align-center" />
+
+						<p:column selectionMode="multiple" style="width:16px;text-align:center" />
 
 						<p:column headerText="Nome">
 							<p:link value="#{servico.nome}" outcome="servico-form.xhtml">
 								<f:param name="id" value="#{servico.id}" />
 							</p:link>
 						</p:column>
-						
+
 						<p:column headerText="Tempo">
 							<p:outputLabel value="#{servico.tempo}" />
 						</p:column>
-						
+
 						<p:column headerText="Valor">
 							R$ <p:outputLabel value="#{servico.valor}" />
 						</p:column>

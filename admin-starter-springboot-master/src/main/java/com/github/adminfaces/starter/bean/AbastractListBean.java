@@ -4,6 +4,8 @@ import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +20,7 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 	@Autowired
 	private R repository;
     private List<M> registrosSelecionados;
+    private String nome ="";
 
 	AbastractListBean(Class<M> modelClass) {
 		this.modelClass = modelClass;
@@ -47,11 +50,24 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 		this.registrosSelecionados = registrosSelecionados;
 	}
 
-	public void listar() {
-		lista = repository.findAll();
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
-	public void buscar() {
+	@PostConstruct
+	public void listar() {
 		lista = repository.findAll();
 	}
 
@@ -70,15 +86,4 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 			addDetailMessage("Excluido com sucesso");
 		}
 	}
-
-
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
 }

@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface ServicoRepository extends JpaRepository<Servico, Integer> {
 
-
+	List<Servico> findByNomeLikeOrderById(String nome);
 }

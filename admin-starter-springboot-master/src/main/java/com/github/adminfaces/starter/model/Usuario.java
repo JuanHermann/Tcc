@@ -2,15 +2,13 @@ package com.github.adminfaces.starter.model;
 
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
 @Table(name = "usuario")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
-    private Long id;
+    private Integer id;
 
     @Column(length = 100,nullable = false)
     private String  nome;
@@ -25,19 +23,19 @@ public class Usuario {
     private String  telefone;
 
     @Column(length = 100,nullable = false)
-    private String  tipo;
+    private Integer  tipo;// 1-adm 2-funcionario 3-atendente 4-cliente
 
     @Column(nullable = false)
-    private boolean  status;// novo cadastro de usuario
+    private boolean  aceito;// novo cadastro de usuario
 
     @Column(nullable = false)
     private boolean  ativo; // futuro cadastro de um empregado que foi despedido
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -73,20 +71,20 @@ public class Usuario {
         this.telefone = telefone;
     }
 
-    public String getTipo() {
+    public Integer getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(Integer tipo) {
         this.tipo = tipo;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isAceito() {
+        return aceito;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setAceito(boolean aceito) {
+        this.aceito = aceito;
     }
 
     public boolean isAtivo() {

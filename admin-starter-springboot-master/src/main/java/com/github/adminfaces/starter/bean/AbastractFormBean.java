@@ -1,11 +1,9 @@
 package com.github.adminfaces.starter.bean;
 
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
-import static com.github.adminfaces.template.util.Assert.has;
 
 import javax.annotation.PostConstruct;
 
-import org.omnifaces.util.Faces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -75,7 +73,10 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
-	
+
+
+	public R getRepository() {
+		return repository;
+	}
 
 }

@@ -28,30 +28,6 @@ public class ServicoList extends AbastractListBean<Servico, ServicoRepository> {
 
 	}
 
-	public void onRowSelect(SelectEvent event){
-		   Servico produtoTemp = ((Servico) event.getObject()); 
-		   produtoTemp.setEnableItem(true);
-		}
-
-		public void unRowSelect(UnselectEvent event){
-		   Servico produtoTemp = ((Servico) event.getObject()); 
-		   produtoTemp.setEnableItem(false);
-		}
-
-		public void onRowSelectAll(ToggleSelectEvent event){
-		   DataTable listTemp = (DataTable) event.getSource();
-		   List<Servico> list = (List<Servico>) listTemp.getValue();
-		   if(event.isSelected()){
-		      for(Servico p: list){
-		        if(p.getEstoqueMaximo() > 0)
-		       p.setEnableItem(true);
-		      }
-		      return;
-		   }
-		   for(Servico p: list){
-		      if(p.getEstoqueMaximo() > 0)
-		    p.setEnableItem(false);
-		      }
-		}
+	
 
 }

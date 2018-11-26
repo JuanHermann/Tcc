@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="#{layoutMB.template}">
+
+	<ui:define name="title">
+        Cadastro de Funcionários
+    </ui:define>
+
+	<ui:define name="head-end">
+		<ui:param name="renderBreadCrumb" value="false" />
+	</ui:define>
+
+	<ui:define name="body">
+		<f:metadata>
+			<f:viewParam name="id" value="#{funcionarioForm.id}" />
+			<f:viewAction action="#{funcionarioForm.init}" /> 
+		</f:metadata>
+
+
+		<h:form id="form" prependId="false">
+
+
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<div id="main-buttons" class="hidden-sm hidden-xs">
+
+
+						<p:commandButton value="Salvar" action="#{funcionarioForm.salvar()}"
+							update="@form" icon="fa fa-check" styleClass="btn-primary" />
+						<p:spacer width="5" />
+						<p:commandButton value="Limpar" action="#{funcionarioForm.novo()}" rendered="#{funcionarioForm.objeto.id == null}"
+							process="@this" icon="fa fa-refresh" styleClass="btn-success"
+							update="@form" resetValues="true" />
+						
+						<p:commandButton value="Deletar" action="#{funcionarioForm.remover()}" rendered="#{funcionarioForm.objeto.id != null}"
+							process="@this" icon="fa fa-trash" styleClass="btn-danger" update="@form" resetValues="true">
+							<f:setPropertyActionListener value="true"
+								target="#{facesContext.externalContext.flash.keepMessages}" />
+							<p:confirm header="Confirmação"
+								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
+						</p:commandButton>
+						<p:spacer width="5" />
+						<p:commandButton value="Voltar" immediate="true"
+							action="funcionario-list?faces-redirect=true" process="@this"
+							icon="fa fa-reply" />
+					</div>
+					<p:splitButton value="Salvar" action="#{funcionarioForm.salvar()}"
+						update="@form" icon="fa fa-check"
+						styleClass="hidden-md hidden-lg btn-primary">
+						<p:menuitem value="Limpar" action="#{funcionarioForm.novo()}" rendered="#{funcionarioForm.objeto.id == null}"
+							process="@this" update="@form" resetValues="true"
+							icon="fa fa-refresh" />
+						<p:menuitem value="Deletar" action="#{funcionarioForm.remover()}" rendered="#{funcionarioForm.objeto.id != null}"
+							process="@this" icon="fa fa-trash" update="@form" resetValues="true">
+							<p:confirm header="Confirmação"
+								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
+						</p:menuitem>
+						<p:menuitem value="Voltar" immediate="true"
+							action="funcionario-list?faces-redirect=true" process="@this"
+							icon="fa fa-reply" /> />
+					</p:splitButton>
+
+					<p:separator />
+
+					<div class="ui-g ui-fluid">
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel for="id" value="ID" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:inputText id="id" value="#{funcionarioForm.objeto.id}" size="4"
+								readonly="true" styleClass="form-control" style="width: 100%" />
+						</div>
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel value="Nome" for="nome" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:inputText id="nome" value="#{funcionarioForm.objeto.nome}"
+								required="true" />
+						</div>
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel value="Email" for="email" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:inputMask mask="99:99:99" id="email" value="#{funcionarioForm.objeto.email}" />
+
+						</div>
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel value="Telefone" for="telefone" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:inputMask mask="(99) 99999-9999" id="telefone"
+								 value="#{funcionarioForm.objeto.telefone}" />
+
+						</div>
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel value="Valor" for="valor" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:inputText id="valor" value="#{funcionarioForm.objeto.valor}"
+								required="true">
+								<f:convertNumber pattern="#,##0.00" />
+							</p:inputText>
+						</div>
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel value="Descrição" for="descricao" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:inputTextarea id="descricao"
+								value="#{funcionarioForm.objeto.descricao}" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				styleClass="box-danger box-solid">
+				<p:commandButton value="Sim" type="button"
+					styleClass="btn-material btn-primary ui-confirmdialog-yes"
+					icon="fa fa-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="btn-material btn-danger ui-confirmdialog-no"
+					icon="fa fa-close" />
+			</p:confirmDialog>
+		</h:form>
+
+
+	</ui:define>
+
+</ui:composition>

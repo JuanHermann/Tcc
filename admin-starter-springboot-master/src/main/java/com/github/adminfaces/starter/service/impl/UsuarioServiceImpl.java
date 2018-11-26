@@ -13,19 +13,24 @@ import com.github.adminfaces.starter.service.UsuarioService;
 
 
 @Service
-public class UsuarioServiceImpl extends CrudServiceImpl<Usuario, Long> implements UsuarioService {
+public class UsuarioServiceImpl extends CrudServiceImpl<Usuario, Integer> implements UsuarioService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
 	@Override
-	protected JpaRepository<Usuario, Long> getRepository() {
+	protected JpaRepository<Usuario, Integer> getRepository() {
 		return usuarioRepository;
 	}
 
 	@Override
 	public List<Usuario> findByNomeLike(String nome) {
 		return usuarioRepository.findByNomeLike(nome);
+	}
+	
+	@Override
+	public void criptografarSenha(Usuario usuario) throws RuntimeException {
+		
 	}
 
 

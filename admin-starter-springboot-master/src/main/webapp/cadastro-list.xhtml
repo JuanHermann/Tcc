@@ -13,7 +13,7 @@
 	</ui:define>
 
 	<ui:define name="description">
-        Serviços que são realizados na sua empresa.
+        Novos cadastros que precisam ser aceitos.
     </ui:define>
 
 	<ui:define name="body">
@@ -21,37 +21,28 @@
 		<h:form id="form">
 			<div class="box box-primary">
 				<div class="box-header with-border">
-					<div id="main-buttons" class="hidden-sm hidden-xs">
-						<p:commandButton action="servico-form?faces-redirect=true"
-							icon="fa fa-plus" value="Novo" styleClass="btn-primary" />
+					<div id="main-buttons" >
+						<p:commandButton action="#{usuarioList.aceitarSelecionados()}"						
+							disabled="#{empty usuarioList.registrosSelecionados or usuarioList.registrosSelecionados.size() == 0}"
+							icon="fa fa-check" value="Aceitar" styleClass="btn-success" process="@this" update=":form"/>
 
 						<p:spacer width="5" />
-						<p:commandButton value="Deletar Selecionados" icon="fa fa-trash" action="#{servicoList.deletarSelecionados()}"						
-							disabled="#{empty servicoList.registrosSelecionados or servicoList.registrosSelecionados.size() == 0}"
+						<p:commandButton value="Deletar Selecionados" icon="fa fa-trash" action="#{usuarioList.deletarSelecionados()}"						
+							disabled="#{empty usuarioList.registrosSelecionados or usuarioList.registrosSelecionados.size() == 0}"
 							styleClass="btn-danger" process="@this" update="@form">
-							<p:confirm header="Confirmation" message="Você tem Certeza que deseja Excluir #{servicoList.registrosSelecionados.size()} registros selecionados?"
+							<p:confirm header="Confirmation" message="Você tem Certeza que deseja Excluir #{usuarioList.registrosSelecionados.size()} registros selecionados?"
 								icon="ui-icon-danger" />
 						</p:commandButton>
 					</div>
 
-					<p:splitButton value="Novo"
-						action="servico-form?faces-redirect=true" icon="fa fa-plus"
-						styleClass="hidden-md hidden-lg btn-primary">
-						<p:menuitem value="Deletar Selecionado" icon="fa fa-trash"	action="#{servicoList.deletarSelecionados()}"					
-							disabled="#{empty servicoList.registrosSelecionados or servicoList.registrosSelecionados.size() == 0}"
-							process="@this" update="@form">
-							<p:confirm header="Confirmation" message="Você tem Certeza que deseja Excluir #{servicoList.registrosSelecionados.size()} registros selecionados?"
-								icon="ui-icon-danger" />
-						</p:menuitem>
-					</p:splitButton>
-
+					
 					<p:separator />
 
 
-					<p:dataTable value="#{servicoList.lista}" var="servico"
-						id="servicoDT" emptyMessage="Nenhum serviço cadastrado"
-						rowKey="#{servico.id}"
-						selection="#{servicoList.registrosSelecionados}"
+					<p:dataTable value="#{usuarioList.lista}" var="usuario"
+						id="usuarioDT" emptyMessage="Nenhum cadastro novo"
+						rowKey="#{usuario.id}"
+						selection="#{usuarioList.registrosSelecionados}"
 						 widgetVar="table" rows="15"
 						paginator="true" paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -70,10 +61,10 @@
 							update="@(.ui-button, .ui-confirm-dialog)" />
 							
 						<f:facet name="header">
-                            Encontre um Serviço pelo seu nome :
-                             <p:inputText value="#{servicoList.nome}" />
+                            Encontre um cadastro pelo seu nome :
+                             <p:inputText value="#{usuarioList.nome}" />
 							<p:spacer height="5" />
-							<p:commandButton value="Buscar" action="#{servicoList.buscar}"
+							<p:commandButton value="Buscar" action="#{usuarioList.buscarNovos}"
 								process="@form" update="@form"
 								styleClass="btn-flat bg-black btn-states" partialSubmit="true" />
 						</f:facet>
@@ -82,17 +73,17 @@
 							styleClass="align-center"  />
 
 						<p:column headerText="Nome">
-							<p:link value="#{servico.nome}" outcome="servico-form.xhtml">
-								<f:param name="id" value="#{servico.id}" />
+							<p:link value="#{usuario.nome}">
+								<f:param name="id" value="#{usuario.id}" />
 							</p:link>
 						</p:column>
 
-						<p:column headerText="Tempo" style="text-align: center;">
-							<p:outputLabel value="#{servico.tempo}" />
+						<p:column headerText="Email">
+							<p:outputLabel value="#{usuario.email}" />
 						</p:column>
 
-						<p:column headerText="Valor">
-							 <p:outputLabel value="R$ #{servico.valor}" />
+						<p:column headerText="Telefone">
+							 <p:outputLabel value="#{usuario.telefone}" />
 						</p:column>
 
 					</p:dataTable>

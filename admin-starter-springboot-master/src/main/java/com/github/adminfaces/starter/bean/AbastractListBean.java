@@ -86,4 +86,15 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 			addDetailMessage("Excluido com sucesso");
 		}
 	}
+	
+	public void deletarSelecionados() {
+		int num =0;
+		for (int i = 0; i < registrosSelecionados.size(); i++) {
+			repository.delete(registrosSelecionados.get(i));
+			num++;
+		}
+		registrosSelecionados.clear();
+		addDetailMessage(num + " Registros deletado com sucesso!");
+		listar();
+	}
 }

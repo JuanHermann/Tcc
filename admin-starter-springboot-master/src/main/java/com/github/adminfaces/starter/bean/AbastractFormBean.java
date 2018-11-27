@@ -25,9 +25,11 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 	public void init() throws InstantiationException, IllegalAccessException {
 		if (id==0) {
 			novo();
+			System.out.println("novo");
 		} else {
 
 			objeto = (M) repository.findById(id).orElse(null);
+			System.out.println("id");
 		}
 	}
 
@@ -56,6 +58,7 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 	}
 
 	public void salvar() throws InstantiationException, IllegalAccessException {
+		System.out.println("salvar");
 		if (objeto == null) {
 			addDetailMessage("Objeto nulo");
 		} else {
@@ -63,6 +66,7 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 			addDetailMessage("Salvo com sucesso");
 			objeto = modelClass.newInstance();
 		}
+		
 
 	}
 

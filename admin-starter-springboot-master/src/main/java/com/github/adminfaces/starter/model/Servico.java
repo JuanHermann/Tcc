@@ -16,7 +16,7 @@ public class Servico implements Serializable {
     @Column(length = 100,nullable = false)
     private String nome;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Time tempo;
 
     @Column(nullable = false)

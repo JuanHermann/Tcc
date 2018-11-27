@@ -3,7 +3,6 @@ package com.github.adminfaces.starter.bean;
 import com.github.adminfaces.starter.model.Servico;
 import com.github.adminfaces.starter.repository.ServicoRepository;
 
-import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -25,8 +24,10 @@ public class ServicoList extends AbastractListBean<Servico, ServicoRepository> {
 		} else {
 			setLista(servicoRepository.findAll());
 		}
+		setNome("");
 
 	}
+	
 
 	
 

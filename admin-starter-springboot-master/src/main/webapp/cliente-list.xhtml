@@ -23,25 +23,24 @@
 		<h:form>
 			<div class="box box-primary">
 				<div class="box-header with-border">
-					<div id="main-buttons" >						
+					<div id="main-buttons">
 						<p:commandButton value="Deletar Selecionado" icon="fa fa-trash"
 							styleClass="btn-danger" process="@this" update="@form">
-							<p:confirm header="Você deseja aceitar ou excluir este cadastro?" message="dados"
-								icon="ui-icon-danger" />
+							<p:confirm header="Você deseja aceitar ou excluir este cadastro?"
+								message="dados" icon="ui-icon-danger" />
 						</p:commandButton>
 					</div>
-					
+
 					<p:separator />
 
-					<p:dataTable value="#{usuarioList.lista}" var="usuario"
-						id="usuarioDT" emptyMessage="Nenhum Usuario novo cadastrado"
-						rowKey="#{usuario.id}"
+					<p:dataTable id="usuarioDT"
+						emptyMessage="Nenhum Usuario novo cadastrado"
+						value="#{usuarioList.lista}" var="usuario"
 						selection="#{usuarioList.registrosSelecionados}"
-						selectionMode="single" widgetVar="table" rows="15"
+						rowKey="#{usuario.id}" rows="15" widgetVar="table"
 						paginator="true" paginatorPosition="bottom"
 						paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15,20,40">
-
 						<f:facet name="header">
                             Encontre o cadastro pelo seu nome :
                              <p:inputText value="#{usuarioList.nome}" />
@@ -50,11 +49,10 @@
 								process="@form" update="@form"
 								styleClass="btn-flat bg-black btn-states" partialSubmit="true" />
 						</f:facet>
-
-						<p:column selectionMode="multiple" style="width:16px;text-align:center" />
-
+						<p:column selectionMode="multiple" width="5%"
+							styleClass="align-center" />
 						<p:column headerText="Nome">
-							<p:link value="#{usuario.nome}"  >
+							<p:link value="#{usuario.nome}">
 								<f:param name="id" value="#{usuario.id}" />
 							</p:link>
 						</p:column>
@@ -79,6 +77,7 @@
 					styleClass="btn-material btn-danger ui-confirmdialog-no"
 					icon="fa fa-close" />
 			</p:confirmDialog>
+
 		</h:form>
 
 

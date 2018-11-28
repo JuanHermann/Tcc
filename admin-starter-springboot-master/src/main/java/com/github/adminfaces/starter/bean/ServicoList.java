@@ -25,6 +25,7 @@ public class ServicoList extends AbastractListBean<Servico, ServicoRepository> {
 			setLista(servicoRepository.findAll());
 		}
 		setNome("");
+		setRegistrosSelecionados(null);
 
 	}
 	

@@ -26,6 +26,8 @@ public class UsuarioList extends AbastractListBean<Usuario, UsuarioRepository> {
 		} else {
 			listar();
 		}
+		setNome("");
+		setRegistrosSelecionados(null);
 
 	}	
 		

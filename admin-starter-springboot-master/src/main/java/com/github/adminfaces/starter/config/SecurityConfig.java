@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.github.adminfaces.starter.service.impl.UsuarioServiceImpl;
+import com.github.adminfaces.starter.service.UsuarioService;
 
 
 
@@ -17,7 +17,7 @@ import com.github.adminfaces.starter.service.impl.UsuarioServiceImpl;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
-	private UsuarioServiceImpl service;
+	private UsuarioService service;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -33,6 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.authorizeRequests()
 				.antMatchers("/usuario.xhtml").hasRole("ADMIN")
+				.antMatchers("/public/**").permitAll()
+				.antMatchers("/cadastro.xhtml").permitAll()
 				.antMatchers("/javax.faces.resource/**").permitAll()
 					.anyRequest().authenticated()
 			.and().csrf().disable();

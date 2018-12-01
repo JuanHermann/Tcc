@@ -1,11 +1,22 @@
 package com.github.adminfaces.starter.model;
 
 
+import java.util.Collection;
+import java.util.Collections;
+
 import javax.persistence.*;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario {
+public class Usuario implements UserDetails{
+
+	private static final long serialVersionUID = 1L;
+	public static final String ADMIN_EMAIL = "admin";
+	public static final Integer COD_ADMIN = 1;
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private Integer id;
@@ -30,7 +41,47 @@ public class Usuario {
 
     @Column(nullable = false)
     private boolean  ativo; // futuro cadastro de um empregado que foi despedido
+    private String roleName;
+	
+	public Usuario() {
+		roleName = "ROLE_USER";
+	}
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Collections.singletonList(() -> roleName);
+	}
+
+	@Override
+	public String getPassword() {
+		return senha;
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+	
     public Integer getId() {
         return id;
     }
@@ -95,7 +146,15 @@ public class Usuario {
         this.ativo = ativo;
     }
 
-    @Override
+    public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+
+	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;

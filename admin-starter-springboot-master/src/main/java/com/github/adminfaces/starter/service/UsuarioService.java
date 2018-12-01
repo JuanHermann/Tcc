@@ -1,17 +1,55 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.github.adminfaces.starter.service;
 
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.github.adminfaces.starter.model.Usuario;
+import com.github.adminfaces.starter.repository.UsuarioRepository;
 
-public interface UsuarioService extends CrudService<Usuario, Integer> {
+@Service
+public class UsuarioService implements UserDetailsService, CommandLineRunner {
 
-	public List<Usuario> findByNomeLike(String nome);
-	
-	public void criptografarSenha(Usuario usuario);
+	@Autowired
+	private UsuarioRepository repository;
+
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		return repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+	}
+
+	public void criptografarSenha(Usuario usuario) throws RuntimeException {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		if (usuario.getId() == null) {
+			usuario.setSenha(encoder.encode(usuario.getSenha()));
+		} else {
+			Usuario antigo = repository.findById(usuario.getId()).orElse(null);
+			if (antigo != null && !usuario.getSenha().equals(antigo.getSenha())) {
+				usuario.setSenha(encoder.encode(usuario.getSenha()));
+			}
+		}
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		Usuario usuario = repository.findByEmail(Usuario.ADMIN_EMAIL).orElse(null);
+		if (usuario == null) {
+			usuario = new Usuario();
+			usuario.setEmail("admin");
+			usuario.setSenha("123");
+			usuario.setNome("Administrador");
+			usuario.setTelefone("");
+			usuario.setAceito(true);
+			usuario.setAtivo(true);
+			usuario.setTipo(Usuario.COD_ADMIN);
+			usuario.setRoleName("ROLE_ADMIN");
+			criptografarSenha(usuario);
+			repository.save(usuario);
+		}
+	}
+
 }

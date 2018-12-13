@@ -26,10 +26,12 @@
 							icon="fa fa-plus" value="Novo" styleClass="btn-primary" />
 
 						<p:spacer width="5" />
-						<p:commandButton value="Deletar Selecionados" icon="fa fa-trash" action="#{servicoList.deletarSelecionados()}"						
+						<p:commandButton value="Deletar Selecionados" icon="fa fa-trash"
+							action="#{servicoList.deletarSelecionados()}"
 							disabled="#{empty servicoList.registrosSelecionados or servicoList.registrosSelecionados.size() == 0}"
 							styleClass="btn-danger" process="@this" update="@form">
-							<p:confirm header="Confirmation" message="Você tem Certeza que deseja Excluir #{servicoList.registrosSelecionados.size()} registros selecionados?"
+							<p:confirm header="Confirmation"
+								message="Você tem Certeza que deseja Excluir #{servicoList.registrosSelecionados.size()} registros selecionados?"
 								icon="ui-icon-danger" />
 						</p:commandButton>
 					</div>
@@ -37,10 +39,12 @@
 					<p:splitButton value="Novo"
 						action="servico-form?faces-redirect=true" icon="fa fa-plus"
 						styleClass="hidden-md hidden-lg btn-primary">
-						<p:menuitem value="Deletar Selecionado" icon="fa fa-trash"	action="#{servicoList.deletarSelecionados()}"					
+						<p:menuitem value="Deletar Selecionado" icon="fa fa-trash"
+							action="#{servicoList.deletarSelecionados()}"
 							disabled="#{empty servicoList.registrosSelecionados or servicoList.registrosSelecionados.size() == 0}"
 							process="@this" update="@form">
-							<p:confirm header="Confirmation" message="Você tem Certeza que deseja Excluir #{servicoList.registrosSelecionados.size()} registros selecionados?"
+							<p:confirm header="Confirmation"
+								message="Você tem Certeza que deseja Excluir #{servicoList.registrosSelecionados.size()} registros selecionados?"
 								icon="ui-icon-danger" />
 						</p:menuitem>
 					</p:splitButton>
@@ -51,13 +55,12 @@
 					<p:dataTable value="#{servicoList.lista}" var="servico"
 						id="servicoDT" emptyMessage="Nenhum serviço cadastrado"
 						rowKey="#{servico.id}"
-						selection="#{servicoList.registrosSelecionados}"
-						 widgetVar="table" rows="15"
-						paginator="true" paginatorPosition="bottom"
+						selection="#{servicoList.registrosSelecionados}" widgetVar="table"
+						rows="15" paginator="true" paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15,20,40">
-						
-						
+
+
 						<p:ajax event="rowSelectCheckbox"
 							update="@(.ui-button, .ui-confirm-dialog)" />
 						<p:ajax event="rowUnselectCheckbox"
@@ -68,7 +71,7 @@
 							update="@(.ui-button, .ui-confirm-dialog)" />
 						<p:ajax event="toggleSelect"
 							update="@(.ui-button, .ui-confirm-dialog)" />
-							
+
 						<f:facet name="header">
                             Encontre um Serviço pelo seu nome :
                              <p:inputText value="#{servicoList.nome}" />
@@ -79,7 +82,7 @@
 						</f:facet>
 
 						<p:column selectionMode="multiple" width="5%"
-							styleClass="align-center"  />
+							styleClass="align-center" />
 
 						<p:column headerText="Nome">
 							<p:link value="#{servico.nome}" outcome="servico-form.xhtml">
@@ -92,7 +95,9 @@
 						</p:column>
 
 						<p:column headerText="Valor">
-							 <p:outputLabel value="R$ #{servico.valor}" />
+							<p:outputLabel value="#{servico.valor}">
+								<f:convertNumber pattern="R$ #,##0.00" />
+							</p:outputLabel>
 						</p:column>
 
 					</p:dataTable>

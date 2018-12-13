@@ -15,7 +15,7 @@
 	</ui:define>
 
 	<ui:define name="description">
-        Novos cadastros.
+        Usuarios cadastrados.
     </ui:define>
 
 	<ui:define name="body">
@@ -34,7 +34,7 @@
 					<p:separator />
 
 					<p:dataTable id="usuarioDT"
-						emptyMessage="Nenhum Usuario novo cadastrado"
+						emptyMessage="Nenhum Usuario cadastrado"
 						value="#{usuarioList.lista}" var="usuario"
 						selection="#{usuarioList.registrosSelecionados}"
 						rowKey="#{usuario.id}" rows="15" widgetVar="table"

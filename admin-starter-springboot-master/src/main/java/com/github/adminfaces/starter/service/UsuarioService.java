@@ -39,7 +39,7 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 		Usuario usuario = repository.findByEmail(Usuario.ADMIN_EMAIL).orElse(null);
 		if (usuario == null) {
 			usuario = new Usuario();
-			usuario.setEmail("admin");
+			usuario.setEmail("admin@admin.com");
 			usuario.setSenha("123");
 			usuario.setNome("Administrador");
 			usuario.setTelefone("");

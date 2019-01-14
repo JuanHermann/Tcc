@@ -22,15 +22,15 @@
 			<div class="box box-primary">
 				<div class="box-header with-border">
 					<div id="main-buttons" >
-						<p:commandButton action="#{usuarioList.aceitarSelecionados()}"						
-							disabled="#{empty usuarioList.registrosSelecionados or usuarioList.registrosSelecionados.size() == 0}"
+						<p:commandButton action="#{cadastroList.aceitarSelecionados()}"						
+							disabled="#{empty cadastroList.registrosSelecionados or cadastroList.registrosSelecionados.size() == 0}"
 							icon="fa fa-check" value="Aceitar" styleClass="btn-success" process="@this" update=":form"/>
 
 						<p:spacer width="5" />
-						<p:commandButton value="Deletar Selecionados" icon="fa fa-trash" action="#{usuarioList.deletarSelecionados()}"						
-							disabled="#{empty usuarioList.registrosSelecionados or usuarioList.registrosSelecionados.size() == 0}"
+						<p:commandButton value="Deletar Selecionados" icon="fa fa-trash" action="#{cadastroList.deletarSelecionados()}"						
+							disabled="#{empty cadastroList.registrosSelecionados or cadastroList.registrosSelecionados.size() == 0}"
 							styleClass="btn-danger" process="@this" update="@form">
-							<p:confirm header="Confirmation" message="Você tem Certeza que deseja Excluir #{usuarioList.registrosSelecionados.size()} registros selecionados?"
+							<p:confirm header="Confirmation" message="Você tem Certeza que deseja Excluir #{cadastroList.registrosSelecionados.size()} registros selecionados?"
 								icon="ui-icon-danger" />
 						</p:commandButton>
 					</div>
@@ -39,10 +39,10 @@
 					<p:separator />
 
 
-					<p:dataTable value="#{usuarioList.lista}" var="usuario"
+					<p:dataTable value="#{cadastroList.lista}" var="usuario"
 						id="usuarioDT" emptyMessage="Nenhum cadastro novo"
 						rowKey="#{usuario.id}"
-						selection="#{usuarioList.registrosSelecionados}"
+						selection="#{cadastroList.registrosSelecionados}"
 						 widgetVar="table" rows="15"
 						paginator="true" paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -62,9 +62,9 @@
 							
 						<f:facet name="header">
                             Encontre um cadastro pelo seu nome :
-                             <p:inputText value="#{usuarioList.nome}" />
+                             <p:inputText value="#{cadastroList.nome}" />
 							<p:spacer height="5" />
-							<p:commandButton value="Buscar" action="#{usuarioList.buscarNovos}"
+							<p:commandButton value="Buscar" action="#{cadastroList.buscarNovos}"
 								process="@form" update="@form"
 								styleClass="btn-flat bg-black btn-states" partialSubmit="true" />
 						</f:facet>

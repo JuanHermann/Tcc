@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("view")
-public class UsuarioList extends AbastractListBean<Usuario, UsuarioRepository> {
+public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
-	public UsuarioList() {
+	public ClienteList() {
 		super(Usuario.class);
 	}
 
-	public void buscarNovos() {
+	public void buscar() {
 		if (getNome() != "") {
-			setLista(usuarioRepository.findByNomeLikeAndAceitoOrderById("%"+getNome()+"%",false));
+			setLista(usuarioRepository.findByNomeLikeAndAceitoOrderById("%"+getNome()+"%",true));
 		} else {
 			listar();
 		}
@@ -33,7 +33,7 @@ public class UsuarioList extends AbastractListBean<Usuario, UsuarioRepository> {
 		
 	@Override
 	public void listar() {
-		setLista(usuarioRepository.findByAceitoOrderById(false));
+		setLista(usuarioRepository.findByAceitoOrderById(true));
 	}
 	
 	public void aceitarSelecionados() {

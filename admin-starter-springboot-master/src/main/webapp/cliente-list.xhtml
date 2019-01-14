@@ -8,49 +8,70 @@
 	template="#{layoutMB.template}">
 
 
-
-
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
 	</ui:define>
 
 	<ui:define name="description">
-        Usuarios cadastrados.
+        Clientes cadastros.
     </ui:define>
 
 	<ui:define name="body">
 
-		<h:form>
+		<h:form id="form">
 			<div class="box box-primary">
 				<div class="box-header with-border">
-					<div id="main-buttons">
-						<p:commandButton value="Deletar Selecionado" icon="fa fa-trash"
+					<div id="main-buttons" >
+						<p:commandButton action="#{clienteList.aceitarSelecionados()}"						
+							disabled="#{empty clienteList.registrosSelecionados or clienteList.registrosSelecionados.size() == 0}"
+							icon="fa fa-check" value="Aceitar" styleClass="btn-success" process="@this" update=":form"/>
+
+						<p:spacer width="5" />
+						<p:commandButton value="Deletar Selecionados" icon="fa fa-trash" action="#{clienteList.deletarSelecionados()}"						
+							disabled="#{empty clienteList.registrosSelecionados or clienteList.registrosSelecionados.size() == 0}"
 							styleClass="btn-danger" process="@this" update="@form">
-							<p:confirm header="Você deseja aceitar ou excluir este cadastro?"
-								message="dados" icon="ui-icon-danger" />
+							<p:confirm header="Confirmation" message="Você tem Certeza que deseja Excluir #{clienteList.registrosSelecionados.size()} registros selecionados?"
+								icon="ui-icon-danger" />
 						</p:commandButton>
 					</div>
 
+					
 					<p:separator />
 
-					<p:dataTable id="usuarioDT"
-						emptyMessage="Nenhum Usuario cadastrado"
-						value="#{usuarioList.lista}" var="usuario"
-						selection="#{usuarioList.registrosSelecionados}"
-						rowKey="#{usuario.id}" rows="15" widgetVar="table"
+
+					<p:dataTable value="#{clienteList.lista}" var="usuario"
+						id="usuarioDT" emptyMessage="Nenhum cliente Cadastrado"
+						rowKey="#{usuario.id}"
+						selection="#{clienteList.registrosSelecionados}"
+						 widgetVar="table" rows="15"
 						paginator="true" paginatorPosition="bottom"
-						paginatorTemplate=" {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15,20,40">
+						
+						
+						<p:ajax event="rowSelectCheckbox"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="rowUnselectCheckbox"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="rowSelect"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="rowUnselect"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="toggleSelect"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+							
 						<f:facet name="header">
-                            Encontre o cadastro pelo seu nome :
-                             <p:inputText value="#{usuarioList.nome}" />
+                            Encontre um cliente pelo seu nome :
+                             <p:inputText value="#{clienteList.nome}" />
 							<p:spacer height="5" />
-							<p:commandButton value="Buscar" action="#{usuarioList.buscar}"
+							<p:commandButton value="Buscar" action="#{clienteList.buscar}"
 								process="@form" update="@form"
 								styleClass="btn-flat bg-black btn-states" partialSubmit="true" />
 						</f:facet>
+
 						<p:column selectionMode="multiple" width="5%"
-							styleClass="align-center" />
+							styleClass="align-center"  />
+
 						<p:column headerText="Nome">
 							<p:link value="#{usuario.nome}">
 								<f:param name="id" value="#{usuario.id}" />
@@ -62,22 +83,21 @@
 						</p:column>
 
 						<p:column headerText="Telefone">
-							<p:outputLabel value="#{usuario.telefone}" />
+							 <p:outputLabel value="#{usuario.telefone}" />
 						</p:column>
 
 					</p:dataTable>
 				</div>
 			</div>
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				styleClass="box-info box-solid">
-				<p:commandButton value="Aceitar" type="button"
+				styleClass="box-danger box-solid">
+				<p:commandButton value="Sim" type="button" update="@form"
 					styleClass="btn-material btn-primary ui-confirmdialog-yes"
 					icon="fa fa-check" />
-				<p:commandButton value="Excluir" type="button"
+				<p:commandButton value="Não" type="button"
 					styleClass="btn-material btn-danger ui-confirmdialog-no"
 					icon="fa fa-close" />
 			</p:confirmDialog>
-
 		</h:form>
 
 

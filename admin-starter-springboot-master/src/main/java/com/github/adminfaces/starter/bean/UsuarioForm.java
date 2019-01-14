@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.github.adminfaces.starter.model.Permissao;
 import com.github.adminfaces.starter.model.Usuario;
+import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.service.UsuarioService;
 
@@ -25,6 +27,9 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 	@Autowired
 	private UsuarioService usuarioService;
 	
+	@Autowired
+	private PermissaoRepository permissaoRepository;
+	
 	public UsuarioForm() {
 		super(Usuario.class);
 	}
@@ -33,6 +38,7 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 		getObjeto().setAtivo(true);
 		getObjeto().setTipo(4);
 		getObjeto().setAceito(false);
+		getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_USER"));
 		usuarioService.criptografarSenha(getObjeto());
 		getRepository().save(getObjeto());		
 		addDetailMessage("Cadastro criado com sucesso!");

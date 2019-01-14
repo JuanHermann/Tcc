@@ -1,13 +1,17 @@
 package com.github.adminfaces.starter.model;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 @Table(name = "usuario")
@@ -16,6 +20,7 @@ public class Usuario implements UserDetails{
 	private static final long serialVersionUID = 1L;
 	public static final String ADMIN_EMAIL = "admin";
 	public static final Integer COD_ADMIN = 1;
+	private static final BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder(10);
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
@@ -40,16 +45,29 @@ public class Usuario implements UserDetails{
     private boolean  aceito;// novo cadastro de usuario
 
     @Column(nullable = false)
-    private boolean  ativo; // futuro cadastro de um empregado que foi despedido
-    private String roleName;
+    private boolean  ativo; // futuro cadastro de um empregado que foi despedido   
+    
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Permissao> permissoes;
 	
-	public Usuario() {
-		roleName = "ROLE_USER";
-	}
-
+//    public Usuario(String email, String senha) {
+//		this.email = email;
+//		this.senha = senha;
+//	}
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Collections.singletonList(() -> roleName);
+		List<GrantedAuthority> auto = new ArrayList<>();
+		auto.addAll(getPermissoes());
+		
+		return auto;
+	}
+	
+	public void addPermissao(Permissao permissao) {
+		if (permissoes == null) {
+			permissoes = new HashSet<>();
+		}
+		permissoes.add(permissao);
 	}
 
 	@Override
@@ -144,14 +162,14 @@ public class Usuario implements UserDetails{
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
-    }
+    }  
 
-    public String getRoleName() {
-		return roleName;
+	public Set<Permissao> getPermissoes() {
+		return permissoes;
 	}
 
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
+	public void setPermissoes(Set<Permissao> permissoes) {
+		this.permissoes = permissoes;
 	}
 
 	@Override

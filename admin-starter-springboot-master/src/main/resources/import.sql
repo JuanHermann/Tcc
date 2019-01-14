@@ -18,4 +18,7 @@ INSERT INTO usuario (aceito, ativo, email, nome, senha, telefone, tipo) VALUES (
 INSERT INTO usuario (aceito, ativo, email, nome, senha, telefone, tipo) VALUES ( false, true, 'adm2@adm.com','adm2', 123, '(99) 9999-9999', 4);
 INSERT INTO usuario (aceito, ativo, email, nome, senha, telefone, tipo) VALUES ( true, true, 'adm3@adm.com','adm3', 123, '(99) 9999-9999', 4);
 INSERT INTO usuario (aceito, ativo, email, nome, senha, telefone, tipo) VALUES ( true, true, 'adm4@adm.com','adm4', 123, '(99) 9999-9999', 4);
-
+INSERT INTO public.permissao(id, nome) VALUES (1, 'ROLE_ADMIN');
+INSERT INTO public.permissao(id, nome) VALUES (2, 'ROLE_FUNCIONARIO');
+INSERT INTO public.permissao(id, nome) VALUES (3, 'ROLE_ATENDENTE');
+INSERT INTO public.permissao(id, nome) VALUES (4, 'ROLE_USER');

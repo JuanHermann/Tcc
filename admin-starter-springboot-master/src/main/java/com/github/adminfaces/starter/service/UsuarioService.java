@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.adminfaces.starter.model.Usuario;
+import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 
 @Service
@@ -16,10 +17,12 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 
 	@Autowired
 	private UsuarioRepository repository;
+	@Autowired
+	private PermissaoRepository permissaoRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		return repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+		return repository.findByEmailAndAceito(email,true).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 	}
 
 	public void criptografarSenha(Usuario usuario) throws RuntimeException {
@@ -36,7 +39,7 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Usuario usuario = repository.findByEmail(Usuario.ADMIN_EMAIL).orElse(null);
+		Usuario usuario = repository.findByEmailAndAceito(Usuario.ADMIN_EMAIL,true).orElse(null);
 		if (usuario == null) {
 			usuario = new Usuario();
 			usuario.setEmail("admin@admin.com");
@@ -46,7 +49,6 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 			usuario.setAceito(true);
 			usuario.setAtivo(true);
 			usuario.setTipo(Usuario.COD_ADMIN);
-			usuario.setRoleName("ROLE_ADMIN");
 			criptografarSenha(usuario);
 			repository.save(usuario);
 		}

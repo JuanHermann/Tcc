@@ -21,7 +21,7 @@ import com.github.adminfaces.starter.service.UsuarioService;
 
 @Component
 @Scope("view")
-public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
+public class Senha extends AbastractFormBean<Usuario, UsuarioRepository> {
 
 	@Autowired
 	private UsuarioService usuarioService;
@@ -29,7 +29,7 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 	@Autowired
 	private PermissaoRepository permissaoRepository;
 	
-	public UsuarioForm() {
+	public Senha() {
 		super(Usuario.class);
 	}
 	

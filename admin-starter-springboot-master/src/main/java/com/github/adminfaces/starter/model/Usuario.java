@@ -18,7 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class Usuario implements UserDetails{
 
 	private static final long serialVersionUID = 1L;
-	public static final String ADMIN_EMAIL = "admin";
+	public static final String ADMIN_EMAIL = "admin@admin.com";
 	public static final Integer COD_ADMIN = 1;
 	private static final BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder(10);
 	
@@ -37,9 +37,6 @@ public class Usuario implements UserDetails{
 
     @Column(length = 100,nullable = false)
     private String  telefone;
-
-    @Column(length = 100,nullable = false)
-    private Integer  tipo;// 1-adm 2-funcionario 3-atendente 4-cliente
 
     @Column(nullable = false)
     private boolean  aceito;// novo cadastro de usuario
@@ -138,14 +135,6 @@ public class Usuario implements UserDetails{
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
-    }
-
-    public Integer getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(Integer tipo) {
-        this.tipo = tipo;
     }
 
     public boolean isAceito() {

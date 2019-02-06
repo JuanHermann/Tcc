@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/usuario.xhtml").hasRole("ADMIN")
 				.antMatchers("/public/**").permitAll()
 				.antMatchers("/cadastro.xhtml").permitAll()
+				.antMatchers("/senha.xhtml").permitAll()
 				.antMatchers("/javax.faces.resource/**").permitAll()
 					.anyRequest().authenticated()
 			.and().csrf().disable();

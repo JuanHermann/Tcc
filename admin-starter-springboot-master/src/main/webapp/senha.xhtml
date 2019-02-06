@@ -2,11 +2,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" 
       xmlns:adm="http://github.com/adminfaces"
       xmlns:p="http://primefaces.org/ui">
 
     <h:head>
-        <title>Centro Estetico Andressa Hermann</title>
+        <title>Centro Estético Andressa Hermann</title>
         <meta charset="utf-8"/>
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
@@ -59,7 +60,7 @@
     </h:head>
 
     <h:body styleClass="hold-transition login-page">
-        <p:growl autoUpdate="true" sticky="true"/>
+        <p:growl p:autoUpdate="true" sticky="true"/>
         <div id="loader" class="load-bar" style="display: none">
             <div class="bar"></div>
             <div class="bar"></div>
@@ -77,49 +78,31 @@
             </div>
             <!-- /.login-logo -->
             <div class="box login-box-body">
-                <form action="/login.xhtml" method="post">
-                    <p class="login-box-msg">Faça seu Login</p>
+                <h:form>
+                    <p class="login-box-msg">Esqueci minha senha</p>
                     <p:messages closable="true"/>
+                    
+                    <div class="form-group has-feedback">
+                        <p:inputText value="#{usuarioForm.objeto.email}" type="email" styleClass="form-control" placeholder="Informe seu E-mail"
+                                     required="true" requiredMessage="Email é obrigatório." validatorMessage="Informe um email valido.">
+                                     <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 
-                    <div class="form-group has-feedback">
-                        <p:inputText  id="username" type="email" styleClass="form-control" placeholder="Informe seu E-mail"
-                                     required="true"
-                                     requiredMessage="Email é obrigatório."/>
-                        <i class="fa fa-envelope form-control-feedback" ></i>
+	</p:inputText>
                     </div>
-                    <div class="form-group has-feedback">
-                        <p:inputText type="password" styleClass="form-control"
-                                     placeholder="Informe sua Senha" required="true" id="password" 
-                                     requiredMessage="Senha é obrigatória."/>
-                        <i class="fa fa-lock form-control-feedback" style="font-size: 18px"></i>
-                    </div>
+                    
                     <div class="row">
+                        
                         <div class="col-xs-12">
-                            <p:selectBooleanCheckbox itemLabel="Lembrar-me" />
-                        </div>
-                        <p:spacer height="10"/>
-                        <div class="col-xs-12">
-                            <button class="btn btn-success btn-block" type="submit">
-					<span class="ui-button-text ui-c">Entrar</span>	
-				</button>
+                            <p:commandButton styleClass="btn btn-success btn-block" action="#{usuarioForm.novoCadastro}" onclick="showBar()" oncomplete="if(args.validationFailed){hideBar()}"
+                                             value="Enviar Email" />
                         </div>
                         
+                        <p:spacer height="2" />
                     </div>
-                </form>
-                <!-- botoes do face e google
-                                <div class="social-auth-links text-center">
-                                    <p>- OU -</p>
-                                    <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i
-                                            class="fa fa-facebook"></i> Sign in using
-                                        Facebook</a>
-                                    <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i
-                                            class="fa fa-google-plus"></i> Sign in using
-                                        Google+</a>
-                                </div>
-                                 /.social-auth-links -->
+                </h:form>
+                
 
-                <a href="senha.xhtml">Esqueci minha senha</a><br/>
-                <a href="cadastro.xhtml" class="text-center">Criar Conta</a>
+                <a href="login.xhtml" class="text-center">Voltar</a>
 
             </div>
             <!-- /.login-box-body -->

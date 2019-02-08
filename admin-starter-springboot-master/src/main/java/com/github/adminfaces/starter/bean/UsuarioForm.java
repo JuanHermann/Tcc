@@ -23,9 +23,9 @@ import com.github.adminfaces.starter.service.UsuarioService;
 @Scope("view")
 public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 
-	@Autowired
-	private UsuarioService usuarioService;
 	
+	@Autowired
+	private UsuarioService usuarioService;	
 	@Autowired
 	private PermissaoRepository permissaoRepository;
 	
@@ -42,6 +42,17 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 		addDetailMessage("Cadastro criado com sucesso!");
 		Faces.getExternalContext().getFlash().setKeepMessages(true);
         Faces.redirect("index.jsf");
+	}
+	
+	public void atualizar() {
+		
+		getObjeto().setAtivo(true);
+		getObjeto().setAceito(false);
+		getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_USER"));
+		getRepository().save(getObjeto());		
+		addDetailMessage("Cadastro Atualizado com sucesso!");
+		Faces.getExternalContext().getFlash().setKeepMessages(true);
+        
 	}
 
    

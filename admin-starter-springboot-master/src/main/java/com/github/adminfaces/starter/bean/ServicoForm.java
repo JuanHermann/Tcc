@@ -15,7 +15,5 @@ public class ServicoForm extends AbastractFormBean<Servico, ServicoRepository> {
 		super(Servico.class);
 	}
 	
-	
-
    
 }

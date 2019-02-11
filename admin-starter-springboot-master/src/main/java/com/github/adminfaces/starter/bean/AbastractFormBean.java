@@ -25,11 +25,11 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 	public void init() throws InstantiationException, IllegalAccessException {
 		if (id==0) {
 			novo();
-//			System.out.println("novo");
+			System.out.println("novo");
 		} else {
 
 			objeto = (M) repository.findById(id).orElse(null);
-//			System.out.println("id");
+			System.out.println("id");
 		}
 	}
 

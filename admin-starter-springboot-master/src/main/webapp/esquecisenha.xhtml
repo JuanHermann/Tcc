@@ -84,16 +84,16 @@
                     
                     <div class="form-group has-feedback">
                         <p:inputText value="#{usuarioForm.objeto.email}" type="email" styleClass="form-control" placeholder="Informe seu E-mail"
-                                     required="true" requiredMessage="Email é obrigatório." validatorMessage="Informe um email valido.">
+                                     required="true" requiredMessage="Informe o seu E-mail." validatorMessage="Informe um email valido.">
                                      <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 
-	</p:inputText>
+						</p:inputText>
                     </div>
                     
                     <div class="row">
                         
                         <div class="col-xs-12">
-                            <p:commandButton styleClass="btn btn-success btn-block" action="#{usuarioForm.novoCadastro}" onclick="showBar()" oncomplete="if(args.validationFailed){hideBar()}"
+                            <p:commandButton styleClass="btn btn-success btn-block" action="#{esqueciSenha.novaSenha}" onclick="showBar()" oncomplete="if(args.validationFailed){hideBar()}"
                                              value="Enviar Email" />
                         </div>
                         

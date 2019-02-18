@@ -94,12 +94,14 @@
                         <i class="fa fa-lock form-control-feedback" style="font-size: 18px"></i>
                     </div>
                     <div class="row">
-                        <div class="col-xs-12">
+                        <div class="col-xs-12" >
                             <p:selectBooleanCheckbox itemLabel="Lembrar-me" />
                         </div>
                         <p:spacer height="10"/>
                         <div class="col-xs-12">
-                            <button class="btn btn-success btn-block" type="submit">
+                            <p:commandButton styleClass="btn btn-success btn-block" type="submit"  
+                                             value="Enviar Email" />
+				 <button class="btn btn-success btn-block" type="submit" >
 					<span class="ui-button-text ui-c">Entrar</span>	
 				</button>
                         </div>
@@ -117,9 +119,13 @@
                                         Google+</a>
                                 </div>
                                  /.social-auth-links -->
+                                 
+                                 <br/>
 
-                <a href="senha.xhtml">Esqueci minha senha</a><br/>
-                <a href="cadastro.xhtml" class="text-center">Criar Conta</a>
+                <a  href="cadastro.xhtml" class="text-center">Criar Conta</a>
+                <div style="text-align: right; float: right;">
+                	<a style="text-align: right;" href="esquecisenha.xhtml">Esqueci minha senha</a>
+                </div>
 
             </div>
             <!-- /.login-box-body -->

@@ -45,7 +45,8 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 			usuario.setEmail("admin@admin.com");
 			usuario.setSenha("123");
 			usuario.setNome("Administrador");
-			usuario.setTelefone("");
+			usuario.setTelefone("(99)99999-9999");
+			//usuario.addPermissao(permissaoRepository.findByNome("ROLE_ADMIN"));
 			usuario.setAceito(true);
 			usuario.setAtivo(true);
 			criptografarSenha(usuario);

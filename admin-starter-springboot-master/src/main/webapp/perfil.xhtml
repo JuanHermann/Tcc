@@ -25,19 +25,6 @@
 
 			<div class="box box-primary">
 				<div class="box-header with-border">
-					<div id="main-buttons"   class="hidden-sm hidden-xs" >
-
-
-						<p:commandButton value="Salvar" action="#{perfil.salvar()}"
-							update="@form" icon="fa fa-check" styleClass="btn-primary" />
-												
-					</div>
-					
-					<p:splitButton value="Salvar" action="#{perfil.salvar()}"
-						update="@form" icon="fa fa-check"
-						styleClass="hidden-md hidden-lg btn-primary">
-						
-					</p:splitButton> 
 
 					<p:separator />
 
@@ -53,14 +40,14 @@
 							<p:outputLabel value="Nome" for="nome" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="nome" value="#{usuarioForm.objeto.email}"
+							<p:inputText id="nome" value="#{perfil.objeto.nome}"
 								required="true" />
 						</div>
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel value="Email" for="email" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="email" value="#{usuarioForm.objeto.email}" type="email" styleClass="form-control" placeholder="Informe seu E-mail"
+							<p:inputText id="email" value="#{perfil.objeto.email}" type="email" styleClass="form-control" placeholder="Informe seu E-mail"
                                      required="true" requiredMessage="Email é obrigatório." validatorMessage="Informe um email valido.">
                                      <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 
@@ -72,18 +59,23 @@
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
 							 <p:inputMask id="telefone" mask="(99) 99999-9999" styleClass="form-control" placeholder="Informe seu Telefone"
-                                     required="true" requiredMessage="Telefone é obrigatório." value="#{usuarioForm.objeto.telefone}" />
+                                     required="true" requiredMessage="Telefone é obrigatório." value="#{perfil.objeto.telefone}" />
 						</div>
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel value="Senha" for="senha" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
 							<p:commandButton id="senha" value="Alterar Senha" action="#"
-							update="@form" icon="fa fa-check" styleClass="btn-danger" />
+							update="@form" icon="fa fa-refresh" styleClass="btn-danger" />
 						</div>
-						<p:commandButton value="Salvar Alterações" action="#{perfil.salvar()}"
-							update="@form" icon="fa fa-check" styleClass="btn-success" />
+						
+						<p:commandButton value="Salvar Alterações" action="#{perfil.atualizar()}"
+							update="@form" icon="fa fa-check" styleClass="btn-success"  />
+							
 					</div>
+					
+							
+							
 				</div>
 			</div>
 

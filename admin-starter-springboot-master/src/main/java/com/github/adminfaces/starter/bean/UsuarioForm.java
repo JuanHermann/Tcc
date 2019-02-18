@@ -27,11 +27,11 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 	@Autowired
 	private UsuarioService usuarioService;	
 	@Autowired
-	private PermissaoRepository permissaoRepository;
+	private PermissaoRepository permissaoRepository;	
 	
 	public UsuarioForm() {
 		super(Usuario.class);
-	}
+	}	
 	
 	public void novoCadastro() throws IOException {
 		getObjeto().setAtivo(true);
@@ -44,16 +44,6 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
         Faces.redirect("index.jsf");
 	}
 	
-	public void atualizar() {
-		
-		getObjeto().setAtivo(true);
-		getObjeto().setAceito(false);
-		getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_USER"));
-		getRepository().save(getObjeto());		
-		addDetailMessage("Cadastro Atualizado com sucesso!");
-		Faces.getExternalContext().getFlash().setKeepMessages(true);
-        
-	}
-
+	
    
 }

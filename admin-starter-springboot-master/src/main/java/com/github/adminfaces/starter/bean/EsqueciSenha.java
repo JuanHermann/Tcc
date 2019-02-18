@@ -33,7 +33,7 @@ public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> 
 		super(Usuario.class);
 	}
 	
-	public void novoCadastro() throws IOException {
+	public void novaSenha() throws IOException {
 		getObjeto().setAtivo(true);
 		getObjeto().setAceito(false);
 		getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_USER"));

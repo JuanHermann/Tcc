@@ -32,10 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll()
 			.and()
 			.authorizeRequests()
-				.antMatchers("/usuario.xhtml").hasRole("ADMIN")
+				.antMatchers("/cliente-list.xhtml").hasRole("ADMIN")
 				.antMatchers("/public/**").permitAll()
 				.antMatchers("/cadastro.xhtml").permitAll()
-				.antMatchers("/senha.xhtml").permitAll()
+				.antMatchers("/esquecisenha.xhtml").permitAll()
 				.antMatchers("/javax.faces.resource/**").permitAll()
 					.anyRequest().authenticated()
 			.and().csrf().disable();

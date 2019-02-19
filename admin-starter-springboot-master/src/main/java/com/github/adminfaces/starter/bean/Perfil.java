@@ -33,6 +33,13 @@ public class Perfil extends AbastractFormBean<Usuario, UsuarioRepository> {
 		addDetailMessage("Cadastro Atualizado com sucesso!");
 		Faces.getExternalContext().getFlash().setKeepMessages(true);		       
 	}
+	
+	public void atualizarSenha() {		
+		getRepository().save(getObjeto());		
+		usuarioLogadoBean.setUsuario(getObjeto()); 
+		addDetailMessage("Cadastro Atualizado com sucesso!");
+		Faces.getExternalContext().getFlash().setKeepMessages(true);		       
+	}
 
 	
 

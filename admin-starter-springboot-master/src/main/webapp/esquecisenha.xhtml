@@ -78,22 +78,23 @@
             </div>
             <!-- /.login-logo -->
             <div class="box login-box-body">
-                <h:form>
+                <h:form class="needs-validation">
                     <p class="login-box-msg">Esqueci minha senha</p>
                     <p:messages closable="true"/>
                     
                     <div class="form-group has-feedback">
-                        <p:inputText value="#{usuarioForm.objeto.email}" type="email" styleClass="form-control" placeholder="Informe seu E-mail"
+                        <p:inputText id="email" value="#{usuarioForm.objeto.email}" type="email" styleClass="form-control" placeholder="Informe seu E-mail"
                                      required="true" requiredMessage="Informe o seu E-mail." validatorMessage="Informe um email valido.">
                                      <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 
 						</p:inputText>
+						 <p:message for="email"/>
                     </div>
                     
                     <div class="row">
                         
                         <div class="col-xs-12">
-                            <p:commandButton styleClass="btn btn-success btn-block" action="#{esqueciSenha.novaSenha}" onclick="showBar()" oncomplete="if(args.validationFailed){hideBar()}"
+                            <p:commandButton styleClass="btn btn-success btn-block" action="#{esqueciSenha.novaSenha}" update="@form" process="email"
                                              value="Enviar Email" />
                         </div>
                         
@@ -105,10 +106,28 @@
                 <a href="login.xhtml" class="text-center">Voltar</a>
 
             </div>
-            <!-- /.login-box-body -->
         </div>
         <adm:ripple />
         <h:outputScript library="js" name="admintemplate.js" target="head"/>
 
+<script>
+function() {
+	  'use strict';
+	  window.addEventListener('load', function() {
+	    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+	    var forms = document.getElementsByClassName('needs-validation');
+	    // Loop over them and prevent submission
+	    var validation = Array.prototype.filter.call(forms, function(form) {
+	      form.addEventListener('submit', function(event) {
+	        if (form.checkValidity() === false) {
+	          event.preventDefault();
+	          event.stopPropagation();
+	        }
+	        form.classList.add('was-validated');
+	      }, false);
+	    });
+	  }, false);
+	})();
+</script>
     </h:body>
 </html>

@@ -5,7 +5,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" template="#{layoutMB.template}">
 
-	
+
 
 	<ui:define name="title">
         Perfil
@@ -80,46 +80,13 @@
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
 							<p:commandButton id="senha2" value="Alterar Senha"
-								onclick="javascript:mostrarSenha('senhaSumir')" type="button" icon="fa fa-refresh"
-								styleClass="btn-danger" />
+								onclick="javascript:mostrarSenha('senhaSumir')" type="button"
+								icon="fa fa-refresh" styleClass="btn-danger" />
 
 						</div>
 						<p:commandButton value="Salvar Alterações"
 							action="#{perfil.atualizar()}" update="@form" icon="fa fa-check"
 							styleClass="btn-success" />
-					</div>
-
-					<div id="senhaSumir" class="box box-primary" style="display:none;" >
-						<div class="box-header with-border">
-							
-
-								<div class="ui-sm-12 ui-md-2 ui-lg-1">
-									<p:outputLabel value="Email" for="email2" />
-								</div>
-								<div class="ui-sm-12 ui-md-4 ui-lg-5">
-									<p:inputText id="email2" value="#{perfil.objeto.email}"
-										type="email" styleClass="form-control"
-										placeholder="Informe seu E-mail" required="true"
-										requiredMessage="Email é obrigatório."
-										validatorMessage="Informe um email valido.">
-										<f:validateRegex
-											pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
-
-									</p:inputText>
-
-								</div>
-
-								<div class="ui-sm-12 ui-md-2 ui-lg-1">
-									<p:outputLabel value="Telefone" for="telefone2" />
-								</div>
-								<div class="ui-sm-12 ui-md-4 ui-lg-5">
-									<p:inputMask id="telefone2" mask="(99) 99999-9999"
-										styleClass="form-control" placeholder="Informe seu Telefone"
-										required="true" requiredMessage="Telefone é obrigatório."
-										value="#{perfil.objeto.telefone}" />
-								</div>
-							
-						</div>
 					</div>
 
 
@@ -128,14 +95,13 @@
 					<p:dialog header="Login" widgetVar="dlg" resizable="false">
 						<h:panelGrid columns="2" cellpadding="5">
 							<h:outputLabel for="username" value="Username:" />
-							<p:inputText id="username" value="#"
-								required="true" label="username" />
+							<p:inputText id="username" value="#" required="true"
+								label="username" />
 
-							
+
 
 							<f:facet name="footer">
-								<p:commandButton value="Login" update="growl"
-									action="#"
+								<p:commandButton value="Login" update="growl" action="#"
 									oncomplete="handleLoginRequest(xhr, status, args)" />
 							</f:facet>
 						</h:panelGrid>
@@ -147,33 +113,78 @@
 
 			</div>
 
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-				styleClass="box-danger box-solid">
-				<p:commandButton value="Sim" type="button"
-					styleClass="btn-material btn-primary ui-confirmdialog-yes"
-					icon="fa fa-check" />
-				<p:commandButton value="Não" type="button"
-					styleClass="btn-material btn-danger ui-confirmdialog-no"
-					icon="fa fa-close" />
-			</p:confirmDialog>
 		</h:form>
-		
+		<h:form>
+			<div id="senhaSumir" class="box box-primary" style="display: none;">
+				<div class="box-header with-border">
+					<div class="ui-g ui-fluid">
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel value="Informe sua senha" for="senhaAtual" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:inputText type="password" styleClass="form-control"
+								required="true" id="senhaAtual"
+								requiredMessage="Senha é obrigatória." />
+
+						</div>
+					</div>
+					<div class="ui-g ui-fluid">
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel value="Nova senha" for="pw" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:password id="pw" value="#{usuarioForm.objeto.senha}"
+								styleClass="form-control" required="true" match="pw2"
+								requiredMessage="Senha é obrigatória." redisplay="true"
+								validatorMessage="Senhas não conferem" />
+						</div>
+					</div>
+					<div class="ui-g ui-fluid">
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel value="Comfirme sua nova senha" for="pw2" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:password id="pw2" value="#{usuarioForm.objeto.senha}"
+								styleClass="form-control" required="true"
+								requiredMessage="Confirmação de senha é obrigatória."
+								validatorMessage="Senhas não conferem" />
+						</div>
+					</div>
+					<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:commandButton value="Salvar Alterações"
+							action="#{perfil.atualizarSenha()}" update="@form" icon="fa fa-check"
+							styleClass="btn-success" />
+							 <div style="text-align: right; float: right;">
+                	
+								<p:commandButton  value="cancelar"
+								onclick="javascript:mostrarSenha('senhaSumir')" type="button"
+								icon="fa fa-refresh" styleClass="btn-danger" />
+								</div>
+
+						</div>
+						
+
+				</div>
+			</div>
+		</h:form>
+
 		<script type="text/javascript">
-		function handleLoginRequest(xhr, status, args) {
-			if (args.validationFailed || !args.loggedIn) {
-				PF('dlg').jq.effect("shake", {
-					times : 5
-				}, 100);
-			} else {
-				PF('dlg').hide();
-				$('#loginLink').fadeOut();
+			function handleLoginRequest(xhr, status, args) {
+				if (args.validationFailed || !args.loggedIn) {
+					PF('dlg').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('dlg').hide();
+					$('#loginLink').fadeOut();
+				}
 			}
-		}
-		function mostrarSenha(id) {
-	       	var e = document.getElementById(id);
-	       	e.style.display = (e.style.display == 'block') ? 'none' : 'block';
-	     }
-	</script>
+			function mostrarSenha(id) {
+				var e = document.getElementById(id);
+				e.style.display = (e.style.display == 'block') ? 'none'
+						: 'block';
+			}
+		</script>
 
 
 	</ui:define>

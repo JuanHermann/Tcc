@@ -17,10 +17,43 @@
 	</ui:define>
 
 	<ui:define name="body">
+				
 		<h:form>
-			<p:schedule value="#{indexBean.eventModel}" locale="pt_BR" ></p:schedule>
-		</h:form>
+    <p:growl id="messages" showDetail="true" />
+      
+        <p:schedule id="schedule" value="#{indexBean.eventModel}" locale="pt_BR" widgetVar="myschedule" timeZone="UTC-3" pattern="dd/MM/yyyy"
+        minHour="7" maxHour="20" >
+ 
+            <p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}" update="eventDetails" oncomplete="PF('inserir').show();" />
+            <p:ajax event="eventSelect" listener="#{indexBean.onEventSelect}" update="eventDetails" oncomplete="PF('inserir').show();" />
+            <p:ajax event="eventMove" listener="#{indexBean.onEventMove}" update="messages" />
+            <p:ajax event="eventResize" listener="#{indexBean.onEventResize}" update="messages" />
+ 
+        </p:schedule>    
+        
+    
+     
+    <p:dialog widgetVar="inserir" header="Cadastrar Horario" showEffect="clip" hideEffect="clip" >
+        <h:panelGrid id="eventDetails" columns="2">
+            <p:outputLabel for="title" value="Titles:" />
+            <p:inputText id="title" value="#{indexBean.event.title}" required="true" />
+ 
+            <p:outputLabel for="from" value="From:" />
+            <p:calendar id="from" value="#{indexBean.event.startDate}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm"/>
+ 
+            <p:outputLabel for="to" value="To:" />
+            <p:calendar id="to" value="#{indexBean.event.endDate}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm"/>
+ 
+            <p:outputLabel for="allDay" value="All Day:" />
+            <h:selectBooleanCheckbox id="allDay" value="#{indexBean.event.allDay}" />
+ 
+            <p:commandButton type="reset" value="Reset" />
+            <p:commandButton id="addButton" value="Save" action="#{indexBean.addEvent}" oncomplete="PF('myschedule').update();PF('inserir').hide();" />
+        </h:panelGrid>
+    </p:dialog>    
+</h:form>
 
 	</ui:define>
+	
 
 </ui:composition>

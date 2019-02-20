@@ -4,6 +4,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	template="#{layoutMB.template}">
 
@@ -17,43 +18,118 @@
 	</ui:define>
 
 	<ui:define name="body">
-				
+
 		<h:form>
-    <p:growl id="messages" showDetail="true" />
-      
-        <p:schedule id="schedule" value="#{indexBean.eventModel}" locale="pt_BR" widgetVar="myschedule" timeZone="UTC-3" pattern="dd/MM/yyyy"
-        minHour="7" maxHour="20" >
- 
-            <p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}" update="eventDetails" oncomplete="PF('inserir').show();" />
-            <p:ajax event="eventSelect" listener="#{indexBean.onEventSelect}" update="eventDetails" oncomplete="PF('inserir').show();" />
-            <p:ajax event="eventMove" listener="#{indexBean.onEventMove}" update="messages" />
-            <p:ajax event="eventResize" listener="#{indexBean.onEventResize}" update="messages" />
- 
-        </p:schedule>    
-        
-    
-     
-    <p:dialog widgetVar="inserir" header="Cadastrar Horario" showEffect="clip" hideEffect="clip" >
-        <h:panelGrid id="eventDetails" columns="2">
-            <p:outputLabel for="title" value="Titles:" />
-            <p:inputText id="title" value="#{indexBean.event.title}" required="true" />
- 
-            <p:outputLabel for="from" value="From:" />
-            <p:calendar id="from" value="#{indexBean.event.startDate}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm"/>
- 
-            <p:outputLabel for="to" value="To:" />
-            <p:calendar id="to" value="#{indexBean.event.endDate}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm"/>
- 
-            <p:outputLabel for="allDay" value="All Day:" />
-            <h:selectBooleanCheckbox id="allDay" value="#{indexBean.event.allDay}" />
- 
-            <p:commandButton type="reset" value="Reset" />
-            <p:commandButton id="addButton" value="Save" action="#{indexBean.addEvent}" oncomplete="PF('myschedule').update();PF('inserir').hide();" />
-        </h:panelGrid>
-    </p:dialog>    
-</h:form>
+			<p:growl id="messages" showDetail="true" />
+
+			<p:schedule id="schedule" value="#{indexBean.eventModel}"
+				locale="pt_BR" widgetVar="myschedule" timeZone="UTC-3"
+				pattern="dd/MM/yyyy" minHour="7" maxHour="20">
+
+				<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
+					update="eventDetails" oncomplete="PF('inserir').show();" />
+				<p:ajax event="eventSelect" listener="#{indexBean.onEventSelect}"
+					update="eventDetails" oncomplete="PF('inserir').show();" />
+				<p:ajax event="eventMove" listener="#{indexBean.onEventMove}"
+					update="messages" />
+				<p:ajax event="eventResize" listener="#{indexBean.onEventResize}"
+					update="messages" />
+
+			</p:schedule>
+
+
+
+			<p:dialog widgetVar="inserir" header="Cadastrar Horario"
+				showEffect="clip" hideEffect="clip">
+
+				<h:panelGrid id="eventDetails" columns="2">
+					<h:form id="formulario">
+						<p:outputLabel for="tipo" value="Tipo:" />
+						<p:selectOneRadio id="tipo" value="#{IndexBean.tipo}"
+							onclick="javascript:mudar('bloqueio','agendamento')"
+							unselectable="true">
+							<f:selectItem itemLabel="Serviço" itemValue="servico"
+								id="radioServico" />
+							<f:selectItem itemLabel="Bloqueio" itemValue="bloqueio"
+								id="radioBloqueio" />
+						</p:selectOneRadio>
+						<div id="agendamento" style="display: none;">
+							<p:outputLabel for="data" value="Dia/Hora:" />
+							<p:calendar id="data" value="#{indexBean.event.startDate}"
+								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
+
+
+							<p:outputLabel for="funcionario" value="Funcionario:" />
+							<p:selectOneMenu id="funcionario" converter="#{usuarioConverter}">
+								<f:selectItem itemLabel="Selecione um funcionario" itemValue="" />
+								<f:selectItems value="#{indexBean.funcionarios}"
+									var="funcionario" itemLabel="#{funcionario.nome}"
+									itemValue="#{usuario}" />
+								<p:message for="funcionario" />
+							</p:selectOneMenu>
+							<p:outputLabel />
+							<p:selectBooleanCheckbox value="#{selectBooleanView.value1}"
+								itemLabel="Sem preferencia" />
+
+							<p:outputLabel for="servico" value="Serviço:" />
+
+							<p:selectCheckboxMenu id="servico"
+								value="#{indexBean.servicosSelecionados}" label="Serviços"
+								multiple="true" filter="true" filterMatchMode="startsWith"
+								panelStyle="width:250px">
+								<f:selectItems value="#{indexBean.servicos}" var="servico"
+									itemLabel="#{servico.nome}" />
+
+								<p:message for="servico" />
+							</p:selectCheckboxMenu>
+
+							<p:commandButton type="reset" value="Reset" />
+							<p:commandButton value="Salvar"
+								action="#{indexBean.salvarAgendamento}"
+								oncomplete="PF('myschedule').update();PF('inserir').hide();" />
+
+						</div>
+						<div id="bloqueio" style="display: none;">
+							<p:outputLabel for="inicio" value="Inicio" />
+							<p:calendar id="inicio" value="#{indexBean.event.startDate}"
+								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
+
+							<p:outputLabel for="final" value="Final" />
+							<p:calendar id="final" value="#{indexBean.event.startDate}"
+								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
+
+
+							<p:commandButton type="reset" value="Reset" />
+							<p:commandButton value="Salvar"
+								action="#{indexBean.salvarAgendamento}"
+								oncomplete="PF('myschedule').update();PF('inserir').hide();" />
+
+						</div>
+					</h:form>
+				</h:panelGrid>
+
+			</p:dialog>
+		</h:form>
+		<script type="text/javascript">
+		function mudar(id, id1) {
+			var e = document.getElementById(id);
+			var a = document.getElementById(id1);
+			if (document.getElementById('radioServico').checked == true) {
+				e.style.display = "block";
+				a.style.display = "none";
+			} else {
+				e.style.display = "none";
+				a.style.display = "block";
+			}
+			
+		}
+
+			
+		</script>
+	
+
 
 	</ui:define>
-	
+
 
 </ui:composition>

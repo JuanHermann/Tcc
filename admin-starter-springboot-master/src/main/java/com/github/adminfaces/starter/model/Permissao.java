@@ -1,28 +1,31 @@
 package com.github.adminfaces.starter.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
-public class Permissao implements GrantedAuthority{
+public class Permissao implements GrantedAuthority {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(length = 50, nullable = false)	
+	@Column(length = 50, nullable = false)
 	private String nome;
-	
+
 	@Override
 	public String getAuthority() {
 		return this.nome;
 	}
+
+	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "permissao_id"), inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+	private List<Usuario> usuarios = new ArrayList<>();
 
 	public Long getId() {
 		return id;
@@ -39,7 +42,5 @@ public class Permissao implements GrantedAuthority{
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	
-	
 
 }

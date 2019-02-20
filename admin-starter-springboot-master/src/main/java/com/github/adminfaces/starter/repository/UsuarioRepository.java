@@ -5,14 +5,17 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.github.adminfaces.starter.model.Permissao;
 import com.github.adminfaces.starter.model.Usuario;
 
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
+	
 
 	Optional<Usuario> findByEmailAndAceito(String email,boolean aceito);
 		
 	List<Usuario> findByNomeLikeAndAceitoOrderById(String nome,boolean aceito);
 	
 	List<Usuario> findByAceitoOrderById(boolean ativo);
+	
 }

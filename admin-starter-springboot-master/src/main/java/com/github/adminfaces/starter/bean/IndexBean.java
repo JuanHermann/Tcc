@@ -2,6 +2,7 @@ package com.github.adminfaces.starter.bean;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -15,11 +16,16 @@ import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.github.adminfaces.starter.model.HorarioAgendado;
+import com.github.adminfaces.starter.model.Servico;
+import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
+import com.github.adminfaces.starter.repository.ServicoRepository;
+import com.github.adminfaces.starter.repository.UsuarioRepository;
 
 @Component
 @Scope("view")
@@ -31,13 +37,29 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	
 	 private ScheduleEvent event = new DefaultScheduleEvent();
 	
+	 private String tipo;
+	 
+	 @Autowired
+	private UsuarioRepository usuarioRepository;		
+	private List<Usuario> funcionarios;
+	
+	@Autowired
+	private ServicoRepository servicoRepository;		
+	private List<Servico> servicos;
+	
+	private List<Servico> servicosSelecionados;
+	
+	 
 	public IndexBean() {
 		super(HorarioAgendado.class);
-		// TODO Auto-generated constructor stub
+
 	}
 	
 	@PostConstruct
     public void init() {
+		funcionarios = usuarioRepository.findAll();
+		servicos = servicoRepository.findAll();
+		
         eventModel = new DefaultScheduleModel();
         eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", previousDay8Pm(), previousDay11Pm()));
         eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
@@ -56,6 +78,10 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
             }   
         };
     }
+	
+	public void salvarAgendamento() {
+		
+	}
 
 	public Date getRandomDate(Date base) {
         Calendar date = Calendar.getInstance();
@@ -196,6 +222,33 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
     private void addMessage(FacesMessage message) {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
+    
+    public List<Usuario> getFuncionarios() {
+		return funcionarios;
+	}
+
+	public void setFuncionarios(List<Usuario> funcionarios) {
+		this.funcionarios = funcionarios;
+	}
+
+	public List<Servico> getServicos() {
+		return servicos;
+	}
+
+	public void setServicos(List<Servico> servicos) {
+		this.servicos = servicos;
+	}
+
+	public List<Servico> getServicosSelecionados() {
+		return servicosSelecionados;
+	}
+
+	public void setServicosSelecionados(List<Servico> servicosSelecionados) {
+		this.servicosSelecionados = servicosSelecionados;
+	}
+	
+	
+
 
 
 }

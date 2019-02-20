@@ -1,6 +1,5 @@
 package com.github.adminfaces.starter.model;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,51 +14,52 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario implements UserDetails{
+public class Usuario implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 	public static final String ADMIN_EMAIL = "admin@admin.com";
 	public static final Integer COD_ADMIN = 1;
 	private static final BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder(10);
-	
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY )
-    private Integer id;
 
-    @Column(length = 100,nullable = false)
-    private String  nome;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @Column(length = 100,nullable = false)
-    private String  email;
+	@Column(length = 100, nullable = false)
+	private String nome;
 
-    @Column(length = 100,nullable = false)
-    private String  senha;
+	@Column(length = 100, nullable = false)
+	private String email;
 
-    @Column(length = 100,nullable = false)
-    private String  telefone;
+	@Column(length = 100, nullable = false)
+	private String senha;
 
-    @Column(nullable = false)
-    private boolean  aceito;// novo cadastro de usuario
+	@Column(length = 100, nullable = false)
+	private String telefone;
 
-    @Column(nullable = false)
-    private boolean  ativo; // futuro cadastro de um empregado que foi despedido   
-    
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Column(nullable = false)
+	private boolean aceito;// novo cadastro de usuario
+
+	@Column(nullable = false)
+	private boolean ativo; // futuro cadastro de um empregado que foi despedido
+
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "usuarios_permissao", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "permissao_id"))
 	private Set<Permissao> permissoes;
-	
-//    public Usuario(String email, String senha) {
-//		this.email = email;
-//		this.senha = senha;
-//	}
-	
+
+	// public Usuario(String email, String senha) {
+	// this.email = email;
+	// this.senha = senha;
+	// }
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> auto = new ArrayList<>();
 		auto.addAll(getPermissoes());
-		
+
 		return auto;
 	}
-	
+
 	public void addPermissao(Permissao permissao) {
 		if (permissoes == null) {
 			permissoes = new HashSet<>();
@@ -96,62 +96,62 @@ public class Usuario implements UserDetails{
 	public boolean isEnabled() {
 		return true;
 	}
-	
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getSenha() {
-        return senha;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
+	public String getSenha() {
+		return senha;
+	}
 
-    public String getTelefone() {
-        return telefone;
-    }
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
+	public String getTelefone() {
+		return telefone;
+	}
 
-    public boolean isAceito() {
-        return aceito;
-    }
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
+	}
 
-    public void setAceito(boolean aceito) {
-        this.aceito = aceito;
-    }
+	public boolean isAceito() {
+		return aceito;
+	}
 
-    public boolean isAtivo() {
-        return ativo;
-    }
+	public void setAceito(boolean aceito) {
+		this.aceito = aceito;
+	}
 
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }  
+	public boolean isAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
+	}
 
 	public Set<Permissao> getPermissoes() {
 		return permissoes;
@@ -162,31 +162,32 @@ public class Usuario implements UserDetails{
 	}
 
 	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
-    }
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Usuario other = (Usuario) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
-    }
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
 
-    public boolean hasNome() {
-        return nome != null && !"".equals(nome.trim());
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	public boolean hasNome() {
+		return nome != null && !"".equals(nome.trim());
+	}
 
 }

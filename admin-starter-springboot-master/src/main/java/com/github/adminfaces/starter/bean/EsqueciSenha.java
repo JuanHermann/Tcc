@@ -36,7 +36,6 @@ public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> 
 	public void novaSenha() throws IOException {
 		getObjeto().setAtivo(true);
 		getObjeto().setAceito(false);
-		getObjeto().addPermissao(permissaoRepository.findByNome());
 		usuarioService.criptografarSenha(getObjeto());
 		getRepository().save(getObjeto());		
 		addDetailMessage("Cadastro criado com sucesso!");

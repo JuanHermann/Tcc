@@ -2,9 +2,7 @@ package com.github.adminfaces.starter.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.*;
 
@@ -44,8 +42,8 @@ public class Usuario implements UserDetails {
 	private boolean ativo; // futuro cadastro de um empregado que foi despedido
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinTable(name = "usuarios_permissao", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "permissao_id"))
-	private Set<Permissao> permissoes;
+	@JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "permissao_id"))
+	private List<Permissao> permissoes;
 
 	// public Usuario(String email, String senha) {
 	// this.email = email;
@@ -62,7 +60,7 @@ public class Usuario implements UserDetails {
 
 	public void addPermissao(Permissao permissao) {
 		if (permissoes == null) {
-			permissoes = new HashSet<>();
+			permissoes = new ArrayList<>();
 		}
 		permissoes.add(permissao);
 	}
@@ -151,13 +149,13 @@ public class Usuario implements UserDetails {
 
 	public void setAtivo(boolean ativo) {
 		this.ativo = ativo;
-	}
+	}	
 
-	public Set<Permissao> getPermissoes() {
+	public List<Permissao> getPermissoes() {
 		return permissoes;
 	}
 
-	public void setPermissoes(Set<Permissao> permissoes) {
+	public void setPermissoes(List<Permissao> permissoes) {
 		this.permissoes = permissoes;
 	}
 

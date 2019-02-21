@@ -21,9 +21,9 @@ INSERT INTO usuario (aceito, ativo, email, nome, senha, telefone) VALUES ( true,
 INSERT INTO permissao(id, nome) VALUES (1, 'ROLE_ADMIN');
 INSERT INTO permissao(id, nome) VALUES (2, 'ROLE_FUNCIONARIO');
 INSERT INTO permissao(id, nome) VALUES (3, 'ROLE_ATENDENTE');
-INSERT INTO permissao(id, nome) VALUES (4, 'ROLE_USER');
-INSERT INTO usuario_permissoes(usuario_id, permissoes_id) VALUES (5, 1);
-INSERT INTO usuario_permissoes(usuario_id, permissoes_id) VALUES (1, 2);
-INSERT INTO usuario_permissoes(usuario_id, permissoes_id) VALUES (2, 3);
-INSERT INTO usuario_permissoes(usuario_id, permissoes_id) VALUES (3, 4);
-INSERT INTO usuario_permissoes(usuario_id, permissoes_id) VALUES (4, 4);
+INSERT INTO permissao(id, nome) VALUES (4, 'ROLE_CLIENTE');
+INSERT INTO permissao(id, nome) VALUES (5, 'ROLE_CADASTRADO');
+INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (2, 1);
+INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (3, 2);
+INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (4, 3);
+INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (4, 4);

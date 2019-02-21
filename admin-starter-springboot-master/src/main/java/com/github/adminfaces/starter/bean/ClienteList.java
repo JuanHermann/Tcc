@@ -30,6 +30,7 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 	public void buscar() {
 		if (getNome() != "") {
 			setLista(usuarioRepository.findByNomeLikeAndAceitoOrderById("%"+getNome()+"%",true));
+			
 			 
 		} else {
 			listar();
@@ -41,21 +42,10 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 		
 	@Override
 	public void listar() {
-		setLista(usuarioRepository.findByAceitoOrderById(true));
-		List p =  permissaoRepository.findById(4);
+		Permissao permissao =  permissaoRepository.findByNome("ROLE_CLIENTE");
+		setLista(permissao.getUsuarios()); 
+		
 	}
-	
-	public void aceitarSelecionados() {
-		int num =0;
-		for (int i = 0; i < getRegistrosSelecionados().size(); i++) {
-			getRegistrosSelecionados().get(i).setAceito(true);
-			usuarioRepository.save(getRegistrosSelecionados().get(i));
-			num++;
-		}
-		getRegistrosSelecionados().clear();
-		addDetailMessage(num + " Registros aceitos com sucesso!");
-		listar();
-	}
-	
+		
 
 }

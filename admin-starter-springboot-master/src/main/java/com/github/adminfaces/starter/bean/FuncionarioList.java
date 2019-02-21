@@ -7,6 +7,7 @@ import com.github.adminfaces.starter.repository.UsuarioRepository;
 
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,20 +16,22 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("view")
-public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> {
+public class FuncionarioList extends AbastractListBean<Usuario, UsuarioRepository> {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	@Autowired
 	private PermissaoRepository permissaoRepository;
 
-	public CadastroList() {
+	public FuncionarioList() {
 		super(Usuario.class);
 	}
 
-	public void buscarNovos() {
+	public void buscar() {
 		if (getNome() != "") {
-			setLista(usuarioRepository.findByNomeLikeAndAceitoOrderById("%"+getNome()+"%",false));
+			setLista(usuarioRepository.findByNomeLikeAndAceitoOrderById("%"+getNome()+"%",true));
+			
+			 
 		} else {
 			listar();
 		}
@@ -39,25 +42,10 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 		
 	@Override
 	public void listar() {
-		Permissao permissao =  permissaoRepository.findByNome("ROLE_CADASTRADO");
+		Permissao permissao =  permissaoRepository.findByNome("ROLE_FUNCIONARIO");
 		setLista(permissao.getUsuarios()); 
+		
 	}
-	
-	public void aceitarSelecionados() {
-		int num =0;
-		for (int i = 0; i < getRegistrosSelecionados().size(); i++) {
-			getRegistrosSelecionados().get(i).setAceito(true);
-			List<Permissao> p =  getRegistrosSelecionados().get(i).getPermissoes();
-			permissaoRepository.delete(p.get(0));
-			getRegistrosSelecionados().get(i).addPermissao(permissaoRepository.findByNome("ROLE_CLIENTE"));
-			usuarioRepository.save(getRegistrosSelecionados().get(i));
-			//errorrr
-			num++;
-		}
-		getRegistrosSelecionados().clear();
-		addDetailMessage(num + " Registros aceitos com sucesso!");
-		listar();
-	}
-	
+		
 
 }

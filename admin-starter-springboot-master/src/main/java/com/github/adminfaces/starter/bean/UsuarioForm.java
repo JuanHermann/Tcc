@@ -36,9 +36,10 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 	public void novoCadastro() throws IOException {
 		getObjeto().setAtivo(true);
 		getObjeto().setAceito(false);
-		getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_USER"));
 		usuarioService.criptografarSenha(getObjeto());
-		getRepository().save(getObjeto());		
+		getRepository().save(getObjeto());
+		getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_CADASTRADO"));
+		getRepository().save(getObjeto());	
 		addDetailMessage("Cadastro criado com sucesso!");
 		Faces.getExternalContext().getFlash().setKeepMessages(true);
         Faces.redirect("index.jsf");

@@ -23,13 +23,15 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 	@Autowired
 	private PermissaoRepository permissaoRepository;
 
+	private boolean role = false;
+	
 	public CadastroList() {
 		super(Usuario.class);
 	}
 
 	public void buscarNovos() {
 		if (getNome() != "") {
-			buscarPorNomePermissao();
+			setLista(retirarCadastrosCliente(usuarioRepository.findByNomeLikeOrderByNome("%"+getNome()+"%")));
 		} else {
 			listar();
 		}
@@ -41,15 +43,33 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 	@Override
 	public void listar() {
 		Permissao permissao =  permissaoRepository.findByNome("ROLE_CADASTRADO");
-		setLista(permissao.getUsuarios()); 
+		setLista(retirarCadastrosCliente(permissao.getUsuarios()));
+		
 	}
 	
+	private List<Usuario> retirarCadastrosCliente(List<Usuario> lista) {
+		List<Usuario> usuarios = lista;
+		List<Usuario> pesquisa  = new ArrayList<>();
+		for (Usuario usuario : usuarios) {
+			List<Permissao> permissoes= usuario.getPermissoes();
+			role = false;
+			for (Permissao p : permissoes) {
+				
+				if(p.getNome().equals("ROLE_CLIENTE")) {
+					role =true;
+				}
+			}
+			if(role == false) {
+				pesquisa.add(usuario);
+			}
+		}
+		
+		return pesquisa;		
+	}
+
 	public void aceitarSelecionados() {
 		int num =0;
 		for (int i = 0; i < getRegistrosSelecionados().size(); i++) {
-			getRegistrosSelecionados().get(i).setAceito(true);
-			List<Permissao> p =  getRegistrosSelecionados().get(i).getPermissoes();
-			permissaoRepository.delete(p.get(0));
 			getRegistrosSelecionados().get(i).addPermissao(permissaoRepository.findByNome("ROLE_CLIENTE"));
 			usuarioRepository.save(getRegistrosSelecionados().get(i));
 			//errorrr
@@ -60,26 +80,17 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 		listar();
 	}
 	
-	private void buscarPorNomePermissao() {
-		boolean role = false;
-		List<Usuario> usuarios = usuarioRepository.findByNomeLikeAndAceitoOrderById("%"+getNome()+"%",true);
-		List<Usuario> pesquisa = new ArrayList<>();
-		for (Usuario usuario : usuarios) {
-			List<Permissao> permissoes= usuario.getPermissoes();
-			role = false;
-			for (Permissao permissao : permissoes) {
-				
-				if(permissao.getNome().equals("ROLE_CADASTRADO")) {
-					role =true;
-				}
-			}
-			if(role == true) {
-				pesquisa.add(usuario);
-			}
+	public void recusarSelecionados() {
+		int num =0;
+		for (int i = 0; i < getRegistrosSelecionados().size(); i++) {
+			
+			usuarioRepository.delete(getRegistrosSelecionados().get(i));
+			
+			num++;
 		}
-		
-		setLista(pesquisa);		
-	}
-	
+		getRegistrosSelecionados().clear();
+		addDetailMessage(num + " Registros Recusados com sucesso!");
+		listar();
+	}	
 
 }

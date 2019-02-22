@@ -19,13 +19,17 @@ INSERT INTO usuario (aceito, ativo, email, nome, senha, telefone) VALUES ( false
 INSERT INTO usuario (aceito, ativo, email, nome, senha, telefone) VALUES ( true, true, 'adm3@adm.com','adm3', 123, '(99) 99999-9999');
 INSERT INTO usuario (aceito, ativo, email, nome, senha, telefone) VALUES ( true, true, 'adm4@adm.com','adm4', 123, '(99) 99999-9999');
 INSERT INTO usuario (aceito, ativo, email, nome, senha, telefone) VALUES ( true, true, 'adm5@adm.com','adm5', 123, '(99) 99999-9999');
+INSERT INTO usuario (aceito, ativo, email, nome, senha, telefone) VALUES ( true, true, 'adm6@adm.com','adm6', 123, '(99) 99999-9999');
 INSERT INTO permissao(id, nome) VALUES (1, 'ROLE_ADMIN');
 INSERT INTO permissao(id, nome) VALUES (2, 'ROLE_FUNCIONARIO');
 INSERT INTO permissao(id, nome) VALUES (3, 'ROLE_ATENDENTE');
 INSERT INTO permissao(id, nome) VALUES (4, 'ROLE_CLIENTE');
 INSERT INTO permissao(id, nome) VALUES (5, 'ROLE_CADASTRADO');
 INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (2, 1);
+INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (4, 1);
 INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (3, 2);
+INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (4, 2);
 INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (4, 3);
 INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (4, 4);
 INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (5, 5);
+INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (5, 6);

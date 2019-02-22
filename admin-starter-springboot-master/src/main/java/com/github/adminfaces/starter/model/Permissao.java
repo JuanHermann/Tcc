@@ -23,7 +23,7 @@ public class Permissao implements GrantedAuthority {
 		return this.nome;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "permissao_id"), inverseJoinColumns = @JoinColumn(name = "usuario_id"))
 	private List<Usuario> usuarios = new ArrayList<>();
 

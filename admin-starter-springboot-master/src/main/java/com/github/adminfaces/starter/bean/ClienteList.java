@@ -41,7 +41,7 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 		
 	private void buscarPorNomePermissao() {
 		boolean role = false;
-		List<Usuario> usuarios = usuarioRepository.findByNomeLikeAndAceitoOrderById("%"+getNome()+"%",true);
+		List<Usuario> usuarios = usuarioRepository.findByNomeLikeOrderByNome("%"+getNome()+"%");
 		List<Usuario> pesquisa = new ArrayList<>();
 		for (Usuario usuario : usuarios) {
 			List<Permissao> permissoes= usuario.getPermissoes();

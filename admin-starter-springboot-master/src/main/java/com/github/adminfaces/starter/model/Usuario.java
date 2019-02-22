@@ -41,7 +41,7 @@ public class Usuario implements UserDetails {
 	@Column(nullable = false)
 	private boolean ativo; // futuro cadastro de um empregado que foi despedido
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany( fetch = FetchType.EAGER)
 	@JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "permissao_id"))
 	private List<Permissao> permissoes;
 

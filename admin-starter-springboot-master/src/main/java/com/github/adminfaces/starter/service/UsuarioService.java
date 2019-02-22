@@ -22,7 +22,7 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		return repository.findByEmailAndAceito(email,true).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+		return repository.findByEmailAndAtivo(email,true).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 	}
 
 	public void criptografarSenha(Usuario usuario) throws RuntimeException {
@@ -51,6 +51,7 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 			criptografarSenha(usuario);
 			repository.save(usuario);
 			usuario.addPermissao(permissaoRepository.findByNome("ROLE_ADMIN"));
+			usuario.addPermissao(permissaoRepository.findByNome("ROLE_CLIENTE"));
 			repository.save(usuario);
 		}
 	}

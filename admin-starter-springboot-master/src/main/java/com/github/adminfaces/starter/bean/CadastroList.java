@@ -7,6 +7,7 @@ import com.github.adminfaces.starter.repository.UsuarioRepository;
 
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 
 	public void buscarNovos() {
 		if (getNome() != "") {
-			setLista(usuarioRepository.findByNomeLikeAndAceitoOrderById("%"+getNome()+"%",false));
+			buscarPorNomePermissao();
 		} else {
 			listar();
 		}
@@ -57,6 +58,27 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 		getRegistrosSelecionados().clear();
 		addDetailMessage(num + " Registros aceitos com sucesso!");
 		listar();
+	}
+	
+	private void buscarPorNomePermissao() {
+		boolean role = false;
+		List<Usuario> usuarios = usuarioRepository.findByNomeLikeAndAceitoOrderById("%"+getNome()+"%",true);
+		List<Usuario> pesquisa = new ArrayList<>();
+		for (Usuario usuario : usuarios) {
+			List<Permissao> permissoes= usuario.getPermissoes();
+			role = false;
+			for (Permissao permissao : permissoes) {
+				
+				if(permissao.getNome().equals("ROLE_CADASTRADO")) {
+					role =true;
+				}
+			}
+			if(role == true) {
+				pesquisa.add(usuario);
+			}
+		}
+		
+		setLista(pesquisa);		
 	}
 	
 

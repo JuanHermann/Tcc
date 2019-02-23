@@ -21,6 +21,8 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 	@Autowired
 	private PermissaoRepository permissaoRepository;
 	
+	private boolean role;
+	
 	
 
 	public ClienteList() {
@@ -30,7 +32,7 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 	public void buscar() {
 		
 		if (getNome() != "") {
-			buscarPorNomePermissao();
+			setLista(filtrarCliente(usuarioRepository.findByNomeLikeAndAtivoOrderByNome("%"+getNome()+"%",true)));
 		} else {
 			listar();
 		}
@@ -39,17 +41,22 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 
 	}	
 		
-	private void buscarPorNomePermissao() {
-		boolean role = false;
-		List<Usuario> usuarios = usuarioRepository.findByNomeLikeOrderByNome("%"+getNome()+"%");
-		List<Usuario> pesquisa = new ArrayList<>();
+	private List<Usuario> filtrarCliente(List<Usuario> lista) {
+		List<Usuario> usuarios = lista;
+		List<Usuario> pesquisa  = new ArrayList<>();
 		for (Usuario usuario : usuarios) {
 			List<Permissao> permissoes= usuario.getPermissoes();
 			role = false;
-			for (Permissao permissao : permissoes) {
-				
-				if(permissao.getNome().equals("ROLE_CLIENTE")) {
+			for (Permissao p : permissoes) {
+				if(p.getNome().equals("ROLE_ATENDENTE")) {
+					role =false;
+					break;
+				}else if(p.getNome().equals("ROLE_FUNCIONARIO")) {
+					role =false;
+					break;
+				}else if(p.getNome().equals("ROLE_CLIENTE")) {
 					role =true;
+					break;
 				}
 			}
 			if(role == true) {
@@ -57,13 +64,13 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 			}
 		}
 		
-		setLista(pesquisa);		
+		return pesquisa;		
 	}
 
 	@Override
 	public void listar() {
 		Permissao permissao =  permissaoRepository.findByNome("ROLE_CLIENTE");
-		setLista(permissao.getUsuarios()); 
+		setLista(filtrarCliente(permissao.getUsuarios()));
 		
 	}
 		

@@ -10,13 +10,10 @@ import com.github.adminfaces.starter.model.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 	
-
-	Optional<Usuario> findByEmailAndAceito(String email,boolean aceito);
-	
 	Optional<Usuario> findByEmailAndAtivo(String email,boolean ativo);
 		
-	List<Usuario> findByNomeLikeOrderByNome(String nome);
+	List<Usuario> findByNomeLikeAndAtivoOrderByNome(String nome,boolean ativo);
 	
-	List<Usuario> findByAceitoOrderById(boolean ativo);
+	List<Usuario> findByAtivoOrderByNome(boolean ativo);
 	
 }

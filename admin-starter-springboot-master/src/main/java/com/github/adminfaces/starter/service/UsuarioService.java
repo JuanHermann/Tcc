@@ -39,7 +39,7 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Usuario usuario = repository.findByEmailAndAceito(Usuario.ADMIN_EMAIL,true).orElse(null);
+		Usuario usuario = repository.findByEmailAndAtivo(Usuario.ADMIN_EMAIL,true).orElse(null);
 		if (usuario == null) {
 			usuario = new Usuario();
 			usuario.setEmail("admin@admin.com");
@@ -51,7 +51,6 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 			criptografarSenha(usuario);
 			repository.save(usuario);
 			usuario.addPermissao(permissaoRepository.findByNome("ROLE_ADMIN"));
-			usuario.addPermissao(permissaoRepository.findByNome("ROLE_CLIENTE"));
 			repository.save(usuario);
 		}
 	}

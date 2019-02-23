@@ -31,7 +31,7 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 
 	public void buscarNovos() {
 		if (getNome() != "") {
-			setLista(retirarCadastrosCliente(usuarioRepository.findByNomeLikeOrderByNome("%"+getNome()+"%")));
+			setLista(retirarCadastrosCliente(usuarioRepository.findByNomeLikeAndAtivoOrderByNome("%"+getNome()+"%",true)));
 		} else {
 			listar();
 		}
@@ -57,6 +57,8 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 				
 				if(p.getNome().equals("ROLE_CLIENTE")) {
 					role =true;
+				}else if(p.getNome().equals("ROLE_ADMIN")) {
+					role =true;
 				}
 			}
 			if(role == false) {
@@ -72,7 +74,6 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 		for (int i = 0; i < getRegistrosSelecionados().size(); i++) {
 			getRegistrosSelecionados().get(i).addPermissao(permissaoRepository.findByNome("ROLE_CLIENTE"));
 			usuarioRepository.save(getRegistrosSelecionados().get(i));
-			//errorrr
 			num++;
 		}
 		getRegistrosSelecionados().clear();

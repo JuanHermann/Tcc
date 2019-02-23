@@ -6,7 +6,7 @@
 	xmlns:p="http://primefaces.org/ui" template="#{layoutMB.template}">
 
 	<ui:define name="title">
-        Cadastro de Serviços
+        Bloquear Agenda 
     </ui:define>
 
 	<ui:define name="head-end">
@@ -15,91 +15,75 @@
 
 	<ui:define name="body">
 		<f:metadata>
-			<f:viewParam name="id" value="#{servicoForm.id}" />
-			<f:viewAction action="#{servicoForm.init}" /> 
+			<f:viewParam name="id" value="#{bloquearAgendaForm.id}" />
+			<f:viewAction action="#{bloquearAgendaForm.init}" />
 		</f:metadata>
 
 
-		<h:form id="form" data-toggle="validator" prependId="false" role="form">
+		<h:form id="form" data-toggle="validator" prependId="false"
+			role="form">
 
 
 			<div class="box box-primary">
 				<div class="box-header with-border">
-					<div id="main-buttons"   class="hidden-sm hidden-xs" >
+					<div id="main-buttons" class="hidden-sm hidden-xs">
 
 
-						<p:commandButton value="Salvar" action="#{servicoForm.salvar()}"
+						<p:commandButton value="Salvar" action="#{bloquearAgendaForm.salvar()}"
 							update="@form" icon="fa fa-check" styleClass="btn-primary" />
 						<p:spacer width="5" />
-						<p:commandButton value="Limpar" action="#{servicoForm.novo()}" rendered="#{servicoForm.objeto.id == null}"
-							process="@this" icon="fa fa-refresh" styleClass="btn-success"
-							update="@form" resetValues="true" />
-						
-						<p:commandButton value="Deletar" action="#{servicoForm.remover()}" rendered="#{servicoForm.objeto.id != null}"
-							process="@this" icon="fa fa-trash" styleClass="btn-danger" update="@form" resetValues="true">
+						<p:commandButton value="Limpar" action="#{bloquearAgendaForm.novo()}"
+							rendered="#{bloquearAgendaForm.objeto.id == null}" process="@this"
+							icon="fa fa-refresh" styleClass="btn-success" update="@form"
+							resetValues="true" />
+
+						<p:commandButton value="Deletar" action="#{bloquearAgendaForm.remover()}"
+							rendered="#{bloquearAgendaForm.objeto.id != null}" process="@this"
+							icon="fa fa-trash" styleClass="btn-danger" update="@form"
+							resetValues="true">
 							<f:setPropertyActionListener value="true"
 								target="#{facesContext.externalContext.flash.keepMessages}" />
 							<p:confirm header="Confirmação"
 								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
 						</p:commandButton>
-						<p:spacer width="5" />
-						<p:commandButton value="Voltar" immediate="true"
-							action="servico-list?faces-redirect=true" process="@this"
-							icon="fa fa-reply" />
+						
 					</div>
-					
-					<p:splitButton value="Salvar" action="#{servicoForm.salvar()}"
+
+					<p:splitButton value="Salvar" action="#{bloquearAgendaForm.salvar()}"
 						update="@form" icon="fa fa-check"
 						styleClass="hidden-md hidden-lg btn-primary">
-						<p:menuitem value="Limpar" action="#{servicoForm.novo()}" rendered="#{servicoForm.objeto.id == null}"
-							process="@this" update="@form" resetValues="true"
-							icon="fa fa-refresh" />
-						<p:menuitem value="Deletar" action="#{servicoForm.remover()}" rendered="#{servicoForm.objeto.id != null}"
-							process="@this" icon="fa fa-trash" update="@form" resetValues="true">
+						<p:menuitem value="Limpar" action="#{bloquearAgendaForm.novo()}"
+							rendered="#{bloquearAgendaForm.objeto.id == null}" process="@this"
+							update="@form" resetValues="true" icon="fa fa-refresh" />
+						<p:menuitem value="Deletar" action="#{bloquearAgendaForm.remover()}"
+							rendered="#{bloquearAgendaForm.objeto.id != null}" process="@this"
+							icon="fa fa-trash" update="@form" resetValues="true">
 							<p:confirm header="Confirmação"
 								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
 						</p:menuitem>
-						<p:menuitem value="Voltar" immediate="true"
-							action="servico-list?faces-redirect=true" process="@this"
-							icon="fa fa-reply" /> 
-					</p:splitButton> 
+						
+					</p:splitButton>
 
 					<p:separator />
 
+					
 					<div class="ui-g ui-fluid">
-						
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel value="Nome" for="nome" />
+							<p:outputLabel for="inicio" value="Inicio" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="nome" value="#{servicoForm.objeto.nome}"
-								required="true"  data-error-msg="Must enter your name?" />
-								
-    
+							<p:calendar id="inicio" value="#{bloquearAgendaForm.objeto.data}"
+								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
 						</div>
+					</div>
+					
+					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel value="Tempo" for="tempo" />
+							<p:outputLabel for="termino" value="Termino" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputMask mask="99:99:99" id="tempo" required="true"
-								converter="#{timeConverter}" value="#{servicoForm.objeto.tempo}" />
-
-						</div>
-						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel value="Valor" for="valor" />
-						</div>
-						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="valor" value="#{servicoForm.objeto.valor}"
-								required="true">
-								<f:convertNumber pattern="#,##0.00" />
-							</p:inputText>
-						</div>
-						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel value="Descrição" for="descricao" />
-						</div>
-						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputTextarea id="descricao"
-								value="#{servicoForm.objeto.descricao}" />
+							<p:calendar id="termino" value="#{bloquearAgendaForm.termino}"
+								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
 						</div>
 					</div>
 				</div>

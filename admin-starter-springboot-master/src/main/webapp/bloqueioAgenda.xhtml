@@ -72,8 +72,8 @@
 							<p:outputLabel for="inicio" value="Inicio" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:calendar id="inicio" value="#{bloquearAgendaForm.objeto.data}"
-								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
+							<p:calendar id="inicio" value="#{bloquearAgendaForm.inicio}"
+								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm"  mask="true" />
 						</div>
 					</div>
 					
@@ -83,7 +83,8 @@
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
 							<p:calendar id="termino" value="#{bloquearAgendaForm.termino}"
-								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
+								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" mask="true" />
+								
 						</div>
 					</div>
 				</div>

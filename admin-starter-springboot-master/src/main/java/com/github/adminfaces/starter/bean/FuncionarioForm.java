@@ -1,7 +1,7 @@
 package com.github.adminfaces.starter.bean;
 
-import com.github.adminfaces.starter.model.Servico;
-import com.github.adminfaces.starter.repository.ServicoRepository;
+import com.github.adminfaces.starter.model.Usuario;
+import com.github.adminfaces.starter.repository.UsuarioRepository;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("view")
-public class FuncionarioForm extends AbastractFormBean<Servico, ServicoRepository> {
+public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 
 	public FuncionarioForm() {
-		super(Servico.class);
+		super(Usuario.class);
 	}
 	
 	

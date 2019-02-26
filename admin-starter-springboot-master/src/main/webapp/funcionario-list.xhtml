@@ -73,7 +73,7 @@
 							styleClass="align-center"  />
 
 						<p:column headerText="Nome">
-							<p:link value="#{usuario.nome}">
+							<p:link value="#{usuario.nome}" outcome="funcionario-form.xhtml">
 								<f:param name="id" value="#{usuario.id}" />
 							</p:link>
 						</p:column>

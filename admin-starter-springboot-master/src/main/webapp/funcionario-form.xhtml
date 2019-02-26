@@ -5,8 +5,10 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" template="#{layoutMB.template}">
 
+
+
 	<ui:define name="title">
-        Cadastro de Funcionários
+        Dados do funcionario
     </ui:define>
 
 	<ui:define name="head-end">
@@ -16,7 +18,7 @@
 	<ui:define name="body">
 		<f:metadata>
 			<f:viewParam name="id" value="#{funcionarioForm.id}" />
-			<f:viewAction action="#{funcionarioForm.init}" /> 
+			<f:viewAction action="#{funcionarioForm.init}" />
 		</f:metadata>
 
 
@@ -28,15 +30,20 @@
 					<div id="main-buttons" class="hidden-sm hidden-xs">
 
 
-						<p:commandButton value="Salvar" action="#{funcionarioForm.salvar()}"
-							update="@form" icon="fa fa-check" styleClass="btn-primary" />
+						<p:commandButton value="Salvar"
+							action="#{funcionarioForm.salvar()}" update="@form"
+							icon="fa fa-check" styleClass="btn-primary" />
 						<p:spacer width="5" />
-						<p:commandButton value="Limpar" action="#{funcionarioForm.novo()}" rendered="#{funcionarioForm.objeto.id == null}"
-							process="@this" icon="fa fa-refresh" styleClass="btn-success"
-							update="@form" resetValues="true" />
-						
-						<p:commandButton value="Deletar" action="#{funcionarioForm.remover()}" rendered="#{funcionarioForm.objeto.id != null}"
-							process="@this" icon="fa fa-trash" styleClass="btn-danger" update="@form" resetValues="true">
+						<p:commandButton value="Limpar" action="#{funcionarioForm.novo()}"
+							rendered="#{funcionarioForm.objeto.id == null}" process="@this"
+							icon="fa fa-refresh" styleClass="btn-success" update="@form"
+							resetValues="true" />
+
+						<p:commandButton value="Deletar"
+							action="#{funcionarioForm.remover()}"
+							rendered="#{funcionarioForm.objeto.id != null}" process="@this"
+							icon="fa fa-trash" styleClass="btn-danger" update="@form"
+							resetValues="true">
 							<f:setPropertyActionListener value="true"
 								target="#{facesContext.externalContext.flash.keepMessages}" />
 							<p:confirm header="Confirmação"
@@ -47,32 +54,26 @@
 							action="funcionario-list?faces-redirect=true" process="@this"
 							icon="fa fa-reply" />
 					</div>
+
 					<p:splitButton value="Salvar" action="#{funcionarioForm.salvar()}"
 						update="@form" icon="fa fa-check"
 						styleClass="hidden-md hidden-lg btn-primary">
-						<p:menuitem value="Limpar" action="#{funcionarioForm.novo()}" rendered="#{funcionarioForm.objeto.id == null}"
-							process="@this" update="@form" resetValues="true"
-							icon="fa fa-refresh" />
-						<p:menuitem value="Deletar" action="#{funcionarioForm.remover()}" rendered="#{funcionarioForm.objeto.id != null}"
-							process="@this" icon="fa fa-trash" update="@form" resetValues="true">
+						<p:menuitem value="Limpar" action="#{funcionarioForm.novo()}"
+							rendered="#{funcionarioForm.objeto.id == null}" process="@this"
+							update="@form" resetValues="true" icon="fa fa-refresh" />
+						<p:menuitem value="Deletar" action="#{funcionarioForm.remover()}"
+							rendered="#{funcionarioForm.objeto.id != null}" process="@this"
+							icon="fa fa-trash" update="@form" resetValues="true">
 							<p:confirm header="Confirmação"
 								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
 						</p:menuitem>
 						<p:menuitem value="Voltar" immediate="true"
 							action="funcionario-list?faces-redirect=true" process="@this"
-							icon="fa fa-reply" /> />
+							icon="fa fa-reply" />
 					</p:splitButton>
 
 					<p:separator />
-
 					<div class="ui-g ui-fluid">
-						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel for="id" value="ID" />
-						</div>
-						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="id" value="#{funcionarioForm.objeto.id}" size="4"
-								readonly="true" styleClass="form-control" style="width: 100%" />
-						</div>
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel value="Nome" for="nome" />
 						</div>
@@ -80,50 +81,147 @@
 							<p:inputText id="nome" value="#{funcionarioForm.objeto.nome}"
 								required="true" />
 						</div>
+					</div>
+
+					<div class="ui-g ui-fluid">
+
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel value="Email" for="email" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputMask mask="99:99:99" id="email" value="#{funcionarioForm.objeto.email}" />
+							<p:inputText id="email" value="#{funcionarioForm.objeto.email}"
+								type="email" styleClass="form-control"
+								placeholder="Informe seu E-mail" required="true"
+								requiredMessage="Email é obrigatório."
+								validatorMessage="Informe um email valido.">
+								<f:validateRegex
+									pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+
+							</p:inputText>
 
 						</div>
+					</div>
+					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel value="Telefone" for="telefone" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputMask mask="(99) 99999-9999" id="telefone"
-								 value="#{funcionarioForm.objeto.telefone}" />
-
-						</div>
-						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel value="Valor" for="valor" />
-						</div>
-						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="valor" value="#{funcionarioForm.objeto.valor}"
-								required="true">
-								<f:convertNumber pattern="#,##0.00" />
-							</p:inputText>
-						</div>
-						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel value="Descrição" for="descricao" />
-						</div>
-						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputTextarea id="descricao"
-								value="#{funcionarioForm.objeto.descricao}" />
+							<p:inputMask id="telefone" mask="(99) 99999-9999"
+								styleClass="form-control" placeholder="Informe seu Telefone"
+								required="true" requiredMessage="Telefone é obrigatório."
+								value="#{funcionarioForm.objeto.telefone}" />
 						</div>
 					</div>
+
+
+
+					<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+
+
+
+				</div>
+
+			</div>
+			<ui:define name="title">
+        Dados do funcionario2
+    </ui:define>
+			Serviços realizados pelos funcionario.
+			
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<div id="main-buttons" class="hidden-sm hidden-xs">
+						<p:commandButton action="servico-form?faces-redirect=true"
+							icon="fa fa-plus" value="Novo" styleClass="btn-primary" />
+
+						<p:spacer width="5" />
+						<p:commandButton value="Deletar Selecionados" icon="fa fa-trash"
+							action="#{servicoList.deletarSelecionados()}"
+							disabled="#{empty servicoList.registrosSelecionados or servicoList.registrosSelecionados.size() == 0}"
+							styleClass="btn-danger" process="@this" update="@form">
+							<p:confirm header="Confirmation"
+								message="Você tem Certeza que deseja Excluir #{servicoList.registrosSelecionados.size()} registros selecionados?"
+								icon="ui-icon-danger" />
+						</p:commandButton>
+					</div>
+
+					<p:splitButton value="Novo"
+						action="servico-form?faces-redirect=true" icon="fa fa-plus"
+						styleClass="hidden-md hidden-lg btn-primary">
+						<p:menuitem value="Deletar Selecionado" icon="fa fa-trash"
+							action="#{servicoList.deletarSelecionados()}"
+							disabled="#{empty servicoList.registrosSelecionados or servicoList.registrosSelecionados.size() == 0}"
+							process="@this" update="@form">
+							<p:confirm header="Confirmation"
+								message="Você tem Certeza que deseja Excluir #{servicoList.registrosSelecionados.size()} registros selecionados?"
+								icon="ui-icon-danger" />
+						</p:menuitem>
+					</p:splitButton>
+
+					<p:separator />
+
+
+					<p:dataTable value="#{servicoList.lista}" var="servico"
+						id="servicoDT" emptyMessage="Nenhum serviço cadastrado"
+						rowKey="#{servico.id}"
+						selection="#{servicoList.registrosSelecionados}" widgetVar="table"
+						rows="15" paginator="true" paginatorPosition="bottom"
+						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15,20,40">
+
+
+						<p:ajax event="rowSelectCheckbox"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="rowUnselectCheckbox"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="rowSelect"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="rowUnselect"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+						<p:ajax event="toggleSelect"
+							update="@(.ui-button, .ui-confirm-dialog)" />
+
+						<f:facet name="header">
+                            Encontre um Serviço pelo seu nome :
+                             <p:inputText value="#{servicoList.nome}" />
+							<p:spacer height="5" />
+							<p:commandButton value="Buscar" action="#{servicoList.buscar}"
+								process="@form" update="@form"
+								styleClass="btn-flat bg-black btn-states" partialSubmit="true" />
+						</f:facet>
+
+						<p:column selectionMode="multiple" width="5%" 
+							styleClass="align-center" />
+
+						<p:column headerText="Nome">
+							<p:link value="#{servico.nome}" outcome="servico-form.xhtml">
+								<f:param name="id" value="#{servico.id}" />
+							</p:link>
+						</p:column>
+
+						<p:column headerText="Tempo" style="text-align: center;">
+							<p:outputLabel value="#{servico.tempo}" />
+						</p:column>
+
+						<p:column headerText="Valor">
+							<p:outputLabel value="#{servico.valor}">
+								<f:convertNumber pattern="R$ #,##0.00" />
+							</p:outputLabel>
+						</p:column>
+
+					</p:dataTable>
 				</div>
 			</div>
-
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
 				styleClass="box-danger box-solid">
-				<p:commandButton value="Sim" type="button"
+				<p:commandButton value="Sim" type="button" update="@form"
 					styleClass="btn-material btn-primary ui-confirmdialog-yes"
 					icon="fa fa-check" />
 				<p:commandButton value="Não" type="button"
 					styleClass="btn-material btn-danger ui-confirmdialog-no"
 					icon="fa fa-close" />
 			</p:confirmDialog>
+		
+
 		</h:form>
 
 

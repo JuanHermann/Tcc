@@ -21,13 +21,7 @@ public class FuncionarioServicoList extends AbastractListBean<UsuarioServico, Us
 	}
 
 	public void buscar() {
-		if (getNome() != "") {
-			setLista(servicoRepository.findByNomeLikeOrderById("%"+getNome()+"%"));
-		} else {
-			setLista(servicoRepository.findAll());
-		}
-		setNome("");
-		setRegistrosSelecionados(null);
+		
 
 	}
 	

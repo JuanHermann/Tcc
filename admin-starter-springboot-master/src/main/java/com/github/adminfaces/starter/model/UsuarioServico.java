@@ -12,9 +12,37 @@ public class UsuarioServico {
 
     @ManyToOne
     @JoinColumn(name= "usuario_id",referencedColumnName="id")
-    private Usuario codUsuario;
+    private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name= "servico_id",referencedColumnName="id")
-    private Servico codServico;
+    private Servico servico;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public Servico getServico() {
+		return servico;
+	}
+
+	public void setServico(Servico servico) {
+		this.servico = servico;
+	}
+
+
+    
+    
 }

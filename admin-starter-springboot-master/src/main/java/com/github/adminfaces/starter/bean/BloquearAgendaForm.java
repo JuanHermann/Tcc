@@ -1,13 +1,11 @@
 package com.github.adminfaces.starter.bean;
 
-import com.github.adminfaces.starter.converter.TimeConverter;
 import com.github.adminfaces.starter.model.HorarioAgendado;
 import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
 
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.context.annotation.Scope;

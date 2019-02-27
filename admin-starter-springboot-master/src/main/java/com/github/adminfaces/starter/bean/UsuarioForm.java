@@ -32,10 +32,7 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 	private UsuarioService usuarioService;
 	@Autowired
 	private PermissaoRepository permissaoRepository;
-	@Autowired
-	private ServicoRepository servicoRepository;
-	@Autowired
-	private UsuarioServicoRepository usuarioServicoRepository;
+
 
 	public UsuarioForm() {
 		super(Usuario.class);
@@ -53,16 +50,6 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 		Faces.redirect("index.jsf");
 	}
 
-	public void tornarFuncionairo() {
-		getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_FUNCIONARIO"));
-		getRepository().save(getObjeto());
-		List<Servico> servicos = servicoRepository.findAll();
-		for (Servico servico : servicos) {
-			UsuarioServico us = new UsuarioServico();
-			us.setServico(servico);
-			us.setUsuario(getObjeto());
-			usuarioServicoRepository.save(us);
-		}
-	}
+	
 
 }

@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -97,4 +96,14 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 		addDetailMessage(num + " Registros deletado com sucesso!");
 		listar();
 	}
+
+	public R getRepository() {
+		return repository;
+	}
+
+	public void setRepository(R repository) {
+		this.repository = repository;
+	}
+	
+	
 }

@@ -19,7 +19,7 @@
 
 	<ui:define name="body">
 
-		<h:form>
+		<h:form id="formAgenda">
 			<p:growl id="messages" showDetail="true" />
 
 			<p:schedule id="schedule" value="#{indexBean.eventModel}"
@@ -48,6 +48,7 @@
 						<p:selectOneRadio id="tipo" value="#{IndexBean.tipo}"
 							onclick="javascript:mudar('bloqueio','agendamento')"
 							unselectable="true">
+							<p:ajax event="change" />
 							<f:selectItem itemLabel="Serviço" itemValue="servico"
 								id="radioServico" />
 							<f:selectItem itemLabel="Bloqueio" itemValue="bloqueio"
@@ -106,27 +107,57 @@
 
 						</div>
 					</h:form>
+					 <h:form id="myFormId">
+                        <p:selectOneRadio id="myRadio" value="#{indexBean.radioVal}" >
+                            <p:ajax event="change" oncomplete="handleComplete(xhr, status, args,'agendamento','bloqueio')" listener="#{indexBean.test()}" />
+                            <f:selectItem itemLabel="1" itemValue=" first" />
+                            <f:selectItem itemLabel="2" itemValue=" second" />
+                            <f:selectItem itemLabel="3" itemValue=" third" />
+                        </p:selectOneRadio>
+                    </h:form>
 				</h:panelGrid>
 
 			</p:dialog>
 		</h:form>
 		<script type="text/javascript">
-		function mudar(id, id1) {
-			var e = document.getElementById(id);
-			var a = document.getElementById(id1);
-			if (document.getElementById('radioServico').checked == true) {
-				e.style.display = "block";
-				a.style.display = "none";
-			} else {
-				e.style.display = "none";
-				a.style.display = "block";
+			function mudar(id, id1) {
+				var e = document.getElementById(id);
+				var a = document.getElementById(id1);
+				if (document.getElementById('radioServico').checked == true) {
+					e.style.display = "block";
+					a.style.display = "none";
+				} else {
+					e.style.display = "none";
+					a.style.display = "block";
+				}
+
+			}
+
+			function reactToChangedRadio() {
+				alert("I'm in");
+				var myval;
+				if (document.forms['formAgenda']['formAgenda:tipo'][0].checked == true) {
+					myval = "first button";
+				} else if (document.forms['formAgenda']['formAgenda:tipo'][1].checked == true) {
+					myval = "second button";
+				}
+
+				alert("val = " + myval);
 			}
 			
-		}
-
-			
+			function handleComplete(xhr, status, args,id,id1) {  
+				var e = document.getElementById(id);
+				var a = document.getElementById(id1);
+				if (document.getElementById('radioServico').checked == true) {
+					e.style.display = "block";
+					a.style.display = "none";
+				} else {
+					e.style.display = "none";
+					a.style.display = "block";
+				} 
+			 } 
 		</script>
-	
+
 
 
 	</ui:define>

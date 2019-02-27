@@ -11,11 +11,11 @@ public class UsuarioServico {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name= "usuario_id",referencedColumnName="id")
+    @JoinColumn(nullable=false, name= "usuario_id",referencedColumnName="id")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name= "servico_id",referencedColumnName="id")
+    @JoinColumn(nullable=false, name= "servico_id",referencedColumnName="id")
     private Servico servico;
 
 	public Long getId() {

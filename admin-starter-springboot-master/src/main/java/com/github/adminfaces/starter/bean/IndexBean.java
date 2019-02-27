@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
@@ -49,7 +50,21 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	
 	private List<Servico> servicosSelecionados;
 	
-	 
+	private String radioVal;
+
+	public String getRadioVal() {
+	    return radioVal;
+	}
+
+	public void setRadioVal(String radioVal) {
+	    this.radioVal = radioVal;
+	}
+
+	public void test(){
+	    RequestContext context = RequestContext.getCurrentInstance();  
+	    context.addCallbackParam("myRadVal", radioVal);
+	    System.out.println("radioVal: "+radioVal);
+	}
 	public IndexBean() {
 		super(HorarioAgendado.class);
 

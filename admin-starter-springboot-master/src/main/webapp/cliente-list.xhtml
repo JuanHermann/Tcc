@@ -12,6 +12,9 @@
 		<ui:param name="renderBreadCrumb" value="false" />
 	</ui:define>
 
+<ui:define name="title">
+         Lista de Clientes
+    </ui:define>
 	<ui:define name="description">
         Clientes cadastros.
     </ui:define>
@@ -33,6 +36,11 @@
 							<p:confirm header="Confirmation" message="Você tem Certeza que deseja Excluir #{clienteList.registrosSelecionados.size()} registros selecionados?"
 								icon="ui-icon-danger" />
 						</p:commandButton>
+						<p:commandButton action="#{clienteList.tornarFuncionairo()}"						
+							disabled="#{empty clienteList.registrosSelecionados or clienteList.registrosSelecionados.size() == 0}"
+							icon="fa fa-check" value="Tornar Funcionario" styleClass="btn-info" process="@this" update=":form"/>
+
+						<p:spacer width="5" />
 					</div>
 
 					

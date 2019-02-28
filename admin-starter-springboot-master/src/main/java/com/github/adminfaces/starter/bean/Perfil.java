@@ -42,19 +42,17 @@ public class Perfil extends AbastractFormBean<Usuario, UsuarioRepository> {
 	
 	public void atualizarSenha() {	
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		
-		String s = encoder.encode(senhaAtual);
-		if(s.equals(getObjeto().getSenha())) {
+
+		if(encoder.matches(senhaAtual, getObjeto().getSenha())){
 			getObjeto().setSenha(novaSenha);
 			usuarioService.criptografarSenha(getObjeto());
 			getRepository().save(getObjeto());			
 			usuarioLogadoBean.setUsuario(getObjeto()); 
 			addDetailMessage("Senha Atualizada com sucesso!");
+			System.out.println("senha alterada");
 			Faces.getExternalContext().getFlash().setKeepMessages(true);		
 			
 		}else {
-			System.out.println(s);
-			System.out.println(getObjeto().getSenha());
 			System.out.println("senhas não conferem");
 		}
 		

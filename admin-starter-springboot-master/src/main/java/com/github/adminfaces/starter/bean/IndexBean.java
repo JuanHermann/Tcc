@@ -1,5 +1,6 @@
 package com.github.adminfaces.starter.bean;
 
+import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	
 	 private ScheduleEvent event = new DefaultScheduleEvent();
 	
-	 private String tipo;
+	 private String tipo ="";
+	 private Time horarios;
 	 
 	 @Autowired
 	private UsuarioRepository usuarioRepository;		
@@ -49,22 +51,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private List<Servico> servicos;
 	
 	private List<Servico> servicosSelecionados;
-	
-	private String radioVal;
 
-	public String getRadioVal() {
-	    return radioVal;
-	}
-
-	public void setRadioVal(String radioVal) {
-	    this.radioVal = radioVal;
-	}
-
-	public void test(){
-	    RequestContext context = RequestContext.getCurrentInstance();  
-	    context.addCallbackParam("myRadVal", radioVal);
-	    System.out.println("radioVal: "+radioVal);
-	}
 	public IndexBean() {
 		super(HorarioAgendado.class);
 
@@ -93,6 +80,12 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
             }   
         };
     }
+	
+	public boolean mostrarForm() {
+		System.out.println(tipo);
+		return "servico".equalsIgnoreCase(tipo);
+		
+	}
 	
 	public void salvarAgendamento() {
 		
@@ -260,6 +253,22 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	public void setServicosSelecionados(List<Servico> servicosSelecionados) {
 		this.servicosSelecionados = servicosSelecionados;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
+
+	public Time getHorarios() {
+		return horarios;
+	}
+
+	public void setHorarios(Time horarios) {
+		this.horarios = horarios;
 	}
 	
 	

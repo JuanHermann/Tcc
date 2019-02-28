@@ -40,38 +40,26 @@
 
 
 			<p:dialog widgetVar="inserir" header="Cadastrar Horario"
-				showEffect="clip" hideEffect="clip">
+				showEffect="clip" hideEffect="clip" >
 
 				<h:panelGrid id="eventDetails" columns="2">
 					<h:form id="formulario">
 						<p:outputLabel for="tipo" value="Tipo:" />
-						<p:selectOneRadio id="tipo" value="#{IndexBean.tipo}"
-							onclick="javascript:mudar('bloqueio','agendamento')"
+						<p:selectOneRadio id="tipo" value="#{indexBean.tipo}"
 							unselectable="true">
-							<p:ajax event="change" />
 							<f:selectItem itemLabel="Serviço" itemValue="servico"
 								id="radioServico" />
 							<f:selectItem itemLabel="Bloqueio" itemValue="bloqueio"
 								id="radioBloqueio" />
+							<p:ajax event="change" process="@this" update="idAgendamento idBloqueio" />
 						</p:selectOneRadio>
-						<div id="agendamento" style="display: none;">
-							<p:outputLabel for="data" value="Dia/Hora:" />
-							<p:calendar id="data" value="#{indexBean.event.startDate}"
-								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
 
+						<p:outputPanel id="idAgendamento"
+							rendered="#{indexBean.mostrarForm()}"> agenda</p:outputPanel>
+						<p:outputPanel id="idBloqueio"
+							rendered="#{!indexBean.mostrarForm()}"> bloqueio</p:outputPanel>
 
-							<p:outputLabel for="funcionario" value="Funcionario:" />
-							<p:selectOneMenu id="funcionario" converter="#{usuarioConverter}">
-								<f:selectItem itemLabel="Selecione um funcionario" itemValue="" />
-								<f:selectItems value="#{indexBean.funcionarios}"
-									var="funcionario" itemLabel="#{funcionario.nome}"
-									itemValue="#{usuario}" />
-								<p:message for="funcionario" />
-							</p:selectOneMenu>
-							<p:outputLabel />
-							<p:selectBooleanCheckbox value="#{selectBooleanView.value1}"
-								itemLabel="Sem preferencia" />
-
+						<div id="agendamento" style="display: block;">
 							<p:outputLabel for="servico" value="Serviço:" />
 
 							<p:selectCheckboxMenu id="servico"
@@ -80,16 +68,41 @@
 								panelStyle="width:250px">
 								<f:selectItems value="#{indexBean.servicos}" var="servico"
 									itemLabel="#{servico.nome}" />
-
-								<p:message for="servico" />
 							</p:selectCheckboxMenu>
+							<br />
+							<p:outputLabel for="funcionario" value="Funcionario:" />
+							<p:selectOneMenu id="funcionario" converter="#{usuarioConverter}">
+								<f:selectItem itemLabel="Nenhuma Preferencia" itemValue="" />
+								<f:selectItems value="#{indexBean.funcionarios}"
+									var="funcionario" itemLabel="#{funcionario.nome}"
+									itemValue="#{usuario}" />
+							</p:selectOneMenu>
 
-							<p:commandButton type="reset" value="Reset" />
+							<p:outputLabel for="data" value="Dia:" />
+							<p:calendar id="data" value="#{indexBean.event.startDate}"
+								timeZone="UTC-3" pattern="dd/MM/yyyy" />
+							<br />
+							<div class="ui-sm-12 ui-md-1 ui-lg-1">
+								<p:outputLabel value="Tempo" for="tempo" />
+							</div>
+							<div class="ui-sm-12 ui-md-3 ui-lg-5">
+
+								<p:selectOneMenu id="tempo" converter="#{timeConverter}">
+									<f:selectItem itemLabel="Selecione o horario" itemValue="" />
+									<f:selectItems value="#{indexBean.horarios}" var="horario"
+										itemLabel="#{horario}" itemValue="#{Time}" />
+								</p:selectOneMenu>
+
+							</div>
+
+
+
 							<p:commandButton value="Salvar"
 								action="#{indexBean.salvarAgendamento}"
 								oncomplete="PF('myschedule').update();PF('inserir').hide();" />
 
 						</div>
+
 						<div id="bloqueio" style="display: none;">
 							<p:outputLabel for="inicio" value="Inicio" />
 							<p:calendar id="inicio" value="#{indexBean.event.startDate}"
@@ -107,58 +120,11 @@
 
 						</div>
 					</h:form>
-					 <h:form id="myFormId">
-                        <p:selectOneRadio id="myRadio" value="#{indexBean.radioVal}" >
-                            <p:ajax event="change" oncomplete="handleComplete(xhr, status, args,'agendamento','bloqueio')" listener="#{indexBean.test()}" />
-                            <f:selectItem itemLabel="1" itemValue=" first" />
-                            <f:selectItem itemLabel="2" itemValue=" second" />
-                            <f:selectItem itemLabel="3" itemValue=" third" />
-                        </p:selectOneRadio>
-                    </h:form>
+
 				</h:panelGrid>
 
 			</p:dialog>
 		</h:form>
-		<script type="text/javascript">
-			function mudar(id, id1) {
-				var e = document.getElementById(id);
-				var a = document.getElementById(id1);
-				if (document.getElementById('radioServico').checked == true) {
-					e.style.display = "block";
-					a.style.display = "none";
-				} else {
-					e.style.display = "none";
-					a.style.display = "block";
-				}
-
-			}
-
-			function reactToChangedRadio() {
-				alert("I'm in");
-				var myval;
-				if (document.forms['formAgenda']['formAgenda:tipo'][0].checked == true) {
-					myval = "first button";
-				} else if (document.forms['formAgenda']['formAgenda:tipo'][1].checked == true) {
-					myval = "second button";
-				}
-
-				alert("val = " + myval);
-			}
-			
-			function handleComplete(xhr, status, args,id,id1) {  
-				var e = document.getElementById(id);
-				var a = document.getElementById(id1);
-				if (document.getElementById('radioServico').checked == true) {
-					e.style.display = "block";
-					a.style.display = "none";
-				} else {
-					e.style.display = "none";
-					a.style.display = "block";
-				} 
-			 } 
-		</script>
-
-
 
 	</ui:define>
 

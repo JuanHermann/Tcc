@@ -40,7 +40,7 @@
 
 
 			<p:dialog widgetVar="inserir" header="Cadastrar Horario"
-				showEffect="clip" hideEffect="clip" >
+				showEffect="clip" hideEffect="clip">
 
 				<h:panelGrid id="eventDetails" columns="2">
 					<h:form id="formulario">
@@ -51,74 +51,68 @@
 								id="radioServico" />
 							<f:selectItem itemLabel="Bloqueio" itemValue="bloqueio"
 								id="radioBloqueio" />
-							<p:ajax event="change" process="@this" update="idAgendamento idBloqueio" />
+							<p:ajax event="change" process="@this" update="idGeral" />
 						</p:selectOneRadio>
+						<p:outputPanel id="idGeral">
+							<p:outputPanel rendered="#{indexBean.mostrarForm()}">
+								<h:panelGrid id="eventDetails" columns="1">
+									<p:outputLabel for="servico" value="Serviço:" />
 
-						<p:outputPanel id="idAgendamento"
-							rendered="#{indexBean.mostrarForm()}"> agenda</p:outputPanel>
-						<p:outputPanel id="idBloqueio"
-							rendered="#{!indexBean.mostrarForm()}"> bloqueio</p:outputPanel>
-
-						<div id="agendamento" style="display: block;">
-							<p:outputLabel for="servico" value="Serviço:" />
-
-							<p:selectCheckboxMenu id="servico"
-								value="#{indexBean.servicosSelecionados}" label="Serviços"
-								multiple="true" filter="true" filterMatchMode="startsWith"
-								panelStyle="width:250px">
-								<f:selectItems value="#{indexBean.servicos}" var="servico"
-									itemLabel="#{servico.nome}" />
-							</p:selectCheckboxMenu>
-							<br />
-							<p:outputLabel for="funcionario" value="Funcionario:" />
-							<p:selectOneMenu id="funcionario" converter="#{usuarioConverter}">
-								<f:selectItem itemLabel="Nenhuma Preferencia" itemValue="" />
-								<f:selectItems value="#{indexBean.funcionarios}"
-									var="funcionario" itemLabel="#{funcionario.nome}"
-									itemValue="#{usuario}" />
-							</p:selectOneMenu>
-
-							<p:outputLabel for="data" value="Dia:" />
-							<p:calendar id="data" value="#{indexBean.event.startDate}"
-								timeZone="UTC-3" pattern="dd/MM/yyyy" />
-							<br />
-							<div class="ui-sm-12 ui-md-1 ui-lg-1">
-								<p:outputLabel value="Tempo" for="tempo" />
-							</div>
-							<div class="ui-sm-12 ui-md-3 ui-lg-5">
-
-								<p:selectOneMenu id="tempo" converter="#{timeConverter}">
-									<f:selectItem itemLabel="Selecione o horario" itemValue="" />
-									<f:selectItems value="#{indexBean.horarios}" var="horario"
-										itemLabel="#{horario}" itemValue="#{Time}" />
-								</p:selectOneMenu>
-
-							</div>
+									<p:selectCheckboxMenu id="servico"
+										value="#{indexBean.servicosSelecionados}" label="Serviços"
+										multiple="true" filter="true" filterMatchMode="startsWith"
+										panelStyle="width:250px">
+										<f:selectItems value="#{indexBean.servicos}" var="servico"
+											itemLabel="#{servico.nome}" />
+									</p:selectCheckboxMenu>
 
 
+									<p:outputLabel for="funcionario" value="Funcionario:" />
 
-							<p:commandButton value="Salvar"
-								action="#{indexBean.salvarAgendamento}"
-								oncomplete="PF('myschedule').update();PF('inserir').hide();" />
+									<p:selectOneMenu id="funcionario"
+										converter="#{usuarioConverter}">
+										<f:selectItem itemLabel="Nenhuma Preferencia" itemValue="" />
+										<f:selectItems value="#{indexBean.funcionarios}"
+											var="funcionario" itemLabel="#{funcionario.nome}"
+											itemValue="#{usuario}" />
+									</p:selectOneMenu>
 
-						</div>
+									<p:outputLabel for="data" value="Dia:" />
 
-						<div id="bloqueio" style="display: none;">
-							<p:outputLabel for="inicio" value="Inicio" />
-							<p:calendar id="inicio" value="#{indexBean.event.startDate}"
-								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
-
-							<p:outputLabel for="final" value="Final" />
-							<p:calendar id="final" value="#{indexBean.event.startDate}"
-								timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
+									<p:calendar id="data" value="#{indexBean.event.startDate}"
+										timeZone="UTC-3" pattern="dd/MM/yyyy" />
 
 
-							<p:commandButton type="reset" value="Reset" />
-							<p:commandButton value="Salvar"
-								action="#{indexBean.salvarAgendamento}"
-								oncomplete="PF('myschedule').update();PF('inserir').hide();" />
+									<p:outputLabel value="Horario:" for="horario" />
 
-						</div>
+									<p:selectOneMenu id="horario" converter="#{timeConverter}">
+										<f:selectItem itemLabel="Selecione o horario" itemValue="" />
+										<f:selectItems value="#{indexBean.horarios}" var="horario"
+											itemLabel="#{horario}" itemValue="#{Time}" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+								<p:commandButton value="Salvar"
+									action="#{indexBean.salvarAgendamento}"
+									oncomplete="PF('myschedule').update();PF('inserir').hide();" />
+							</p:outputPanel>
+							<p:outputPanel rendered="#{!indexBean.mostrarForm()}">
+								<h:panelGrid  columns="1">
+									<p:outputLabel for="inicio" value="Inicio" />
+									<p:calendar id="inicio" value="#{indexBean.event.startDate}"
+										timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
+
+									
+									<p:outputLabel for="final" value="Final" />
+									<p:calendar id="final" value="#{indexBean.event.startDate}"
+										timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
+									
+									<p:commandButton value="Salvar"
+										action="#{indexBean.salvarAgendamento}"
+										oncomplete="PF('myschedule').update();PF('inserir').hide();" />
+								</h:panelGrid>
+							</p:outputPanel>
+
+						</p:outputPanel>
 					</h:form>
 
 				</h:panelGrid>

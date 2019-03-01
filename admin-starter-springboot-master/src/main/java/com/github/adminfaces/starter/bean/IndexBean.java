@@ -39,7 +39,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	
 	 private ScheduleEvent event = new DefaultScheduleEvent();
 	
-	 private String tipo ="";
+	 private String tipo ="servico";
 	 private Time horarios;
 	 
 	 @Autowired
@@ -67,6 +67,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
         eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
         eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
         eventModel.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
+        
          
         lazyEventModel = new LazyScheduleModel() {
              
@@ -83,6 +84,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	
 	public boolean mostrarForm() {
 		System.out.println(tipo);
+		System.out.println("servico".equalsIgnoreCase(tipo));
 		return "servico".equalsIgnoreCase(tipo);
 		
 	}

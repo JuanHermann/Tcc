@@ -24,7 +24,7 @@
 
 			<p:schedule id="schedule" value="#{indexBean.eventModel}"
 				locale="pt_BR" widgetVar="myschedule" timeZone="UTC-3"
-				pattern="dd/MM/yyyy" minHour="7" maxHour="20">
+				timeFormat="dd/MM/yyyy" minHour="7" maxHour="20">
 
 				<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
 					update="eventDetails" oncomplete="PF('inserir').show();" />
@@ -64,6 +64,7 @@
 										panelStyle="width:250px">
 										<f:selectItems value="#{indexBean.servicos}" var="servico"
 											itemLabel="#{servico.nome}" />
+										<p:ajax event="change" update="funcionario" oncomplete="#{indexBean.buscarFuncionarios()}" />
 									</p:selectCheckboxMenu>
 
 
@@ -72,7 +73,7 @@
 									<p:selectOneMenu id="funcionario"
 										converter="#{usuarioConverter}">
 										<f:selectItem itemLabel="Nenhuma Preferencia" itemValue="" />
-										<f:selectItems value="#{indexBean.funcionarios}"
+										<f:selectItems value="#{indexBean.setFuncionarios}"
 											var="funcionario" itemLabel="#{funcionario.nome}"
 											itemValue="#{usuario}" />
 									</p:selectOneMenu>
@@ -91,26 +92,26 @@
 											itemLabel="#{horario}" itemValue="#{Time}" />
 									</p:selectOneMenu>
 								</h:panelGrid>
-								<p:commandButton value="Salvar"
-									action="#{indexBean.salvarAgendamento}"
-									oncomplete="PF('myschedule').update();PF('inserir').hide();" />
+
 							</p:outputPanel>
 							<p:outputPanel rendered="#{!indexBean.mostrarForm()}">
-								<h:panelGrid  columns="1">
+								<h:panelGrid columns="1">
 									<p:outputLabel for="inicio" value="Inicio" />
 									<p:calendar id="inicio" value="#{indexBean.event.startDate}"
 										timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
 
-									
+
 									<p:outputLabel for="final" value="Final" />
 									<p:calendar id="final" value="#{indexBean.event.startDate}"
 										timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
-									
-									<p:commandButton value="Salvar"
-										action="#{indexBean.salvarAgendamento}"
-										oncomplete="PF('myschedule').update();PF('inserir').hide();" />
+
+
 								</h:panelGrid>
 							</p:outputPanel>
+
+							<p:commandButton value="Salvar"
+								action="#{indexBean.salvarAgendamento()}"
+								oncomplete="PF('myschedule').update();PF('inserir').hide();" />
 
 						</p:outputPanel>
 					</h:form>

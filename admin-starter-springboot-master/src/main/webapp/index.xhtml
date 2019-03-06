@@ -24,7 +24,7 @@
 
 			<p:schedule id="schedule" value="#{indexBean.eventModel}"
 				locale="pt_BR" widgetVar="myschedule" timeZone="UTC-3"
-				timeFormat="dd/MM/yyyy" minHour="7" maxHour="20">
+				timeFormat="dd/MM/yyyy" minTime="7:00" maxTime="20:00">
 
 				<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
 					update="eventDetails" oncomplete="PF('inserir').show();" />
@@ -64,7 +64,8 @@
 										panelStyle="width:250px">
 										<f:selectItems value="#{indexBean.servicos}" var="servico"
 											itemLabel="#{servico.nome}" />
-										<p:ajax event="change" update="funcionario" oncomplete="#{indexBean.buscarFuncionarios()}" />
+										<p:ajax event="toggleSelect" update="funcionario"
+											oncomplete="#{indexBean.buscarFuncionarios()}" />
 									</p:selectCheckboxMenu>
 
 
@@ -80,9 +81,11 @@
 
 									<p:outputLabel for="data" value="Dia:" />
 
-									<p:calendar id="data" value="#{indexBean.event.startDate}"
-										timeZone="UTC-3" pattern="dd/MM/yyyy" />
-
+									<p:calendar id="data" value="#{indexBean.data}"
+										timeZone="UTC-3" pattern="dd/MM/yyyy">
+										<p:ajax event="dateSelect"
+											listener="#{indexBean.buscarHorarios}" update="horario" />
+									</p:calendar>
 
 									<p:outputLabel value="Horario:" for="horario" />
 

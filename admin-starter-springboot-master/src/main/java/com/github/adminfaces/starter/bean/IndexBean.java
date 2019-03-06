@@ -45,7 +45,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private ScheduleEvent event = new DefaultScheduleEvent();
 
 	private String tipo = "servico";
-	private Time horarios;
+	private List<Time> horarios;
+	private Date data = Calendar.getInstance().getTime();
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -56,7 +57,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	@Autowired
 	private ServicoRepository servicoRepository;
 	private List<Servico> servicos;
-
 	private List<Servico> servicosSelecionados;
 
 	@Autowired
@@ -92,7 +92,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void buscarFuncionarios() {
-		System.out.println("passou");
+//		System.out.println("passou");
 		if (servicosSelecionados != null) {
 			for (Servico servico : servicosSelecionados) {
 				usuarioServicos = usuarioServicoRepository.findByServicoOrderByUsuario(servico);
@@ -102,6 +102,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				}
 			}
 		}
+	}
+	public void buscarHorarios() {
+		System.out.println("aqui");
 	}
 
 	public boolean mostrarForm() {
@@ -290,11 +293,11 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		this.tipo = tipo;
 	}
 
-	public Time getHorarios() {
+	public List<Time> getHorarios() {
 		return horarios;
 	}
 
-	public void setHorarios(Time horarios) {
+	public void setHorarios(List<Time> horarios) {
 		this.horarios = horarios;
 	}
 
@@ -304,6 +307,14 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	public void setSetFuncionarios(Set<Usuario> setFuncionarios) {
 		this.setFuncionarios = setFuncionarios;
+	}
+	
+	public Date getData() {
+		return data;
+	}
+	
+	public void setData(Date data) {
+		this.data = data;
 	}
 	
 	

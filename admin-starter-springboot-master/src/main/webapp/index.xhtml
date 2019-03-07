@@ -65,7 +65,7 @@
 										<f:selectItems value="#{indexBean.servicos}" var="servico"
 											itemLabel="#{servico.nome}" />
 										<p:ajax event="toggleSelect" update="funcionario"
-											oncomplete="#{indexBean.buscarFuncionarios()}" />
+											listener="#{indexBean.buscarFuncionarios()}" />
 									</p:selectCheckboxMenu>
 
 

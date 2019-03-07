@@ -92,7 +92,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void buscarFuncionarios() {
-//		System.out.println("passou");
+		System.out.println("passou");
 		if (servicosSelecionados != null) {
 			for (Servico servico : servicosSelecionados) {
 				usuarioServicos = usuarioServicoRepository.findByServicoOrderByUsuario(servico);

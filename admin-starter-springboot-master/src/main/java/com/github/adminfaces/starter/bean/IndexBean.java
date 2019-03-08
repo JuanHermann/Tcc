@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,7 @@ import com.github.adminfaces.starter.model.Servico;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.model.UsuarioServico;
 import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
+import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.ServicoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
@@ -52,7 +54,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private UsuarioRepository usuarioRepository;
 	private List<Usuario> funcionarios;
 	private Set<Usuario> setFuncionarios;
-	
 
 	@Autowired
 	private ServicoRepository servicoRepository;
@@ -62,6 +63,13 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	@Autowired
 	private UsuarioServicoRepository usuarioServicoRepository;
 	private List<UsuarioServico> usuarioServicos;
+
+	@Autowired
+	private PermissaoRepository permissaoRepository;
+
+	@Autowired
+	private HorarioAgendadoRepository horarioAgendadoRepository;
+	private List<HorarioAgendado> horarioAgendados;
 
 	public IndexBean() {
 		super(HorarioAgendado.class);
@@ -77,7 +85,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", previousDay8Pm(), previousDay11Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
-		eventModel.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
+		eventModel
+				.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
 
 		lazyEventModel = new LazyScheduleModel() {
 
@@ -98,19 +107,44 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				usuarioServicos = usuarioServicoRepository.findByServicoOrderByUsuario(servico);
 				for (UsuarioServico usuarioServico : usuarioServicos) {
 					setFuncionarios.add(usuarioServico.getUsuario());
-//					System.out.println("top");
+					System.out.println("top");
 				}
 			}
 		}
 	}
+
 	public void buscarHorarios() {
-		System.out.println("aqui");
+		GregorianCalendar gc = new GregorianCalendar();
+		int a = 0;
+		for (Servico servico : servicosSelecionados) {
+			if (a == 0) {
+				gc.setTimeInMillis(servico.getTempo().getTime());
+				a=1;
+			} else {
+				String[] tempo = String.valueOf(servico.getTempo()).split(":");
+				int hora = Integer.parseInt(tempo[0]), minuto = Integer.parseInt(tempo[1]);
+				if (hora > 0) {
+					gc.add(Calendar.HOUR, hora);
+				} else if (minuto > 0) {
+					gc.add(Calendar.MINUTE, minuto);
+				}
+			}
+
+		}
+		System.out.println(gc.getTime());
+		horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(data);
+		for (HorarioAgendado horarios : horarioAgendados) {
+
+		}
 	}
 
 	public boolean mostrarForm() {
-//		System.out.println(tipo);
-//		System.out.println("servico".equalsIgnoreCase(tipo));
 		return "servico".equalsIgnoreCase(tipo);
+
+	}
+
+	public boolean mostrarFuncionario() {
+		return permissaoRepository.findByNome("ROLE_FUNCIONARIO").getUsuarios().size() > 1;
 
 	}
 
@@ -308,15 +342,13 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	public void setSetFuncionarios(Set<Usuario> setFuncionarios) {
 		this.setFuncionarios = setFuncionarios;
 	}
-	
+
 	public Date getData() {
 		return data;
 	}
-	
+
 	public void setData(Date data) {
 		this.data = data;
 	}
-	
-	
 
 }

@@ -1,5 +1,7 @@
 package com.github.adminfaces.starter.repository;
 
+
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,5 +13,5 @@ import com.github.adminfaces.starter.model.Usuario;
 
 public interface HorarioAgendadoRepository extends JpaRepository<HorarioAgendado, Integer> {
 
-	
+	List<HorarioAgendado> findByDataOrderByHoraInicio(Date data);
 }

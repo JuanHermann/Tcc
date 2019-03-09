@@ -23,8 +23,8 @@
 			<p:growl id="messages" showDetail="true" />
 
 			<p:schedule id="schedule" value="#{indexBean.eventModel}"
-				locale="pt_BR" widgetVar="myschedule" timeZone="UTC-3"
-				timeFormat="dd/MM/yyyy" minTime="7:00" maxTime="20:00">
+				 widgetVar="myschedule" 
+				 minTime="7:00" maxTime="20:00">
 
 				<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
 					update="eventDetails" oncomplete="PF('inserir').show();" />

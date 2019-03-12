@@ -174,6 +174,8 @@ cover
 
 		<div class="box login-box-body">
 			<h:form>
+			
+        <p:messages autoUpdate="true" />
 				<p class="login-box-msg">Informe seus dados para o Cadastro</p>
 
 				<div  class="form-group has-feedback">
@@ -233,6 +235,7 @@ cover
 						<p:commandButton styleClass="btn btn-success btn-block"
 							action="#{usuarioForm.novoCadastro}" onclick="showBar()"
 							oncomplete="if(args.validationFailed){hideBar()}"
+							validateClient="true"
 							value="Criar Conta" update="@form" />
 					</div>
 

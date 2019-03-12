@@ -39,6 +39,7 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 	}
 
 	public void novoCadastro() throws IOException {
+		System.out.println("novo cadastro");
 		getObjeto().setAtivo(true);
 		getObjeto().setAceito(false);
 		usuarioService.criptografarSenha(getObjeto());

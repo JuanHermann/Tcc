@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TimeConverter implements Converter {
 
-	private SimpleDateFormat formatador = new SimpleDateFormat("HH:mm:ss");
+	private SimpleDateFormat formatador = new SimpleDateFormat("HH:mm");
 
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {

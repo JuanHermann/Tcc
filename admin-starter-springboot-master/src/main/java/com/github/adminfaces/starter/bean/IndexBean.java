@@ -39,8 +39,12 @@ import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 @Component
 @Scope("view")
 public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendadoRepository> {
-	private static Time HORA_ENTRE_CADASTRO = new Time(2,0,0) ;
-	private static Time HORA_INICIO_EMPRESA = new Time(7,0,0) ;
+	private static Time HORA_ENTRE_CADASTRO = new Time(2, 0, 0);
+	private static Time HORA_INICIO_EMPRESA = new Time(7, 0, 0);
+	private static Time HORA_INICIO_INTERVALO = new Time(12, 0, 0);
+	private static Time HORA_FINAL_INTERVALO = new Time(13, 30, 0);
+	private static Time HORA_FINAL_EMPRESA = new Time(20, 0, 0);
+	private static Time TEMPO_BUSCA_ENTRE_SERVICOS = new Time(0, 15, 0);
 	private ScheduleModel eventModel = new DefaultScheduleModel();
 
 	private ScheduleModel lazyEventModel;
@@ -82,12 +86,14 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		servicos = servicoRepository.findAll();
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
+
 		eventModel = new DefaultScheduleModel();
 		eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", previousDay8Pm(), previousDay11Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Birthday top", today6Pm(), today7Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
-		eventModel.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
+		eventModel
+				.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
 
 		lazyEventModel = new LazyScheduleModel() {
 
@@ -112,53 +118,108 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				}
 			}
 		}
+		buscarHorarios();
 	}
 
 	public void buscarHorarios() {
 		GregorianCalendar gc = new GregorianCalendar();
 		int a = 0;
-		Time soma = new Time(0,0,0);
+		Time soma = new Time(0, 0, 0);
 		for (Servico servico : servicosSelecionados) {
-//			if (a == 0) {
-//				gc.setTimeInMillis(servico.getTempo().getTime());
-//				a=1;
-//			} else {
-//				String[] tempo = String.valueOf(servico.getTempo()).split(":");
-//				int hora = Integer.parseInt(tempo[0]), minuto = Integer.parseInt(tempo[1]);
-//				if (hora > 0) {
-//					gc.add(Calendar.HOUR, hora);
-//				} else if (minuto > 0) {
-//					gc.add(Calendar.MINUTE, minuto);
-//				}
-//			}
-			
-			 soma = somarTime(soma, servico.getTempo());
-
+			soma = somarTime(soma, servico.getTempo());
 		}
 		System.out.println(soma);
+		horariosLivres(soma);
+
+	}
+
+	private void horariosLivres(Time TempoTotalServicos) {
+		horarios = new ArrayList<>();
 		horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(data);
-		for (HorarioAgendado horarios : horarioAgendados) {
-			if(HORA_INICIO_EMPRESA < horarios.getHoraInicio()) {
+		if (!horarioAgendados.isEmpty()) {
+			Time horaAuxiliar = HORA_INICIO_EMPRESA;
+			for (HorarioAgendado horarioAgendado : horarioAgendados) {
+
+				if (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, horarioAgendado.getHoraInicio())) {
+					horarios.add(horaAuxiliar);
+					horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+
+					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos,
+							horarioAgendado.getHoraInicio()) == true
+							&& verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
+						horarios.add(horaAuxiliar);
+						horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+
+					}
+					if (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos,
+							horarioAgendado.getHoraInicio()) == true) {
+						horaAuxiliar = HORA_FINAL_INTERVALO;
+
+						while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos,
+								horarioAgendado.getHoraInicio()) == true
+								&& verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
+							horarios.add(horaAuxiliar);
+							horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+
+						}
+					}
+
+				} 
+				horaAuxiliar = horarioAgendado.getHoraTermino();
 				
 			}
+		} else {
+			Time horario = HORA_INICIO_EMPRESA;
+
+			while (verificaEspacoTempo(horario, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
+				horarios.add(horario);
+				horario = somarTime(horario, TEMPO_BUSCA_ENTRE_SERVICOS);
+
+			}
+
+			horario = HORA_FINAL_INTERVALO;
+
+			while (verificaEspacoTempo(horario, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
+				horarios.add(horario);
+				horario = somarTime(horario, TEMPO_BUSCA_ENTRE_SERVICOS);
+
+			}
 		}
+
 	}
-	
-	public Time somarTime(Time tempo1,Time tempo2) {
+
+	private boolean verificaEspacoTempo(Time primeiroHorarioLivre, Time tempoTotalServico, Time proximoServico) {
+		Time total = somarTime(primeiroHorarioLivre, tempoTotalServico);
+		if (timeToInt(total) <= timeToInt(proximoServico)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private int timeToInt(Time tempoConverter) {
+
+		String[] tempo = String.valueOf(tempoConverter).split(":");
+		int hora = Integer.parseInt(tempo[0]), minuto = Integer.parseInt(tempo[1]);
+		return (hora * 100) + minuto;
+
+	}
+
+	public Time somarTime(Time tempo1, Time tempo2) {
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTimeInMillis(tempo1.getTime());
 		String[] tempo = String.valueOf(tempo2).split(":");
 		int hora = Integer.parseInt(tempo[0]), minuto = Integer.parseInt(tempo[1]);
 		if (hora > 0) {
 			gc.add(Calendar.HOUR, hora);
-		} else if (minuto > 0) {
+		}
+		if (minuto > 0) {
 			gc.add(Calendar.MINUTE, minuto);
 		}
-		
-		Time soma = (Time) gc.getTime();
+
+		Time soma = new Time(gc.getTime().getTime());
 		return soma;
 	}
-	
 
 	public boolean mostrarForm() {
 		return "servico".equalsIgnoreCase(tipo);
@@ -171,7 +232,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void salvarAgendamento() {
-
+		getRepository().save(getObjeto());
 	}
 
 	public Date getRandomDate(Date base) {
@@ -246,7 +307,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 		return t.getTime();
 	}
-	
+
 	private Date today7Pm() {
 		Calendar t = (Calendar) today().clone();
 		t.set(Calendar.AM_PM, Calendar.PM);

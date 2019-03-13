@@ -13,7 +13,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
@@ -27,6 +26,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.github.adminfaces.starter.model.HorarioAgendado;
+import com.github.adminfaces.starter.model.Permissao;
 import com.github.adminfaces.starter.model.Servico;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.model.UsuarioServico;
@@ -36,8 +36,13 @@ import com.github.adminfaces.starter.repository.ServicoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Component
 @Scope("view")
+@Getter
+@Setter
 public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendadoRepository> {
 	private static Time HORA_ENTRE_CADASTRO = new Time(2, 0, 0);
 	private static Time HORA_INICIO_EMPRESA = new Time(7, 0, 0);
@@ -52,13 +57,16 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private ScheduleEvent event = new DefaultScheduleEvent();
 
 	private String tipo = "servico";
+	private Time tempoTotalServicos;
 	private List<Time> horarios;
 	private Date data = Calendar.getInstance().getTime();
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	private List<Usuario> clientes;
 	private List<Usuario> funcionarios;
 	private Set<Usuario> setFuncionarios;
+	private Usuario funcionario;
 
 	@Autowired
 	private ServicoRepository servicoRepository;
@@ -83,7 +91,10 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	@PostConstruct
 	public void init() {
+		clientes = new ArrayList<>();
+		buscarClientes();
 		servicos = servicoRepository.findAll();
+		 
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
 
@@ -107,6 +118,36 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		};
 	}
 
+	private void buscarClientes() {
+		Permissao permissao = permissaoRepository.findByNome("ROLE_CLIENTE");
+		clientes =filtrarCliente(permissao.getUsuarios());
+	}
+	private List<Usuario> filtrarCliente(List<Usuario> lista) {
+		List<Usuario> usuarios = lista;
+		List<Usuario> pesquisa = new ArrayList<>();
+		for (Usuario usuario : usuarios) {
+			List<Permissao> permissoes = usuario.getPermissoes();
+			boolean role = false;
+			for (Permissao p : permissoes) {
+				if (p.getNome().equals("ROLE_ATENDENTE")) {
+					role = false;
+					break;
+				} else if (p.getNome().equals("ROLE_FUNCIONARIO")) {
+					role = false;
+					break;
+				} else if (p.getNome().equals("ROLE_CLIENTE")) {
+					role = true;
+					break;
+				}
+			}
+			if (role == true) {
+				pesquisa.add(usuario);
+			}
+		}
+
+		return pesquisa;
+	}
+
 	public void buscarFuncionarios() {
 		System.out.println("passou");
 		if (servicosSelecionados != null) {
@@ -124,12 +165,12 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	public void buscarHorarios() {
 		GregorianCalendar gc = new GregorianCalendar();
 		int a = 0;
-		Time soma = new Time(0, 0, 0);
+		tempoTotalServicos = new Time(0, 0, 0);
 		for (Servico servico : servicosSelecionados) {
-			soma = somarTime(soma, servico.getTempo());
+			tempoTotalServicos = somarTime(tempoTotalServicos, servico.getTempo());
 		}
-		System.out.println(soma);
-		horariosLivres(soma);
+		System.out.println(tempoTotalServicos);
+		horariosLivres(tempoTotalServicos);
 
 	}
 
@@ -232,7 +273,26 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void salvarAgendamento() {
-		getRepository().save(getObjeto());
+		System.out.println("salvou");
+		if(mostrarFuncionario()) {
+			for(Servico servico: servicosSelecionados) {
+				getObjeto().setUsuarioServico(usuarioServicoRepository.findByServicoAndUsuarioOrderByUsuario(servico,funcionario ));
+				}
+				getRepository().save(getObjeto());
+		}else {
+			HorarioAgendado agendado ;
+			for(Servico servico: servicosSelecionados) {
+				agendado = new HorarioAgendado();
+				agendado.setCliente(getObjeto().getCliente());
+				agendado.setData(getObjeto().getData());
+				agendado.setHoraInicio(getObjeto().getHoraInicio());
+				agendado.setHoraTermino(somarTime(getObjeto().getHoraInicio(),tempoTotalServicos ));
+				agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
+				}
+				getRepository().save(getObjeto());
+		}
+		
+		
 	}
 
 	public Date getRandomDate(Date base) {
@@ -386,60 +446,10 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		FacesContext.getCurrentInstance().addMessage(null, message);
 	}
 
-	public List<Usuario> getFuncionarios() {
-		return funcionarios;
-	}
 
-	public void setFuncionarios(List<Usuario> funcionarios) {
-		this.funcionarios = funcionarios;
-	}
 
-	public List<Servico> getServicos() {
-		return servicos;
-	}
 
-	public void setServicos(List<Servico> servicos) {
-		this.servicos = servicos;
-	}
-
-	public List<Servico> getServicosSelecionados() {
-		return servicosSelecionados;
-	}
-
-	public void setServicosSelecionados(List<Servico> servicosSelecionados) {
-		this.servicosSelecionados = servicosSelecionados;
-	}
-
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
-	public List<Time> getHorarios() {
-		return horarios;
-	}
-
-	public void setHorarios(List<Time> horarios) {
-		this.horarios = horarios;
-	}
-
-	public Set<Usuario> getSetFuncionarios() {
-		return setFuncionarios;
-	}
-
-	public void setSetFuncionarios(Set<Usuario> setFuncionarios) {
-		this.setFuncionarios = setFuncionarios;
-	}
-
-	public Date getData() {
-		return data;
-	}
-
-	public void setData(Date data) {
-		this.data = data;
-	}
+	
+	
 
 }

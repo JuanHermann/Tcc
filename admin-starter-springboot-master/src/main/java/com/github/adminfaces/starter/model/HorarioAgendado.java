@@ -14,11 +14,11 @@ public class HorarioAgendado {
 
     @ManyToOne
     @JoinColumn(name= "usuario_id",referencedColumnName="id")
-    private Usuario codUsuario;
+    private Usuario cliente;
 
     @ManyToOne
     @JoinColumn(name= "usuario_servico_id",referencedColumnName="id")
-    private UsuarioServico codUsuarioServico;
+    private UsuarioServico UsuarioServico;
 
     @Column(nullable = false)
     private Date data;
@@ -39,20 +39,20 @@ public class HorarioAgendado {
 		this.id = id;
 	}
 
-	public Usuario getCodUsuario() {
-		return codUsuario;
+	public Usuario getCliente() {
+		return cliente;
 	}
 
-	public void setCodUsuario(Usuario codUsuario) {
-		this.codUsuario = codUsuario;
+	public void setCliente(Usuario cliente) {
+		this.cliente = cliente;
 	}
 
-	public UsuarioServico getCodUsuarioServico() {
-		return codUsuarioServico;
+	public UsuarioServico getUsuarioServico() {
+		return UsuarioServico;
 	}
 
-	public void setCodUsuarioServico(UsuarioServico codUsuarioServico) {
-		this.codUsuarioServico = codUsuarioServico;
+	public void setUsuarioServico(UsuarioServico usuarioServico) {
+		UsuarioServico = usuarioServico;
 	}
 
 	public Date getData() {

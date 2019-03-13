@@ -1,11 +1,17 @@
 package com.github.adminfaces.starter.model;
 
 import javax.persistence.*;
+
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 import java.sql.Time;
 import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "servico")
 public class Servico implements Serializable {
 
@@ -25,47 +31,6 @@ public class Servico implements Serializable {
     @Column(length = 200,nullable = true)
     private String descricao;
 
-    
-
-    public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Time getTempo() {
-        return tempo;
-    }
-
-    public void setTempo(Time tempo) {
-        this.tempo = tempo;
-    }
-
-    public Double getValor() {
-        return valor;
-    }
-
-    public void setValor(Double valor) {
-        this.valor = valor;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
 
     @Override
     public int hashCode() {

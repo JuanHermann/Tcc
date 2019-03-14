@@ -122,8 +122,8 @@
 								</h:panelGrid>
 							</p:outputPanel>
 
-							<p:commandButton value="Salvar"
-								action="#{indexBean.salvarAgendamento()}" ajax="false"
+							<p:commandButton value="Salvar" process="@this"
+								actionListener="#{indexBean.salvarAgendamento()}"
 								oncomplete="PF('myschedule').update();PF('inserir').hide();" />
 
 						</p:outputPanel>

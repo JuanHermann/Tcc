@@ -57,10 +57,12 @@
 								<h:panelGrid id="eventDetails" columns="1">
 									<p:outputLabel for="cliente" value="Cliente:" />
 
-									<p:selectOneMenu id="cliente" >
+									<p:selectOneMenu id="cliente"
+										value="#{indexBean.objeto.cliente}" filter="true"
+										converter="#{usuarioConverter}">
 										<f:selectItem itemLabel="Selecione o cliente" itemValue="" />
-										<f:selectItems value="#{indexBean.clientes}" var="cliente"
-											itemLabel="#{cliente.nome}" itemValue="#{Usuario}" />
+										<f:selectItems value="#{indexBean.clientes}" var="usuario"
+											itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
 									</p:selectOneMenu>
 
 									<p:outputLabel for="servico" value="Serviço:" />
@@ -79,7 +81,8 @@
 									<p:outputPanel rendered="#{indexBean.mostrarFuncionario()}">
 										<p:outputLabel for="funcionario" value="Funcionario:" />
 
-										<p:selectOneMenu id="funcionario" value="#{indexBean.funcionario}"
+										<p:selectOneMenu id="funcionario"
+											value="#{indexBean.funcionario}"
 											converter="#{usuarioConverter}">
 											<f:selectItem itemLabel="Nenhuma Preferencia" itemValue="" />
 											<f:selectItems value="#{indexBean.setFuncionarios}"
@@ -115,7 +118,7 @@
 
 
 									<p:outputLabel for="final" value="Final" />
-									<p:calendar id="final" value="#{indexBean.event.startDate}"
+									<p:calendar id="final" value="#{indexBean.dataFinal}"
 										timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
 
 

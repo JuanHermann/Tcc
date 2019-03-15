@@ -68,6 +68,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private List<Usuario> funcionarios;
 	private Set<Usuario> setFuncionarios;
 	private Usuario funcionario;
+	private Usuario cliente;
 
 	@Autowired
 	private ServicoRepository servicoRepository;
@@ -96,7 +97,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		clientes = new ArrayList<>();
 		buscarClientes();
 		servicos = servicoRepository.findAll();
-		
+		cliente = new Usuario();
 		 
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
@@ -276,31 +277,29 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void salvarAgendamento() {
-		if(mostrarForm()) {
+		if(mostrarForm() == true) {
 			System.out.println("agendar");
+			System.out.println(cliente.getNome());
+			System.out.println(funcionario.getNome());
 			if(mostrarFuncionario()) {
 				for(Servico servico: servicosSelecionados) {
 					getObjeto().setUsuarioServico(usuarioServicoRepository.findByServicoAndUsuarioOrderByUsuario(servico,funcionario ));
 					}
-					getRepository().save(getObjeto());
 			}else {
 				HorarioAgendado agendado ;
 				for(Servico servico: servicosSelecionados) {
 					agendado = new HorarioAgendado();
+					agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
 					agendado.setCliente(getObjeto().getCliente());
 					agendado.setData(getObjeto().getData());
 					agendado.setHoraInicio(getObjeto().getHoraInicio());
 					agendado.setHoraTermino(somarTime(getObjeto().getHoraInicio(),tempoTotalServicos ));
-					agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
 					}
-					getRepository().save(getObjeto());
 			}
 		}else {
 			System.out.println("bloquear");
 			HorarioAgendado bloquear = new HorarioAgendado();
 			bloquear.setData(event.getStartDate());
-			bloquear.setHoraInicio(event.getStartDate().getTime());
-			bloquear.setHoraTermino();
 			
 		}
 		

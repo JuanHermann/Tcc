@@ -10,27 +10,25 @@ import org.springframework.stereotype.Component;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 
-
 @Component
 public class UsuarioConverter implements Converter {
-	
+
 	@Autowired
 	private UsuarioRepository repository;
 
 	@Override
-	public Object getAsObject(FacesContext context, 
-			UIComponent component, String value) {
+	public Object getAsObject(FacesContext context, UIComponent component, String value) {
 		try {
-			return repository.findById(Integer.parseInt(value))
-					.orElse(null);
+			System.out.println("aqui");
+			System.out.println(repository.findById(Integer.parseInt(value)).orElse(null).getNome());
+			return repository.findById(Integer.parseInt(value)).orElse(null);
 		} catch (Exception ex) {
 			return null;
 		}
 	}
 
 	@Override
-	public String getAsString(FacesContext context, 
-			UIComponent component, Object value) {
+	public String getAsString(FacesContext context, UIComponent component, Object value) {
 		if (value != null && value instanceof Usuario) {
 			Usuario usuario = (Usuario) value;
 			return String.valueOf(usuario.getId());

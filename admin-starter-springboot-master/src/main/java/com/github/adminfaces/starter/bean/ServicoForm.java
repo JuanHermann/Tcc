@@ -8,6 +8,9 @@ import com.github.adminfaces.starter.repository.ServicoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.util.List;
@@ -18,12 +21,15 @@ import org.springframework.stereotype.Component;
 
 
 @Component
+@Getter
+@Setter
 @Scope("view")
 public class ServicoForm extends AbastractFormBean<Servico, ServicoRepository> {
 	
 	@Autowired
 	private UsuarioServicoRepository usuarioServicoRepository;
 	private UsuarioServico usuarioServico;
+	private Usuario cliente;
 	
 	@Autowired
 	private PermissaoRepository permissaoRepository;
@@ -50,6 +56,8 @@ public class ServicoForm extends AbastractFormBean<Servico, ServicoRepository> {
 		
 		
 	}
+	
+	
 	
    
 }

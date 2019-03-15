@@ -52,7 +52,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private static Time TEMPO_BUSCA_ENTRE_SERVICOS = new Time(0, 15, 0);
 	private ScheduleModel eventModel = new DefaultScheduleModel();
 
-	private ScheduleModel lazyEventModel;
 
 	private ScheduleEvent event = new DefaultScheduleEvent();
 	
@@ -98,7 +97,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		buscarClientes();
 		servicos = servicoRepository.findAll();
 		cliente = new Usuario();
-		 
+		funcionario = new Usuario();
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
 
@@ -110,16 +109,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		eventModel
 				.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
 
-		lazyEventModel = new LazyScheduleModel() {
 
-			public void loadEvents(Date start, Date end) {
-				Date random = getRandomDate(start);
-				addEvent(new DefaultScheduleEvent("Lazy Event 1", random, random));
-
-				random = getRandomDate(start);
-				addEvent(new DefaultScheduleEvent("Lazy Event 2", random, random));
-			}
-		};
 	}
 
 	private void buscarClientes() {
@@ -279,8 +269,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	public void salvarAgendamento() {
 		if(mostrarForm() == true) {
 			System.out.println("agendar");
-			System.out.println(cliente.getNome());
-			System.out.println(funcionario.getNome());
 			if(mostrarFuncionario()) {
 				for(Servico servico: servicosSelecionados) {
 					getObjeto().setUsuarioServico(usuarioServicoRepository.findByServicoAndUsuarioOrderByUsuario(servico,funcionario ));
@@ -289,12 +277,14 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				HorarioAgendado agendado ;
 				for(Servico servico: servicosSelecionados) {
 					agendado = new HorarioAgendado();
-					agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
 					agendado.setCliente(getObjeto().getCliente());
 					agendado.setData(getObjeto().getData());
 					agendado.setHoraInicio(getObjeto().getHoraInicio());
-					agendado.setHoraTermino(somarTime(getObjeto().getHoraInicio(),tempoTotalServicos ));
+					agendado.setHoraTermino(somarTime(getObjeto().getHoraInicio(),servico.getTempo() ));
+					agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
+					getRepository().save(agendado);
 					}
+				
 			}
 		}else {
 			System.out.println("bloquear");

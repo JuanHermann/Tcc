@@ -19,8 +19,6 @@ public class UsuarioConverter implements Converter {
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
 		try {
-			System.out.println("aqui");
-			System.out.println(repository.findById(Integer.parseInt(value)).orElse(null).getNome());
 			return repository.findById(Integer.parseInt(value)).orElse(null);
 		} catch (Exception ex) {
 			return null;

@@ -1,51 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	template="#{layoutMB.template}">
-
-
+	xmlns:p="http://primefaces.org/ui" template="#{layoutMB.template}">
 
 	<ui:define name="title">
-		<h2 class="align-center">Agenda</h2>
-	</ui:define>
+        Cadastro de Serviços
+    </ui:define>
+
+
+
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
 	</ui:define>
 
 	<ui:define name="body">
-	<f:metadata>
+		<f:metadata>
+			<f:viewParam name="id" value="#{servicoForm.id}" />
 			<f:viewAction action="#{servicoForm.init}" />
 		</f:metadata>
 
-		<h:form id="form" data-toggle="validator" 
+
+		<h:form id="form" data-toggle="validator" prependId="false"
 			role="form">
-			<p:growl id="messages" showDetail="true" />
-
-			<p:schedule id="schedule" value="#{indexBean.eventModel}"
-				widgetVar="myschedule">
-
-				<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
-					update="eventDetails" oncomplete="PF('inserir').show();" />
-				<p:ajax event="eventSelect" listener="#{indexBean.onEventSelect}"
-					update="eventDetails" oncomplete="PF('inserir').show();" />
-				<p:ajax event="eventMove" listener="#{indexBean.onEventMove}"
-					update="messages" />
-				<p:ajax event="eventResize" listener="#{indexBean.onEventResize}"
-					update="messages" />
-
-			</p:schedule>
 
 
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<div id="main-buttons" class="hidden-sm hidden-xs">
 
-			<p:dialog widgetVar="inserir" header="Cadastrar Horario" 
-				showEffect="clip" hideEffect="clip">
 
-				<h:panelGrid id="eventDetails" columns="1">
+						<p:commandButton value="Salvar"
+							action="#{indexBean.salvarAgendamento()}" update="@form"
+							icon="fa fa-check" styleClass="btn-primary" />
+						<p:spacer width="5" />
+						<p:commandButton value="Limpar" action="#{servicoForm.novo()}"
+							rendered="#{servicoForm.objeto.id == null}" process="@this"
+							icon="fa fa-refresh" styleClass="btn-success" update="@form"
+							resetValues="true" />
+
+						<p:commandButton value="Deletar" action="#{servicoForm.remover()}"
+							rendered="#{servicoForm.objeto.id != null}" process="@this"
+							icon="fa fa-trash" styleClass="btn-danger" update="@form"
+							resetValues="true">
+							<f:setPropertyActionListener value="true"
+								target="#{facesContext.externalContext.flash.keepMessages}" />
+							<p:confirm header="Confirmação"
+								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
+						</p:commandButton>
+						<p:spacer width="5" />
+						<p:commandButton value="Voltar" immediate="true"
+							action="servico-list?faces-redirect=true" process="@this"
+							icon="fa fa-reply" />
+					</div>
+
+					<p:splitButton value="Salvar" action="#{servicoForm.salvar()}"
+						update="@form" icon="fa fa-check"
+						styleClass="hidden-md hidden-lg btn-primary">
+						<p:menuitem value="Limpar" action="#{servicoForm.novo()}"
+							rendered="#{servicoForm.objeto.id == null}" process="@this"
+							update="@form" resetValues="true" icon="fa fa-refresh" />
+						<p:menuitem value="Deletar" action="#{servicoForm.remover()}"
+							rendered="#{servicoForm.objeto.id != null}" process="@this"
+							icon="fa fa-trash" update="@form" resetValues="true">
+							<p:confirm header="Confirmação"
+								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
+						</p:menuitem>
+						<p:menuitem value="Voltar" immediate="true"
+							action="servico-list?faces-redirect=true" process="@this"
+							icon="fa fa-reply" />
+					</p:splitButton>
+
+					<p:separator />
+
+					<div class="ui-g ui-fluid">
+					
+					<h:panelGrid id="eventDetails" columns="1">
 					<p:outputLabel for="tipo" value="Tipo:" />
 					<p:selectOneRadio id="tipo" value="#{indexBean.tipo}"
 						unselectable="true">
@@ -60,7 +91,7 @@
 							<h:panelGrid columns="1">
 								<p:outputLabel for="cliente" value="Cliente:" />
 
-								<p:selectOneMenu id="cliente" value="#{indexBean.objeto.cliente}"
+								<p:selectOneMenu id="cliente" value="#{indexBean.cliente}"
 									filter="true" converter="#{usuarioConverter}">
 									<f:selectItem itemLabel="Selecione o cliente"
 										itemValue="#{null}" />
@@ -98,7 +129,7 @@
 
 								<p:outputLabel for="data" value="Dia:" />
 
-								<p:calendar id="data" value="#{indexBean.objeto.data}" timeZone="UTC-3"
+								<p:calendar id="data" value="#{indexBean.data}" timeZone="UTC-3"
 									pattern="dd/MM/yyyy">
 									<p:ajax event="dateSelect"
 										listener="#{indexBean.buscarHorarios}" update="horario" />
@@ -128,21 +159,30 @@
 
 
 							</h:panelGrid>
-						</p:outputPanel>							
-							<p:commandButton value="Salvar"
+						</p:outputPanel>
+
+						<p:commandButton value="Salvar"
 							action="#{indexBean.salvarAgendamento()}" update="@form"
-							icon="fa fa-check" styleClass="btn-primary"
-							oncomplete="PF('myschedule').update();PF('inserir').hide();"  />
+							icon="fa fa-check" styleClass="btn-primary" />
 
 					</p:outputPanel>
 
-				</h:panelGrid>
+				</h:panelGrid></div>
+				</div>
+			</div>
 
-			</p:dialog>
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				styleClass="box-danger box-solid">
+				<p:commandButton value="Sim" type="button"
+					styleClass="btn-material btn-primary ui-confirmdialog-yes"
+					icon="fa fa-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="btn-material btn-danger ui-confirmdialog-no"
+					icon="fa fa-close" />
+			</p:confirmDialog>
 		</h:form>
 
 
 	</ui:define>
-
 
 </ui:composition>

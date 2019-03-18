@@ -52,9 +52,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private static Time TEMPO_BUSCA_ENTRE_SERVICOS = new Time(0, 15, 0);
 	private ScheduleModel eventModel = new DefaultScheduleModel();
 
-
 	private ScheduleEvent event = new DefaultScheduleEvent();
-	
+
 	private ScheduleEvent dataFinal;
 	private String tipo = "servico";
 	private Time tempoTotalServicos;
@@ -101,21 +100,25 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
 
+		horarioAgendados = horarioAgendadoRepository.findAll();
+		
 		eventModel = new DefaultScheduleModel();
+		for(HorarioAgendado horario: horarioAgendados) {
+			eventModel.addEvent(new DefaultScheduleEvent(horario.getUsuarioServico().getServico().getNome() +"\n Cliente " +horario.getCliente().getNome(), horario.getHoraInicio(), horario.getHoraTermino()));
+		}
 		eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", previousDay8Pm(), previousDay11Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Birthday top", today6Pm(), today7Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
-		eventModel
-				.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
-
+		eventModel.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
 
 	}
 
 	private void buscarClientes() {
 		Permissao permissao = permissaoRepository.findByNome("ROLE_CLIENTE");
-		clientes =filtrarCliente(permissao.getUsuarios());
+		clientes = filtrarCliente(permissao.getUsuarios());
 	}
+
 	private List<Usuario> filtrarCliente(List<Usuario> lista) {
 		List<Usuario> usuarios = lista;
 		List<Usuario> pesquisa = new ArrayList<>();
@@ -170,7 +173,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	private void horariosLivres(Time TempoTotalServicos) {
 		horarios = new ArrayList<>();
-		horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(data);
+		horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());
 		if (!horarioAgendados.isEmpty()) {
 			Time horaAuxiliar = HORA_INICIO_EMPRESA;
 			for (HorarioAgendado horarioAgendado : horarioAgendados) {
@@ -199,9 +202,35 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 						}
 					}
 
-				} 
+				}
 				horaAuxiliar = horarioAgendado.getHoraTermino();
-				
+
+			}
+			if (horaAuxiliar.before(HORA_FINAL_EMPRESA)) {
+				if (horaAuxiliar.before(HORA_INICIO_INTERVALO)) {
+					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
+						horarios.add(horaAuxiliar);
+						horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+
+					}
+
+					horaAuxiliar = HORA_FINAL_INTERVALO;
+
+					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
+						horarios.add(horaAuxiliar);
+						horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+
+					}
+				}else {
+					if(horaAuxiliar.before(HORA_FINAL_INTERVALO)) {
+						horaAuxiliar = HORA_FINAL_INTERVALO;
+					}
+					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
+						horarios.add(horaAuxiliar);
+						horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+
+					}
+				}
 			}
 		} else {
 			Time horario = HORA_INICIO_EMPRESA;
@@ -267,34 +296,45 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void salvarAgendamento() {
-		if(mostrarForm() == true) {
+		if (mostrarForm() == true) {
 			System.out.println("agendar");
-			if(mostrarFuncionario()) {
-				for(Servico servico: servicosSelecionados) {
-					getObjeto().setUsuarioServico(usuarioServicoRepository.findByServicoAndUsuarioOrderByUsuario(servico,funcionario ));
-					}
-			}else {
-				HorarioAgendado agendado ;
-				for(Servico servico: servicosSelecionados) {
+			if (mostrarFuncionario()) {
+				for (Servico servico : servicosSelecionados) {
+					getObjeto().setUsuarioServico(
+							usuarioServicoRepository.findByServicoAndUsuarioOrderByUsuario(servico, funcionario));
+				}
+			} else {
+				HorarioAgendado agendado;
+				boolean primeiro = true;
+				Time tempo = new Time(0, 0, 0);
+				for (Servico servico : servicosSelecionados) {
 					agendado = new HorarioAgendado();
 					agendado.setCliente(getObjeto().getCliente());
 					agendado.setData(getObjeto().getData());
-					agendado.setHoraInicio(getObjeto().getHoraInicio());
-					agendado.setHoraTermino(somarTime(getObjeto().getHoraInicio(),servico.getTempo() ));
+					if (primeiro) {
+						agendado.setHoraInicio(getObjeto().getHoraInicio());
+						tempo = somarTime(getObjeto().getHoraInicio(), servico.getTempo());
+						agendado.setHoraTermino(tempo);
+						primeiro = false;
+					} else {
+						agendado.setHoraInicio(tempo);
+						tempo = somarTime(tempo, servico.getTempo());
+						agendado.setHoraTermino(tempo);
+					}
 					agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
 					getRepository().save(agendado);
-					}
-				
+					
+				}
+				setObjeto(new HorarioAgendado());
+
 			}
-		}else {
+		} else {
 			System.out.println("bloquear");
 			HorarioAgendado bloquear = new HorarioAgendado();
 			bloquear.setData(event.getStartDate());
-			
+
 		}
-		
-		
-		
+
 	}
 
 	public Date getRandomDate(Date base) {
@@ -424,7 +464,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	public void onEventSelect(SelectEvent selectEvent) {
 		event = (ScheduleEvent) selectEvent.getObject();
-		
+
 	}
 
 	public void onDateSelect(SelectEvent selectEvent) {
@@ -448,11 +488,5 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private void addMessage(FacesMessage message) {
 		FacesContext.getCurrentInstance().addMessage(null, message);
 	}
-
-
-
-
-	
-	
 
 }

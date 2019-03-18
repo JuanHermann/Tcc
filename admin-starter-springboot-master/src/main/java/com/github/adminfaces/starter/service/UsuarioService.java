@@ -1,5 +1,7 @@
 package com.github.adminfaces.starter.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,9 +10,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.github.adminfaces.starter.model.Servico;
 import com.github.adminfaces.starter.model.Usuario;
+import com.github.adminfaces.starter.model.UsuarioServico;
 import com.github.adminfaces.starter.repository.PermissaoRepository;
+import com.github.adminfaces.starter.repository.ServicoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
+import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 
 @Service
 public class UsuarioService implements UserDetailsService, CommandLineRunner {
@@ -19,7 +25,11 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 	private UsuarioRepository repository;
 	@Autowired
 	private PermissaoRepository permissaoRepository;
-
+	@Autowired
+	private ServicoRepository servicoRepository;
+	@Autowired
+	private UsuarioServicoRepository usuarioServicoRepository;
+	
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		return repository.findByEmailAndAtivo(email,true).orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
@@ -51,7 +61,15 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 			criptografarSenha(usuario);
 			repository.save(usuario);
 			usuario.addPermissao(permissaoRepository.findByNome("ROLE_ADMIN"));
-			repository.save(usuario);
+			usuario.addPermissao(permissaoRepository.findByNome("ROLE_FUNCIONARIO"));
+			repository.save(usuario);			
+			List<Servico> servicos = servicoRepository.findAll();
+			for (Servico servico : servicos) {
+				UsuarioServico us = new UsuarioServico();
+				us.setServico(servico);
+				us.setUsuario(usuario);
+				usuarioServicoRepository.save(us);
+			}
 		}
 	}
 

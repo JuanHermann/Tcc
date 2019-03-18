@@ -25,7 +25,6 @@ INSERT INTO permissao(id, nome) VALUES (2, 'ROLE_FUNCIONARIO');
 INSERT INTO permissao(id, nome) VALUES (3, 'ROLE_ATENDENTE');
 INSERT INTO permissao(id, nome) VALUES (4, 'ROLE_CLIENTE');
 INSERT INTO permissao(id, nome) VALUES (5, 'ROLE_CADASTRADO');
-INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (2, 1);
 INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (4, 1);
 INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (3, 2);
 INSERT INTO usuario_permissao(permissao_id, usuario_id) VALUES (4, 2);

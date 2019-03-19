@@ -100,17 +100,23 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
 
+		atualizarSchedule();
+
+	}
+
+	private void atualizarSchedule() {
+
 		horarioAgendados = horarioAgendadoRepository.findAll();
-		
 		eventModel = new DefaultScheduleModel();
-		for(HorarioAgendado horario: horarioAgendados) {
-			eventModel.addEvent(new DefaultScheduleEvent(horario.getUsuarioServico().getServico().getNome() +"\n Cliente " +horario.getCliente().getNome(), horario.getHoraInicio(), horario.getHoraTermino()));
+		for (HorarioAgendado horario : horarioAgendados) {
+			eventModel.addEvent(new DefaultScheduleEvent(
+					horario.getUsuarioServico().getServico().getNome() + " Cliente " + horario.getCliente().getNome(),
+					horario.getHoraInicio(), horario.getHoraTermino()));
 		}
-		eventModel.addEvent(new DefaultScheduleEvent("Champions League Match", previousDay8Pm(), previousDay11Pm()));
+		eventModel.addEvent(new DefaultScheduleEvent("Campeonato top", previousDay8Pm(), previousDay11Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Birthday top", today6Pm(), today7Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
-		eventModel.addEvent(new DefaultScheduleEvent("Plant the new garden stuff", theDayAfter3Pm(), fourDaysLater3pm()));
 
 	}
 
@@ -221,8 +227,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 						horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 
 					}
-				}else {
-					if(horaAuxiliar.before(HORA_FINAL_INTERVALO)) {
+				} else {
+					if (horaAuxiliar.before(HORA_FINAL_INTERVALO)) {
 						horaAuxiliar = HORA_FINAL_INTERVALO;
 					}
 					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
@@ -323,7 +329,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 					}
 					agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
 					getRepository().save(agendado);
-					
+
 				}
 				setObjeto(new HorarioAgendado());
 
@@ -350,14 +356,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		calendar.set(calendar.get(Calendar.YEAR), Calendar.FEBRUARY, calendar.get(Calendar.DATE), 0, 0, 0);
 
 		return calendar.getTime();
-	}
-
-	public ScheduleModel getEventModel() {
-		return eventModel;
-	}
-
-	public void setEventModel(ScheduleModel eventModel) {
-		this.eventModel = eventModel;
 	}
 
 	private Calendar today() {
@@ -443,14 +441,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		t.set(Calendar.HOUR, 3);
 
 		return t.getTime();
-	}
-
-	public ScheduleEvent getEvent() {
-		return event;
-	}
-
-	public void setEvent(ScheduleEvent event) {
-		this.event = event;
 	}
 
 	public void addEvent() {

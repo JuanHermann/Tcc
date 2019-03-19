@@ -27,7 +27,7 @@
 			<p:growl id="messages" showDetail="true" />
 
 			<p:schedule id="schedule" value="#{indexBean.eventModel}"
-				widgetVar="myschedule">
+				widgetVar="myschedule"  timeFormat="HH:mm" >
 
 				<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
 					update="eventDetails" oncomplete="PF('inserir').show();" />
@@ -130,7 +130,7 @@
 							</h:panelGrid>
 						</p:outputPanel>							
 							<p:commandButton value="Salvar"
-							action="#{indexBean.salvarAgendamento()}" update="@form"
+							action="#{indexBean.salvarAgendamento()}" update="@form schedule "
 							icon="fa fa-check" 
 							oncomplete="PF('myschedule').update();PF('inserir').hide();"  />
 

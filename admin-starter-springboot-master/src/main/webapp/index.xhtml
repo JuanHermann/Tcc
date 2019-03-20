@@ -26,7 +26,7 @@
 			role="form">
 			<p:growl id="messages" showDetail="true" />
 
-			<p:schedule id="schedule" value="#{indexBean.eventModel}"
+			<p:schedule id="schedule" value="#{indexBean.eventModel}" slotMinutes="15" minTime="#{indexBean.inicioSchedule}" maxTime="#{indexBean.finalSchedule}"
 				widgetVar="myschedule"  timeFormat="HH:mm" >
 
 				<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
@@ -98,7 +98,7 @@
 
 								<p:outputLabel for="data" value="Dia:" />
 
-								<p:calendar id="data" value="#{indexBean.objeto.data}" timeZone="UTC-3"
+								<p:calendar id="data" value="#{indexBean.objeto.data}"
 									pattern="dd/MM/yyyy">
 									<p:ajax event="dateSelect"
 										listener="#{indexBean.buscarHorarios}" update="horario" />
@@ -118,19 +118,19 @@
 						<p:outputPanel rendered="#{!indexBean.mostrarForm()}">
 							<h:panelGrid columns="1">
 								<p:outputLabel for="inicio" value="Inicio" />
-								<p:calendar id="inicio" value="#{indexBean.event.startDate}"
-									timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
+								<p:calendar id="inicio" value="#{indexBean.objeto.data}"
+									pattern="dd/MM/yyyy HH:mm" />
 
 
 								<p:outputLabel for="final" value="Final" />
 								<p:calendar id="final" value="#{indexBean.dataFinal}"
-									timeZone="UTC-3" pattern="dd/MM/yyyy HH:mm" />
+									 pattern="dd/MM/yyyy HH:mm" />
 
 
 							</h:panelGrid>
 						</p:outputPanel>							
 							<p:commandButton value="Salvar"
-							action="#{indexBean.salvarAgendamento()}" update="@form schedule "
+							action="#{indexBean.salvarAgendamento()}" update="@form schedule"
 							icon="fa fa-check" 
 							oncomplete="PF('myschedule').update();PF('inserir').hide();"  />
 

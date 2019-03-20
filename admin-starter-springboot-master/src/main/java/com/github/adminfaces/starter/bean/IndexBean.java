@@ -1,5 +1,7 @@
 package com.github.adminfaces.starter.bean;
 
+import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
+
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +10,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -54,6 +57,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	private ScheduleEvent event = new DefaultScheduleEvent();
 
+	private TimeZone timeZoneBrasil;
+	private String inicioSchedule;
+	private String finalSchedule;
 	private ScheduleEvent dataFinal;
 	private String tipo = "servico";
 	private Time tempoTotalServicos;
@@ -92,6 +98,10 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	@PostConstruct
 	public void init() throws InstantiationException, IllegalAccessException {
 		super.init();
+		inicioSchedule = HORA_INICIO_EMPRESA.toString();
+		finalSchedule = HORA_FINAL_EMPRESA.toString();
+
+		timeZoneBrasil = TimeZone.getTimeZone("America/Sao_Paulo");
 		clientes = new ArrayList<>();
 		buscarClientes();
 		servicos = servicoRepository.findAll();
@@ -109,14 +119,25 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		horarioAgendados = horarioAgendadoRepository.findAll();
 		eventModel = new DefaultScheduleModel();
 		for (HorarioAgendado horario : horarioAgendados) {
-			eventModel.addEvent(new DefaultScheduleEvent(
-					horario.getUsuarioServico().getServico().getNome() + " Cliente " + horario.getCliente().getNome(),
-					horario.getHoraInicio(), horario.getHoraTermino()));
+			if (horario.getUsuarioServico().getServico() == null) {
+				eventModel.addEvent(
+						new DefaultScheduleEvent("Bloqueio", horario.getHoraInicio(), horario.getHoraTermino(),
+						"btn-danger"));
+			} else {
+				eventModel
+						.addEvent(new DefaultScheduleEvent(
+								horario.getUsuarioServico().getServico().getNome() + " Cliente "
+										+ horario.getCliente().getNome(),
+								horario.getHoraInicio(), horario.getHoraTermino()));
+			}
+
 		}
-		eventModel.addEvent(new DefaultScheduleEvent("Campeonato top", previousDay8Pm(), previousDay11Pm()));
+		eventModel.addEvent(
+				new DefaultScheduleEvent("Bloqueio", previousDay8Pm(), previousDay11Pm(), "btn-danger"));
 		eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Birthday top", today6Pm(), today7Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
+
 
 	}
 
@@ -329,6 +350,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 					}
 					agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
 					getRepository().save(agendado);
+					atualizarSchedule();
 
 				}
 				setObjeto(new HorarioAgendado());
@@ -336,6 +358,11 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			}
 		} else {
 			System.out.println("bloquear");
+			if(getObjeto().getData().equals(dataFinal)) {
+				System.out.println("igual");
+			}else {
+				System.out.println("diferente");
+			}
 			HorarioAgendado bloquear = new HorarioAgendado();
 			bloquear.setData(event.getStartDate());
 
@@ -459,13 +486,15 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	public void onDateSelect(SelectEvent selectEvent) {
 		event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
+		getObjeto().setData((Date) selectEvent.getObject());
 	}
 
 	public void onEventMove(ScheduleEntryMoveEvent event) {
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved",
 				"Day delta:" + event.getDayDelta() + ", Minute delta:" + event.getMinuteDelta());
 
-		addMessage(message);
+		addDetailMessage("Serviço Transferido /n" + "Day delta:" + event.getDayDelta() + ", Minute delta:"
+				+ event.getMinuteDelta());
 	}
 
 	public void onEventResize(ScheduleEntryResizeEvent event) {

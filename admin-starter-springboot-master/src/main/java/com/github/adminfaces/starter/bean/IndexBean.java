@@ -3,6 +3,7 @@ package com.github.adminfaces.starter.bean;
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.sql.Time;
+import java.text.spi.BreakIteratorProvider;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -118,23 +119,33 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 		horarioAgendados = horarioAgendadoRepository.findAll();
 		eventModel = new DefaultScheduleModel();
+		Date dataInicio = new Date(),dataFinal = new Date();
 		for (HorarioAgendado horario : horarioAgendados) {
+
+			eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
 			if (horario.getUsuarioServico().getServico() == null) {
 				eventModel.addEvent(
 						new DefaultScheduleEvent("Bloqueio", horario.getHoraInicio(), horario.getHoraTermino(),
 						"btn-danger"));
 			} else {
+				dataInicio.setTime(horario.getHoraInicio().getTime());
+				dataInicio = horario.getData();	
+				dataFinal.setTime(horario.getHoraTermino().getTime());
+				dataFinal = new java.sql.Date( horario.getData().getTime());
+				Calendar c = Calendar.getInstance();
+				c.setTime(horario.getData());
+				c.setTimeInMillis(horario.getHoraInicio().getTime());
 				eventModel
 						.addEvent(new DefaultScheduleEvent(
 								horario.getUsuarioServico().getServico().getNome() + " Cliente "
 										+ horario.getCliente().getNome(),
-								horario.getHoraInicio(), horario.getHoraTermino()));
+								dataInicio, dataFinal));
 			}
+	System.out.println();
 
 		}
 		eventModel.addEvent(
 				new DefaultScheduleEvent("Bloqueio", previousDay8Pm(), previousDay11Pm(), "btn-danger"));
-		eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Birthday top", today6Pm(), today7Pm()));
 		eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
 
@@ -350,11 +361,11 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 					}
 					agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
 					getRepository().save(agendado);
-					atualizarSchedule();
+					
 
 				}
 				setObjeto(new HorarioAgendado());
-
+				atualizarSchedule();
 			}
 		} else {
 			System.out.println("bloquear");
@@ -364,7 +375,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				System.out.println("diferente");
 			}
 			HorarioAgendado bloquear = new HorarioAgendado();
-			bloquear.setData(event.getStartDate());
 
 		}
 
@@ -388,6 +398,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private Calendar today() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 0, 0, 0);
+		
 
 		return calendar;
 	}
@@ -414,15 +425,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		Calendar t = (Calendar) today().clone();
 		t.set(Calendar.AM_PM, Calendar.PM);
 		t.set(Calendar.HOUR, 1);
-
-		return t.getTime();
-	}
-
-	private Date theDayAfter3Pm() {
-		Calendar t = (Calendar) today().clone();
-		t.set(Calendar.DATE, t.get(Calendar.DATE) + 2);
-		t.set(Calendar.AM_PM, Calendar.PM);
-		t.set(Calendar.HOUR, 3);
 
 		return t.getTime();
 	}
@@ -461,15 +463,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		return t.getTime();
 	}
 
-	private Date fourDaysLater3pm() {
-		Calendar t = (Calendar) today().clone();
-		t.set(Calendar.AM_PM, Calendar.PM);
-		t.set(Calendar.DATE, t.get(Calendar.DATE) + 4);
-		t.set(Calendar.HOUR, 3);
-
-		return t.getTime();
-	}
-
 	public void addEvent() {
 		if (event.getId() == null)
 			eventModel.addEvent(event);
@@ -486,7 +479,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	public void onDateSelect(SelectEvent selectEvent) {
 		event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
-		getObjeto().setData((Date) selectEvent.getObject());
+		getObjeto().setData( new java.sql.Date( ((Date) selectEvent.getObject()).getTime()));
 	}
 
 	public void onEventMove(ScheduleEntryMoveEvent event) {

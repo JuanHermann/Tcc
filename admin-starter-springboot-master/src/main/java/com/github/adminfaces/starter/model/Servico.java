@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.sql.Time;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -24,7 +25,7 @@ public class Servico implements Serializable {
     private String nome;
 
     @Column(nullable = false)
-    private Time tempo;
+    private LocalTime tempo;
 
     @Column(nullable = false)
     private Double valor;

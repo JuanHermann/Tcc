@@ -3,7 +3,10 @@ package com.github.adminfaces.starter.bean;
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.sql.Time;
-import java.text.spi.BreakIteratorProvider;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,12 +51,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendadoRepository> {
-	private static Time HORA_ENTRE_CADASTRO = new Time(2, 0, 0);
-	private static Time HORA_INICIO_EMPRESA = new Time(7, 0, 0);
-	private static Time HORA_INICIO_INTERVALO = new Time(12, 0, 0);
-	private static Time HORA_FINAL_INTERVALO = new Time(13, 30, 0);
-	private static Time HORA_FINAL_EMPRESA = new Time(20, 0, 0);
-	private static Time TEMPO_BUSCA_ENTRE_SERVICOS = new Time(0, 15, 0);
+	private static LocalTime HORA_ENTRE_CADASTRO = LocalTime.of(2, 0, 0);
+	private static LocalTime HORA_INICIO_EMPRESA = LocalTime.of(7, 0, 0);
+	private static LocalTime HORA_INICIO_INTERVALO = LocalTime.of(12, 0, 0);
+	private static LocalTime HORA_FINAL_INTERVALO = LocalTime.of(13, 30, 0);
+	private static LocalTime HORA_FINAL_EMPRESA = LocalTime.of(20, 0, 0);
+	private static LocalTime TEMPO_BUSCA_ENTRE_SERVICOS = LocalTime.of(0, 15, 0);
 	private ScheduleModel eventModel = new DefaultScheduleModel();
 
 	private ScheduleEvent event = new DefaultScheduleEvent();
@@ -63,8 +66,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private String finalSchedule;
 	private ScheduleEvent dataFinal;
 	private String tipo = "servico";
-	private Time tempoTotalServicos;
-	private List<Time> horarios;
+	private LocalTime tempoTotalServicos;
+	private List<LocalTime> horarios;
 	private Date data = Calendar.getInstance().getTime();
 
 	@Autowired
@@ -121,20 +124,17 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		eventModel = new DefaultScheduleModel();
 		Date dataInicio = new Date(),dataFinal = new Date();
 		for (HorarioAgendado horario : horarioAgendados) {
-
+			LocalDateTime localDataInicio = LocalDateTime.of(horario.getData(), horario.getHoraInicio()); 
+			LocalDateTime localDataFinal = LocalDateTime.of(horario.getData(),horario.getHoraTermino());
+			dataInicio = Date.from(localDataInicio.toInstant(ZoneOffset.UTC));
+			dataFinal = Date.from(localDataFinal.toInstant(ZoneOffset.UTC));
 			eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
 			if (horario.getUsuarioServico().getServico() == null) {
 				eventModel.addEvent(
-						new DefaultScheduleEvent("Bloqueio", horario.getHoraInicio(), horario.getHoraTermino(),
+						new DefaultScheduleEvent("Bloqueio", dataInicio, dataFinal,
 						"btn-danger"));
 			} else {
-				dataInicio.setTime(horario.getHoraInicio().getTime());
-				dataInicio = horario.getData();	
-				dataFinal.setTime(horario.getHoraTermino().getTime());
-				dataFinal = new java.sql.Date( horario.getData().getTime());
-				Calendar c = Calendar.getInstance();
-				c.setTime(horario.getData());
-				c.setTimeInMillis(horario.getHoraInicio().getTime());
+				
 				eventModel
 						.addEvent(new DefaultScheduleEvent(
 								horario.getUsuarioServico().getServico().getNome() + " Cliente "
@@ -190,7 +190,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				usuarioServicos = usuarioServicoRepository.findByServicoOrderByUsuario(servico);
 				for (UsuarioServico usuarioServico : usuarioServicos) {
 					setFuncionarios.add(usuarioServico.getUsuario());
-					System.out.println("top");
 				}
 			}
 		}
@@ -198,33 +197,34 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void buscarHorarios() {
-		GregorianCalendar gc = new GregorianCalendar();
-		int a = 0;
-		tempoTotalServicos = new Time(0, 0, 0);
+		
+		tempoTotalServicos = LocalTime.of(0, 0,0);
 		for (Servico servico : servicosSelecionados) {
-			tempoTotalServicos = somarTime(tempoTotalServicos, servico.getTempo());
+			tempoTotalServicos = somarLocalTime(tempoTotalServicos, servico.getTempo());
 		}
 		System.out.println(tempoTotalServicos);
 		horariosLivres(tempoTotalServicos);
 
 	}
 
-	private void horariosLivres(Time TempoTotalServicos) {
+	private void horariosLivres(LocalTime TempoTotalServicos) {
 		horarios = new ArrayList<>();
 		horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());
 		if (!horarioAgendados.isEmpty()) {
-			Time horaAuxiliar = HORA_INICIO_EMPRESA;
+			
+			LocalTime horaAuxiliar = LocalTime.of(0, 0);
+			horaAuxiliar = HORA_INICIO_EMPRESA;
 			for (HorarioAgendado horarioAgendado : horarioAgendados) {
 
 				if (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, horarioAgendado.getHoraInicio())) {
 					horarios.add(horaAuxiliar);
-					horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+					horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 
 					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos,
 							horarioAgendado.getHoraInicio()) == true
 							&& verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
 						horarios.add(horaAuxiliar);
-						horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 
 					}
 					if (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos,
@@ -235,7 +235,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 								horarioAgendado.getHoraInicio()) == true
 								&& verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
 							horarios.add(horaAuxiliar);
-							horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+							horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 
 						}
 					}
@@ -244,11 +244,11 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				horaAuxiliar = horarioAgendado.getHoraTermino();
 
 			}
-			if (horaAuxiliar.before(HORA_FINAL_EMPRESA)) {
-				if (horaAuxiliar.before(HORA_INICIO_INTERVALO)) {
+			if (horaAuxiliar.isBefore(HORA_FINAL_EMPRESA)) {
+				if (horaAuxiliar.isBefore(HORA_INICIO_INTERVALO)) {
 					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
 						horarios.add(horaAuxiliar);
-						horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 
 					}
 
@@ -256,26 +256,26 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
 						horarios.add(horaAuxiliar);
-						horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 
 					}
 				} else {
-					if (horaAuxiliar.before(HORA_FINAL_INTERVALO)) {
+					if (horaAuxiliar.isBefore(HORA_FINAL_INTERVALO)) {
 						horaAuxiliar = HORA_FINAL_INTERVALO;
 					}
 					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
 						horarios.add(horaAuxiliar);
-						horaAuxiliar = somarTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 
 					}
 				}
 			}
 		} else {
-			Time horario = HORA_INICIO_EMPRESA;
+			LocalTime horario = HORA_INICIO_EMPRESA;
 
 			while (verificaEspacoTempo(horario, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
 				horarios.add(horario);
-				horario = somarTime(horario, TEMPO_BUSCA_ENTRE_SERVICOS);
+				horario = somarLocalTime(horario, TEMPO_BUSCA_ENTRE_SERVICOS);
 
 			}
 
@@ -283,23 +283,23 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 			while (verificaEspacoTempo(horario, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
 				horarios.add(horario);
-				horario = somarTime(horario, TEMPO_BUSCA_ENTRE_SERVICOS);
+				horario = somarLocalTime(horario, TEMPO_BUSCA_ENTRE_SERVICOS);
 
 			}
 		}
 
 	}
 
-	private boolean verificaEspacoTempo(Time primeiroHorarioLivre, Time tempoTotalServico, Time proximoServico) {
-		Time total = somarTime(primeiroHorarioLivre, tempoTotalServico);
-		if (timeToInt(total) <= timeToInt(proximoServico)) {
+	private boolean verificaEspacoTempo(LocalTime primeiroHorarioLivre, LocalTime tempoTotalServico, LocalTime proximoServico) {
+		LocalTime total = somarLocalTime(primeiroHorarioLivre, tempoTotalServico);
+		if (total.isBefore(proximoServico)  || total.equals(proximoServico)){
 			return true;
 		}
 
 		return false;
 	}
 
-	private int timeToInt(Time tempoConverter) {
+	private int timeToInt(LocalTime tempoConverter) {
 
 		String[] tempo = String.valueOf(tempoConverter).split(":");
 		int hora = Integer.parseInt(tempo[0]), minuto = Integer.parseInt(tempo[1]);
@@ -344,19 +344,20 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			} else {
 				HorarioAgendado agendado;
 				boolean primeiro = true;
-				Time tempo = new Time(0, 0, 0);
+				LocalTime tempo = LocalTime.of(0, 0, 0);
 				for (Servico servico : servicosSelecionados) {
 					agendado = new HorarioAgendado();
 					agendado.setCliente(getObjeto().getCliente());
 					agendado.setData(getObjeto().getData());
 					if (primeiro) {
 						agendado.setHoraInicio(getObjeto().getHoraInicio());
-						tempo = somarTime(getObjeto().getHoraInicio(), servico.getTempo());
+						
+						tempo = somarLocalTime(getObjeto().getHoraInicio(), servico.getTempo());
 						agendado.setHoraTermino(tempo);
 						primeiro = false;
 					} else {
 						agendado.setHoraInicio(tempo);
-						tempo = somarTime(tempo, servico.getTempo());
+						tempo = somarLocalTime(tempo, servico.getTempo());
 						agendado.setHoraTermino(tempo);
 					}
 					agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
@@ -378,6 +379,12 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 		}
 
+	}
+
+	private LocalTime somarLocalTime(LocalTime tempo, LocalTime tempo2) {
+		tempo = tempo.plusHours(tempo2.getHour());
+		tempo = tempo.plusMinutes(tempo2.getMinute());
+		return tempo;
 	}
 
 	public Date getRandomDate(Date base) {
@@ -478,8 +485,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void onDateSelect(SelectEvent selectEvent) {
-		event = new DefaultScheduleEvent("", (Date) selectEvent.getObject(), (Date) selectEvent.getObject());
-		getObjeto().setData( new java.sql.Date( ((Date) selectEvent.getObject()).getTime()));
+		Date dataSelecionada = (Date) selectEvent.getObject();
+		event = new DefaultScheduleEvent("", dataSelecionada, dataSelecionada);
+		getObjeto().setData( dataSelecionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 	}
 
 	public void onEventMove(ScheduleEntryMoveEvent event) {

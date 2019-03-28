@@ -99,18 +99,18 @@
 								<p:outputLabel for="data" value="Dia:" />
 
 								<p:calendar id="data" value="#{indexBean.objeto.data}"
-									pattern="dd/MM/yyyy">
+									pattern="dd/MM/yyyy" converter="#{localDateConverter}">
 									<p:ajax event="dateSelect"
 										listener="#{indexBean.buscarHorarios}" update="horario" />
 								</p:calendar>
 
 								<p:outputLabel value="Horario:" for="horario" />
 
-								<p:selectOneMenu id="horario" converter="#{timeConverter}"
+								<p:selectOneMenu id="horario" converter="#{localTimeConverter}"
 									value="#{indexBean.objeto.horaInicio}">
 									<f:selectItem itemLabel="Selecione o horario" itemValue="" />
 									<f:selectItems value="#{indexBean.horarios}" var="horario"
-										itemLabel="#{horario}" itemValue="#{Time}" />
+										itemLabel="#{horario}" itemValue="#{localTime}" />
 								</p:selectOneMenu>
 							</h:panelGrid>
 

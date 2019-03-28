@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -27,13 +29,13 @@ public class HorarioAgendado {
     private UsuarioServico UsuarioServico;
 
     @Column(nullable = false)
-    private Date data;
+    private LocalDate data;
 
     @Column(nullable = false)
-    private Time horaInicio;
+    private LocalTime horaInicio;
 
     @Column(nullable = false)
-    private Time horaTermino;
+    private LocalTime horaTermino;
     
    
 }

@@ -72,11 +72,11 @@
 								<p:outputLabel for="servico" value="Serviço:" />
 
 								<p:selectCheckboxMenu id="servico"
-									value="#{indexBean.servicosSelecionados}" label="Serviços"
+									value="#{indexBean.servicosSelecionados}" label="Serviços" converter="#{servicoConverter}"
 									multiple="true" filter="true" filterMatchMode="startsWith"
 									panelStyle="width:250px">
 									<f:selectItems value="#{indexBean.servicos}" var="servico"
-										itemLabel="#{servico.nome}" />
+										itemLabel="#{servico.nome}" itemValue="#{servico}" />
 									<p:ajax event="change" update="funcionario horario"
 										listener="#{indexBean.buscarFuncionarios()}" />
 								</p:selectCheckboxMenu>
@@ -118,13 +118,13 @@
 						<p:outputPanel rendered="#{!indexBean.mostrarForm()}">
 							<h:panelGrid columns="1">
 								<p:outputLabel for="inicio" value="Inicio" />
-								<p:calendar id="inicio" value="#{indexBean.objeto.data}"
-									pattern="dd/MM/yyyy HH:mm" />
+								<p:calendar id="inicio" value="#{indexBean.dataInicioBloqueio}" minHour="#{indexBean.inicioHoraCalendar}" maxHour="#{indexBean.finalHoraCalendar}" 
+									pattern="dd/MM/yyyy HH:mm" converter="#{localDateConverter}" />
 
 
 								<p:outputLabel for="final" value="Final" />
-								<p:calendar id="final" value="#{indexBean.dataFinal}"
-									 pattern="dd/MM/yyyy HH:mm" />
+								<p:calendar id="final" value="#{indexBean.dataFinalBloqueio}" minHour="#{indexBean.inicioHoraCalendar}" maxHour="#{indexBean.finalHoraCalendar}" 
+									 pattern="dd/MM/yyyy HH:mm" converter="#{localDateConverter}" />
 
 
 							</h:panelGrid>

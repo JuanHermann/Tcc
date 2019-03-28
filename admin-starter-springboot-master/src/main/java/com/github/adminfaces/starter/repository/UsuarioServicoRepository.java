@@ -13,6 +13,7 @@ import com.github.adminfaces.starter.model.UsuarioServico;
 
 public interface UsuarioServicoRepository extends JpaRepository<UsuarioServico, Integer> {
 	List<UsuarioServico> findByServicoOrderByUsuario(Servico servico);
+	List<UsuarioServico> findByServicoAndAtivo(Servico servico,boolean ativo);
 	UsuarioServico findByServico(Servico servico);
 	UsuarioServico findByServicoAndUsuarioOrderByUsuario(Servico servico,Usuario usuario);
 }

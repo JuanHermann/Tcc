@@ -40,6 +40,7 @@ public class ServicoForm extends AbastractFormBean<Servico, ServicoRepository> {
 	
 	@Override
 	public void salvar() throws InstantiationException, IllegalAccessException {
+		getObjeto().setAtivo(true);
 		getRepository().save(getObjeto());
 		salvarUsuarioServico();
 		addDetailMessage("Salvo com sucesso");
@@ -51,10 +52,20 @@ public class ServicoForm extends AbastractFormBean<Servico, ServicoRepository> {
 			usuarioServico = new UsuarioServico();
 			usuarioServico.setUsuario(usuario);
 			usuarioServico.setServico(getObjeto());
+			usuarioServico.setAtivo(true);
+			usuarioServicoRepository.save(usuarioServico);
+		}		
+	}
+	
+	
+	@Override
+	public void remover() throws InstantiationException, IllegalAccessException {
+		getObjeto().setAtivo(false);
+		getRepository().save(getObjeto());
+		for(UsuarioServico usuarioServico :  usuarioServicoRepository.findByServicoAndAtivo(getObjeto(),true)) {
+			usuarioServico.setAtivo(false);
 			usuarioServicoRepository.save(usuarioServico);
 		}
-		
-		
 	}
 	
 	

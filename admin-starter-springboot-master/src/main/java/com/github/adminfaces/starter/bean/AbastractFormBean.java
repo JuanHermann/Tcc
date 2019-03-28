@@ -7,7 +7,11 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> {
 
 	private Integer id = 0;
@@ -33,13 +37,6 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 		}
 	}
 
-	public M getObjeto() {
-		return objeto;
-	}
-
-	public void setObjeto(M objeto) {
-		this.objeto = objeto;
-	}
 
 	public void novo() throws InstantiationException, IllegalAccessException {
 		objeto = modelClass.newInstance();
@@ -68,19 +65,6 @@ public abstract class AbastractFormBean<M, R extends JpaRepository<M, Integer>> 
 		}
 		
 
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-
-	public R getRepository() {
-		return repository;
 	}
 
 }

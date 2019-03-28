@@ -51,7 +51,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendadoRepository> {
-	private static LocalTime HORA_ENTRE_CADASTRO = LocalTime.of(2, 0, 0);
 	private static LocalTime HORA_INICIO_EMPRESA = LocalTime.of(7, 0, 0);
 	private static LocalTime HORA_INICIO_INTERVALO = LocalTime.of(12, 0, 0);
 	private static LocalTime HORA_FINAL_INTERVALO = LocalTime.of(13, 30, 0);
@@ -64,7 +63,10 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private TimeZone timeZoneBrasil;
 	private String inicioSchedule;
 	private String finalSchedule;
-	private ScheduleEvent dataFinal;
+	private int inicioHoraCalendar;
+	private int finalHoraCalendar;
+	private LocalDateTime dataInicioBloqueio;
+	private LocalDateTime dataFinalBloqueio;
 	private String tipo = "servico";
 	private LocalTime tempoTotalServicos;
 	private List<LocalTime> horarios;
@@ -104,11 +106,13 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		super.init();
 		inicioSchedule = HORA_INICIO_EMPRESA.toString();
 		finalSchedule = HORA_FINAL_EMPRESA.toString();
+		inicioHoraCalendar = HORA_INICIO_EMPRESA.getHour();
+		finalHoraCalendar = HORA_FINAL_EMPRESA.getHour();
 
 		timeZoneBrasil = TimeZone.getTimeZone("America/Sao_Paulo");
 		clientes = new ArrayList<>();
 		buscarClientes();
-		servicos = servicoRepository.findAll();
+		servicos = servicoRepository.findByAtivo(true);
 		cliente = new Usuario();
 		funcionario = new Usuario();
 		funcionarios = new ArrayList<>();
@@ -128,7 +132,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			LocalDateTime localDataFinal = LocalDateTime.of(horario.getData(),horario.getHoraTermino());
 			dataInicio = Date.from(localDataInicio.toInstant(ZoneOffset.UTC));
 			dataFinal = Date.from(localDataFinal.toInstant(ZoneOffset.UTC));
-			eventModel.addEvent(new DefaultScheduleEvent("Birthday Party", today1Pm(), today6Pm()));
+
+			
 			if (horario.getUsuarioServico().getServico() == null) {
 				eventModel.addEvent(
 						new DefaultScheduleEvent("Bloqueio", dataInicio, dataFinal,
@@ -136,21 +141,18 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			} else {
 				
 				eventModel
-						.addEvent(new DefaultScheduleEvent(
-								horario.getUsuarioServico().getServico().getNome() + " Cliente "
-										+ horario.getCliente().getNome(),
-								dataInicio, dataFinal));
+						.addEvent(new DefaultScheduleEvent(horario.getCliente().getNome() +"-"+
+								horario.getUsuarioServico().getServico().getNome() ,
+								dataInicio, dataFinal,horario));
 			}
-	System.out.println();
+
 
 		}
-		eventModel.addEvent(
-				new DefaultScheduleEvent("Bloqueio", previousDay8Pm(), previousDay11Pm(), "btn-danger"));
-		eventModel.addEvent(new DefaultScheduleEvent("Birthday top", today6Pm(), today7Pm()));
-		eventModel.addEvent(new DefaultScheduleEvent("Breakfast at Tiffanys", nextDay9Am(), nextDay11Am()));
+
 
 
 	}
+
 
 	private void buscarClientes() {
 		Permissao permissao = permissaoRepository.findByNome("ROLE_CLIENTE");
@@ -299,14 +301,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		return false;
 	}
 
-	private int timeToInt(LocalTime tempoConverter) {
-
-		String[] tempo = String.valueOf(tempoConverter).split(":");
-		int hora = Integer.parseInt(tempo[0]), minuto = Integer.parseInt(tempo[1]);
-		return (hora * 100) + minuto;
-
-	}
-
 	public Time somarTime(Time tempo1, Time tempo2) {
 		GregorianCalendar gc = new GregorianCalendar();
 		gc.setTimeInMillis(tempo1.getTime());
@@ -366,11 +360,12 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 				}
 				setObjeto(new HorarioAgendado());
+				servicosSelecionados.clear();
 				atualizarSchedule();
 			}
 		} else {
 			System.out.println("bloquear");
-			if(getObjeto().getData().equals(dataFinal)) {
+			if(dataInicioBloqueio.equals(dataFinalBloqueio)) {
 				System.out.println("igual");
 			}else {
 				System.out.println("diferente");
@@ -410,66 +405,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		return calendar;
 	}
 
-	private Date previousDay8Pm() {
-		Calendar t = (Calendar) today().clone();
-		t.set(Calendar.AM_PM, Calendar.PM);
-		t.set(Calendar.DATE, t.get(Calendar.DATE) - 1);
-		t.set(Calendar.HOUR, 8);
-
-		return t.getTime();
-	}
-
-	private Date previousDay11Pm() {
-		Calendar t = (Calendar) today().clone();
-		t.set(Calendar.AM_PM, Calendar.PM);
-		t.set(Calendar.DATE, t.get(Calendar.DATE) - 1);
-		t.set(Calendar.HOUR, 11);
-
-		return t.getTime();
-	}
-
-	private Date today1Pm() {
-		Calendar t = (Calendar) today().clone();
-		t.set(Calendar.AM_PM, Calendar.PM);
-		t.set(Calendar.HOUR, 1);
-
-		return t.getTime();
-	}
-
-	private Date today6Pm() {
-		Calendar t = (Calendar) today().clone();
-		t.set(Calendar.AM_PM, Calendar.PM);
-		t.set(Calendar.HOUR, 6);
-
-		return t.getTime();
-	}
-
-	private Date today7Pm() {
-		Calendar t = (Calendar) today().clone();
-		t.set(Calendar.AM_PM, Calendar.PM);
-		t.set(Calendar.HOUR, 7);
-
-		return t.getTime();
-	}
-
-	private Date nextDay9Am() {
-		Calendar t = (Calendar) today().clone();
-		t.set(Calendar.AM_PM, Calendar.AM);
-		t.set(Calendar.DATE, t.get(Calendar.DATE) + 1);
-		t.set(Calendar.HOUR, 9);
-
-		return t.getTime();
-	}
-
-	private Date nextDay11Am() {
-		Calendar t = (Calendar) today().clone();
-		t.set(Calendar.AM_PM, Calendar.AM);
-		t.set(Calendar.DATE, t.get(Calendar.DATE) + 1);
-		t.set(Calendar.HOUR, 11);
-
-		return t.getTime();
-	}
-
 	public void addEvent() {
 		if (event.getId() == null)
 			eventModel.addEvent(event);
@@ -481,6 +416,14 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	public void onEventSelect(SelectEvent selectEvent) {
 		event = (ScheduleEvent) selectEvent.getObject();
+		setObjeto((HorarioAgendado) event.getData());
+		servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
+		if (getObjeto().getUsuarioServico().getServico() == null) {
+			tipo ="bloqueio";
+		} else {
+			tipo ="servico";
+			buscarHorarios();
+		}
 
 	}
 
@@ -488,6 +431,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		Date dataSelecionada = (Date) selectEvent.getObject();
 		event = new DefaultScheduleEvent("", dataSelecionada, dataSelecionada);
 		getObjeto().setData( dataSelecionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+		dataInicioBloqueio = dataInicioBloqueio.of(getObjeto().getData(), HORA_INICIO_EMPRESA);
+		dataFinalBloqueio.of(getObjeto().getData(), HORA_FINAL_EMPRESA);
 	}
 
 	public void onEventMove(ScheduleEntryMoveEvent event) {

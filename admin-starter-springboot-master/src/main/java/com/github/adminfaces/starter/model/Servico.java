@@ -32,5 +32,7 @@ public class Servico implements Serializable {
 
     @Column(length = 200,nullable = true)
     private String descricao;
+    
+    private boolean ativo;
 
 }

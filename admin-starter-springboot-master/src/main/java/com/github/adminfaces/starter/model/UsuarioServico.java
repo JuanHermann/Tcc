@@ -2,7 +2,12 @@ package com.github.adminfaces.starter.model;
 
 import javax.persistence.*;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
+@Getter
+@Setter
 @Table(name = "usuario_servico")
 public class UsuarioServico {
 
@@ -17,32 +22,6 @@ public class UsuarioServico {
     @ManyToOne
     @JoinColumn(nullable=false, name= "servico_id",referencedColumnName="id")
     private Servico servico;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
-
-	public Servico getServico() {
-		return servico;
-	}
-
-	public void setServico(Servico servico) {
-		this.servico = servico;
-	}
-
-
     
-    
+    private boolean ativo;    
 }

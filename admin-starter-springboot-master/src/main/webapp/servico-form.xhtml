@@ -8,8 +8,8 @@
 	<ui:define name="title">
         Cadastro de Serviços
     </ui:define>
-    
-    
+
+
 
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
@@ -84,14 +84,19 @@
 
 
 						</div>
+					</div>
+					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel value="Tempo" for="tempo" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
 							<p:inputMask mask="99:99" id="tempo" required="true"
-								converter="#{localTimeConverter}" value="#{servicoForm.objeto.tempo}" />
+								converter="#{localTimeConverter}"
+								value="#{servicoForm.objeto.tempo}" />
 
-						</div>						
+						</div>
+					</div>
+					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel value="Valor" for="valor" />
 						</div>
@@ -101,6 +106,8 @@
 								<f:convertNumber pattern="#,##0.00" />
 							</p:inputText>
 						</div>
+					</div>
+					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel value="Descrição" for="descricao" />
 						</div>

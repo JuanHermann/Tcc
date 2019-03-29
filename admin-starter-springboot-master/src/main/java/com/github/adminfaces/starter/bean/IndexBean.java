@@ -113,6 +113,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		clientes = new ArrayList<>();
 		buscarClientes();
 		servicos = servicoRepository.findByAtivo(true);
+		servicosSelecionados = new ArrayList<>();
 		cliente = new Usuario();
 		funcionario = new Usuario();
 		funcionarios = new ArrayList<>();
@@ -134,7 +135,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			dataFinal = Date.from(localDataFinal.toInstant(ZoneOffset.UTC));
 
 			
-			if (horario.getUsuarioServico().getServico() == null) {
+			if (horario.getUsuarioServico() == null) {
 				eventModel.addEvent(
 						new DefaultScheduleEvent("Bloqueio", dataInicio, dataFinal,
 						"btn-danger"));
@@ -187,7 +188,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	public void buscarFuncionarios() {
 		System.out.println("passou");
-		if (servicosSelecionados != null) {
+		if (servicosSelecionados != null && mostrarFuncionario()) {
 			for (Servico servico : servicosSelecionados) {
 				usuarioServicos = usuarioServicoRepository.findByServicoOrderByUsuario(servico);
 				for (UsuarioServico usuarioServico : usuarioServicos) {
@@ -365,12 +366,18 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			}
 		} else {
 			System.out.println("bloquear");
-			if(dataInicioBloqueio.equals(dataFinalBloqueio)) {
+			if(dataInicioBloqueio.toLocalDate().equals(dataFinalBloqueio.toLocalDate())) {
 				System.out.println("igual");
+				HorarioAgendado bloquear = new HorarioAgendado();
+				bloquear.setData(dataInicioBloqueio.toLocalDate());
+				bloquear.setHoraInicio(dataInicioBloqueio.toLocalTime());
+				bloquear.setHoraTermino(dataFinalBloqueio.toLocalTime());
+				getRepository().save(bloquear);
+				
 			}else {
 				System.out.println("diferente");
 			}
-			HorarioAgendado bloquear = new HorarioAgendado();
+			
 
 		}
 
@@ -382,28 +389,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		return tempo;
 	}
 
-	public Date getRandomDate(Date base) {
-		Calendar date = Calendar.getInstance();
-		date.setTime(base);
-		date.add(Calendar.DATE, ((int) (Math.random() * 30)) + 1); // set random day of month
-
-		return date.getTime();
-	}
-
-	public Date getInitialDate() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(calendar.get(Calendar.YEAR), Calendar.FEBRUARY, calendar.get(Calendar.DATE), 0, 0, 0);
-
-		return calendar.getTime();
-	}
-
-	private Calendar today() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), 0, 0, 0);
-		
-
-		return calendar;
-	}
 
 	public void addEvent() {
 		if (event.getId() == null)
@@ -415,24 +400,29 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void onEventSelect(SelectEvent selectEvent) {
+
+		servicosSelecionados = new ArrayList<>();
 		event = (ScheduleEvent) selectEvent.getObject();
 		setObjeto((HorarioAgendado) event.getData());
-		servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
-		if (getObjeto().getUsuarioServico().getServico() == null) {
+		if (getObjeto().getUsuarioServico() == null) {
 			tipo ="bloqueio";
+			dataInicioBloqueio = dataInicioBloqueio.of(getObjeto().getData(), getObjeto().getHoraInicio());
+			dataFinalBloqueio = dataFinalBloqueio.of(getObjeto().getData(), getObjeto().getHoraTermino());
 		} else {
 			tipo ="servico";
+			servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
 			buscarHorarios();
 		}
 
 	}
 
 	public void onDateSelect(SelectEvent selectEvent) {
+		servicosSelecionados = new ArrayList<>();
 		Date dataSelecionada = (Date) selectEvent.getObject();
 		event = new DefaultScheduleEvent("", dataSelecionada, dataSelecionada);
 		getObjeto().setData( dataSelecionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		dataInicioBloqueio = dataInicioBloqueio.of(getObjeto().getData(), HORA_INICIO_EMPRESA);
-		dataFinalBloqueio.of(getObjeto().getData(), HORA_FINAL_EMPRESA);
+		dataFinalBloqueio = dataFinalBloqueio.of(getObjeto().getData(), HORA_FINAL_EMPRESA);
 	}
 
 	public void onEventMove(ScheduleEntryMoveEvent event) {

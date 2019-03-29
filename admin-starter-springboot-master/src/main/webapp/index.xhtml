@@ -72,7 +72,7 @@
 								<p:outputLabel for="servico" value="Serviço:" />
 
 								<p:selectCheckboxMenu id="servico"
-									value="#{indexBean.servicosSelecionados}" label="Serviços" converter="#{servicoConverter}"
+									value="#{indexBean.servicosSelecionados}" label="Serviços" 
 									multiple="true" filter="true" filterMatchMode="startsWith"
 									panelStyle="width:250px">
 									<f:selectItems value="#{indexBean.servicos}" var="servico"
@@ -119,12 +119,12 @@
 							<h:panelGrid columns="1">
 								<p:outputLabel for="inicio" value="Inicio" />
 								<p:calendar id="inicio" value="#{indexBean.dataInicioBloqueio}" minHour="#{indexBean.inicioHoraCalendar}" maxHour="#{indexBean.finalHoraCalendar}" 
-									pattern="dd/MM/yyyy HH:mm" converter="#{localDateConverter}" />
+									pattern="dd/MM/yyyy HH:mm" converter="#{localDateTimeConverter}" />
 
 
 								<p:outputLabel for="final" value="Final" />
 								<p:calendar id="final" value="#{indexBean.dataFinalBloqueio}" minHour="#{indexBean.inicioHoraCalendar}" maxHour="#{indexBean.finalHoraCalendar}" 
-									 pattern="dd/MM/yyyy HH:mm" converter="#{localDateConverter}" />
+									 pattern="dd/MM/yyyy HH:mm" converter="#{localDateTimeConverter}" />
 
 
 							</h:panelGrid>

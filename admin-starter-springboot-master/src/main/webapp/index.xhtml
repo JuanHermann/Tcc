@@ -27,7 +27,7 @@
 			<p:growl id="messages" showDetail="true" />
 
 			<p:schedule id="schedule" value="#{indexBean.eventModel}" slotMinutes="15" minTime="#{indexBean.inicioSchedule}" maxTime="#{indexBean.finalSchedule}"
-				widgetVar="myschedule"  timeFormat="HH:mm" >
+				widgetVar="myschedule"  timeFormat="HH:mm" view="agendaWeek" >
 
 				<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
 					update="eventDetails" oncomplete="PF('inserir').show();" />
@@ -108,7 +108,7 @@
 
 								<p:selectOneMenu id="horario" converter="#{localTimeConverter}"
 									value="#{indexBean.objeto.horaInicio}">
-									<f:selectItem itemLabel="Selecione o horario" itemValue="" />
+									<f:selectItem itemLabel="#{indexBean.stringHorario}" itemValue="" />
 									<f:selectItems value="#{indexBean.horarios}" var="horario"
 										itemLabel="#{horario}" itemValue="#{localTime}" />
 								</p:selectOneMenu>

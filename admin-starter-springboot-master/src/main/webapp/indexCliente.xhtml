@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="#{layoutMB.template}">
+
+
+
+	<ui:define name="title">
+        Meus Agendamentos
+    </ui:define>
+
+	<ui:define name="head-end">
+		<ui:param name="renderBreadCrumb" value="false" />
+	</ui:define>
+
+	<ui:define name="body">
+		<f:metadata>
+			<f:viewParam name="id" value="#{usuarioLogadoBean.usuario.id}" />
+			<f:viewAction action="#{indexClienteBean.init}" />
+		</f:metadata>
+
+
+		<h:form id="form" prependId="false">
+
+
+			<div class="box box-primary">
+				<div class="box-header with-border">
+
+
+					<div class="ui-g ui-fluid">
+						<div class="ui-sm-12 ui-md-4 ui-lg-6">
+							<p:commandButton id="agendar" value="Agendar Novo Horario"
+								onclick="javascript:mostrarSenha('senhaSumir')" type="button"
+								icon="fa fa-plus-square-o" styleClass="btn-info" />
+
+						</div>
+
+					</div>
+					<div class="ui-g ui-fluid">
+						<div class="ui-sm-12 ui-md-4 ui-lg-1"></div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-4">
+
+							<p:separator />
+						</div>
+
+					</div>
+
+
+
+					<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+
+					<p:dialog header="Login" widgetVar="dlg" resizable="false">
+						<h:panelGrid columns="2" cellpadding="5">
+							<h:outputLabel for="username" value="Username:" />
+							<p:inputText id="username" value="#" required="true"
+								label="username" />
+
+
+
+							<f:facet name="footer">
+								<p:commandButton value="Login" update="growl" action="#"
+									oncomplete="handleLoginRequest(xhr, status, args)" />
+							</f:facet>
+						</h:panelGrid>
+					</p:dialog>
+
+
+
+				</div>
+
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

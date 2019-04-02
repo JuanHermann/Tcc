@@ -10,6 +10,9 @@
 	<ui:define name="title">
         Meus Agendamentos
     </ui:define>
+	<ui:define name="description">
+        Aqui você pode ver seus agendamentos e agendar novos horarios.
+    </ui:define>
 
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
@@ -32,7 +35,7 @@
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-6">
 							<p:commandButton id="agendar" value="Agendar Novo Horario"
-								onclick="javascript:mostrarSenha('senhaSumir')" type="button"
+								onclick="PF('inserir').show();" type="button"
 								icon="fa fa-plus-square-o" styleClass="btn-info" />
 
 						</div>
@@ -41,29 +44,87 @@
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-1"></div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-4">
-
 							<p:separator />
+						</div>
+
+					</div>
+
+					<div class="ui-g ui-fluid">
+						<div class="ui-sm-12 ui-md-4 ui-lg-6">
+							<p:panelMenu model="#{indexClienteBean.menuModel}" />
+
 						</div>
 
 					</div>
 
 
 
+
 					<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
 
-					<p:dialog header="Login" widgetVar="dlg" resizable="false">
-						<h:panelGrid columns="2" cellpadding="5">
-							<h:outputLabel for="username" value="Username:" />
-							<p:inputText id="username" value="#" required="true"
-								label="username" />
+					<p:dialog widgetVar="inserir" header="Cadastrar Horario"
+						showEffect="clip" hideEffect="clip">
+
+						<h:panelGrid id="eventDetails" columns="1">
+							<p:outputPanel id="idGeral">
+								<h:panelGrid columns="1">
 
 
 
-							<f:facet name="footer">
-								<p:commandButton value="Login" update="growl" action="#"
-									oncomplete="handleLoginRequest(xhr, status, args)" />
-							</f:facet>
+									<p:outputLabel for="servico" value="Serviço:" />
+
+									<p:selectCheckboxMenu id="servico"
+										value="#{indexBean.servicosSelecionados}" label="Serviços"
+										multiple="true" filter="true" filterMatchMode="startsWith"
+										panelStyle="width:250px">
+										<f:selectItems value="#{indexBean.servicos}" var="servico"
+											itemLabel="#{servico.nome}" itemValue="#{servico}" />
+										<p:ajax event="change" update="funcionario horario"
+											listener="#{indexBean.buscarFuncionarios()}" />
+									</p:selectCheckboxMenu>
+
+
+									<p:outputPanel rendered="#{indexBean.mostrarFuncionario()}">
+										<p:outputLabel for="funcionario" value="Funcionario:" />
+
+										<p:selectOneMenu id="funcionario"
+											value="#{indexBean.funcionario}"
+											converter="#{usuarioConverter}">
+											<f:selectItem itemLabel="Nenhuma Preferencia"
+												itemValue="#{null}" />
+											<f:selectItems value="#{indexBean.setFuncionarios}"
+												var="funcionario" itemLabel="#{funcionario.nome}"
+												itemValue="#{usuario}" />
+										</p:selectOneMenu>
+									</p:outputPanel>
+
+									<p:outputLabel for="data" value="Dia:" />
+
+									<p:calendar id="data" value="#{indexBean.objeto.data}"
+										pattern="dd/MM/yyyy" converter="#{localDateConverter}">
+										<p:ajax event="dateSelect"
+											listener="#{indexBean.buscarHorarios}" update="horario" />
+									</p:calendar>
+
+									<p:outputLabel value="Horario:" for="horario" />
+
+									<p:selectOneMenu id="horario" converter="#{localTimeConverter}"
+										value="#{indexBean.objeto.horaInicio}">
+										<f:selectItem itemLabel="#{indexBean.stringHorario}"
+											itemValue="" />
+										<f:selectItems value="#{indexBean.horarios}" var="horario"
+											itemLabel="#{horario}" itemValue="#{localTime}" />
+									</p:selectOneMenu>
+								</h:panelGrid>
+								<p:commandButton value="Salvar"
+									action="#{indexClienteBean.salvarAgendamento()}"
+									update="@form" icon="fa fa-check"
+									oncomplete="PF('inserir').hide();" />
+
+							</p:outputPanel>
+
 						</h:panelGrid>
+
 					</p:dialog>
 
 

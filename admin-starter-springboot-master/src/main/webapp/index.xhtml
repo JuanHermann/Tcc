@@ -133,6 +133,11 @@
 							action="#{indexBean.salvarAgendamento()}" update="@form schedule"
 							icon="fa fa-check" 
 							oncomplete="PF('myschedule').update();PF('inserir').hide();"  />
+							
+							<p:commandButton value="Excluir"
+							action="#{indexBean.excluirAgendamento()}" update="@form schedule"
+							icon="fa fa-trash" styleClass="btn-danger" rendered="#{indexBean.objeto.id != null}"
+							oncomplete="PF('myschedule').update();PF('inserir').hide();"  />
 
 					</p:outputPanel>
 

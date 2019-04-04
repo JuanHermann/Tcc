@@ -7,41 +7,60 @@ package com.github.adminfaces.starter.bean;
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
-import org.omnifaces.util.Faces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.github.adminfaces.starter.model.MailConf;
+import com.github.adminfaces.starter.model.MailLog;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
-import com.github.adminfaces.starter.service.UsuarioService;
+import com.github.adminfaces.starter.service.MailService;
 
+import lombok.Getter;
+import lombok.Setter;
 
 @Component
+@Getter
+@Setter
 @Scope("view")
 public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> {
 
 	@Autowired
-	private UsuarioService usuarioService;
-	
+	private MailService service;
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+
+	private String email;
+
 	@Autowired
 	private PermissaoRepository permissaoRepository;
-	
+
 	public EsqueciSenha() {
 		super(Usuario.class);
 	}
-	
+
 	public void novaSenha() throws IOException {
-		getObjeto().setAtivo(true);
-		getObjeto().setAceito(false);
-		usuarioService.criptografarSenha(getObjeto());
-		getRepository().save(getObjeto());		
-		addDetailMessage("Cadastro criado com sucesso!");
-		Faces.getExternalContext().getFlash().setKeepMessages(true);
-        Faces.redirect("index.jsf");
+		Usuario usuario = usuarioRepository.findByEmail(email);
+		if (usuario != null) {
+			MailConf conf = new MailConf();
+			conf.setEmail("juan.1998@alunos.utfpr.edu.br");
+			conf.setNome("juan Hermann");
+			conf.setPorta(9000);
+			conf.setProtocolo("SMTP");
+			conf.setSenha("ztrabu22");
+			conf.setServidor("teste");
+			conf.setUsuario(usuario.getNome());
+			MailLog mailLog = new MailLog(conf, usuario.getEmail(), "Recuperação de Senha",
+					"Esta aqui sua nova senha", LocalDateTime.now(), false);
+			service.enviar(mailLog, true);
+			addDetailMessage("Enviado com sucesso");
+		} else {
+			addDetailMessage("Email não encontrado");
+		}
 	}
 
-   
 }

@@ -58,22 +58,38 @@ html {
 no-repeat
 
 
+
+
  
+
+
 
 
 center
 
 
+
+
  
+
+
 
 
 center
 
 
+
+
  
+
+
 
 
 fixed
+
+
+
+
 
 
 
@@ -84,13 +100,25 @@ fixed
 
 
 
+
+
+
+
 :
+
+
 
 
  
 
 
+
+
 cover
+
+
+
+
 
 
 
@@ -101,13 +129,25 @@ cover
 
 
 
+
+
+
+
 :
+
+
 
 
  
 
 
+
+
 cover
+
+
+
+
 
 
 
@@ -118,13 +158,25 @@ cover
 
 
 
+
+
+
+
 :
+
+
 
 
  
 
 
+
+
 cover
+
+
+
+
 
 
 
@@ -135,13 +187,25 @@ background-size
 
 
 
+
+
+
+
 :
+
+
 
 
  
 
 
+
+
 cover
+
+
+
+
 
 
 
@@ -174,19 +238,19 @@ cover
 
 		<div class="box login-box-body">
 			<h:form>
-			
-        <p:messages autoUpdate="true" />
+
+				<p:messages autoUpdate="true" />
 				<p class="login-box-msg">Informe seus dados para o Cadastro</p>
 
-				<div  class="form-group has-feedback">
+				<div class="form-group has-feedback">
 					<p:inputText value="#{usuarioForm.objeto.nome}" id="nome"
 						type="text" styleClass="form-control"
 						placeholder="Informe seu nome completo" required="true"
 						requiredMessage="nome é obrigatório.">
 
-						<f:ajax event="keyup"  render="@this msgNome"   />
+						<f:ajax event="change" render="@this  msgNome" />
 					</p:inputText>
-					<p:message id="msgNome" for="nome" display="text"/>
+					<p:message id="msgNome" for="nome" display="text" />
 
 				</div>
 
@@ -199,35 +263,42 @@ cover
 						validatorMessage="Informe um email valido.">
 						<f:validateRegex
 							pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
-
+						<f:ajax event="change" render="@this  msgEmail" />
 					</p:inputText>
-					<p:message for="email" />
+					<p:message id="msgEmail" for="email" display="text" />
 				</div>
 
 				<div class="form-group has-feedback">
 					<p:inputMask id="telefone" mask="(99) 99999-9999"
 						styleClass="form-control" placeholder="Informe seu Telefone"
 						required="true" requiredMessage="Telefone é obrigatório."
-						value="#{usuarioForm.objeto.telefone}" />
-					<p:message for="telefone" />
+						value="#{usuarioForm.objeto.telefone}">
+						<f:ajax event="change" render="@this  msgTelefone" />
+					</p:inputMask>
+
+					<p:message id="msgTelefone" for="telefone" display="text" />
 				</div>
 
 				<div class="form-group has-feedback">
 					<p:password id="senha" value="#{usuarioForm.objeto.senha}"
 						styleClass="form-control" placeholder="Informe sua Senha"
 						required="true" match="pw2" requiredMessage="Senha é obrigatória."
-						redisplay="true" validatorMessage="Senhas não conferem" />
+						redisplay="true" validatorMessage="Senhas não conferem">
+						<f:ajax event="change" render="@this  msgSenha1" />
+					</p:password>
 					<i class="fa fa-lock form-control-feedback" style="font-size: 18px"></i>
-					<p:message for="senha" />
+					<p:message id="msgSenha1" for="senha" display="text" />
 				</div>
 				<div class="form-group has-feedback">
 					<p:password id="pw2" value="#{usuarioForm.objeto.senha}"
 						styleClass="form-control" placeholder="Confirme sua Senha"
 						required="true"
 						requiredMessage="Confirmação de senha é obrigatória."
-						validatorMessage="Senhas não conferem" />
+						validatorMessage="Senhas não conferem">
+						<f:ajax event="change" render=" msgSenha1" />
+					</p:password>
 					<i class="fa fa-lock form-control-feedback" style="font-size: 18px"></i>
-					<p:message for="pw2" />
+					<p:message id="msgSenha2" for="pw2" display="text" />
 				</div>
 
 				<div class="row">
@@ -235,8 +306,7 @@ cover
 						<p:commandButton styleClass="btn btn-success btn-block"
 							action="#{usuarioForm.novoCadastro}" onclick="showBar()"
 							oncomplete="if(args.validationFailed){hideBar()}"
-							validateClient="true"
-							value="Criar Conta" update="@form" />
+							validateClient="true" value="Criar Conta" update="@form" />
 					</div>
 
 					<p:spacer height="2" />

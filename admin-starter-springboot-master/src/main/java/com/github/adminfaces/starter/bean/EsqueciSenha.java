@@ -49,10 +49,10 @@ public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> 
 			MailConf conf = new MailConf();
 			conf.setEmail("juan.1998@alunos.utfpr.edu.br");
 			conf.setNome("juan Hermann");
-			conf.setPorta(9000);
+			conf.setPorta(8080);
 			conf.setProtocolo("SMTP");
 			conf.setSenha("ztrabu22");
-			conf.setServidor("teste");
+			conf.setServidor("localhost");
 			conf.setUsuario(usuario.getNome());
 			MailLog mailLog = new MailLog(conf, usuario.getEmail(), "Recuperação de Senha",
 					"Esta aqui sua nova senha", LocalDateTime.now(), false);

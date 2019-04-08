@@ -74,25 +74,25 @@
 									<p:outputLabel for="servico" value="Serviço:" />
 
 									<p:selectCheckboxMenu id="servico"
-										value="#{indexBean.servicosSelecionados}" label="Serviços"
+										value="#{indexClienteBean.servicosSelecionados}" label="Serviços"
 										multiple="true" filter="true" filterMatchMode="startsWith"
 										panelStyle="width:250px">
-										<f:selectItems value="#{indexBean.servicos}" var="servico"
+										<f:selectItems value="#{indexClienteBean.servicos}" var="servico"
 											itemLabel="#{servico.nome}" itemValue="#{servico}" />
 										<p:ajax event="change" update="funcionario horario"
-											listener="#{indexBean.buscarFuncionarios()}" />
+											listener="#{indexClienteBean.buscarFuncionarios()}" />
 									</p:selectCheckboxMenu>
 
 
-									<p:outputPanel rendered="#{indexBean.mostrarFuncionario()}">
+									<p:outputPanel rendered="#{indexClienteBean.mostrarFuncionario()}">
 										<p:outputLabel for="funcionario" value="Funcionario:" />
 
 										<p:selectOneMenu id="funcionario"
-											value="#{indexBean.funcionario}"
+											value="#{indexClienteBean.funcionario}"
 											converter="#{usuarioConverter}">
 											<f:selectItem itemLabel="Nenhuma Preferencia"
 												itemValue="#{null}" />
-											<f:selectItems value="#{indexBean.setFuncionarios}"
+											<f:selectItems value="#{indexClienteBean.setFuncionarios}"
 												var="funcionario" itemLabel="#{funcionario.nome}"
 												itemValue="#{usuario}" />
 										</p:selectOneMenu>
@@ -100,19 +100,19 @@
 
 									<p:outputLabel for="data" value="Dia:" />
 
-									<p:calendar id="data" value="#{indexBean.objeto.data}"
+									<p:calendar id="data" value="#{indexClienteBean.objeto.data}"
 										pattern="dd/MM/yyyy" converter="#{localDateConverter}">
 										<p:ajax event="dateSelect"
-											listener="#{indexBean.buscarHorarios}" update="horario" />
+											listener="#{indexClienteBean.buscarHorarios}" update="horario" />
 									</p:calendar>
 
 									<p:outputLabel value="Horario:" for="horario" />
 
 									<p:selectOneMenu id="horario" converter="#{localTimeConverter}"
-										value="#{indexBean.objeto.horaInicio}">
-										<f:selectItem itemLabel="#{indexBean.stringHorario}"
+										value="#{indexClienteBean.objeto.horaInicio}">
+										<f:selectItem itemLabel="#{indexClienteBean.stringHorario}"
 											itemValue="" />
-										<f:selectItems value="#{indexBean.horarios}" var="horario"
+										<f:selectItems value="#{indexClienteBean.horarios}" var="horario"
 											itemLabel="#{horario}" itemValue="#{localTime}" />
 									</p:selectOneMenu>
 								</h:panelGrid>

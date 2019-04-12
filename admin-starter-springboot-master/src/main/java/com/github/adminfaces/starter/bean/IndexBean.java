@@ -113,6 +113,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 		timeZoneBrasil = TimeZone.getTimeZone("America/Sao_Paulo");
 		clientes = new ArrayList<>();
+		horarioAgendados = new ArrayList<>();
 		buscarClientes();
 		servicos = servicoRepository.findByAtivo(true);
 		servicosSelecionados = new ArrayList<>();

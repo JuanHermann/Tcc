@@ -20,6 +20,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +31,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.omnifaces.util.Faces;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
@@ -57,6 +59,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	private ScheduleEvent event = new DefaultScheduleEvent();
 
+	private Date dataMinima;
 	private String stringHorario;
 	private TimeZone timeZoneBrasil;
 	private String inicioSchedule;
@@ -111,13 +114,15 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 		servicos = servicoRepository.findByAtivo(true);
 		servicosSelecionados = new ArrayList<>();
-
+		
+		dataMinima=Calendar.getInstance().getTime();
 		funcionario = new Usuario();
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
 		stringHorario = "Selecione um Horairio";
 		servicos = servicoRepository.findByAtivo(true);
 		super.init();
+		getObjeto().setCliente(usuarioLogadoBean.getUsuario());
 		getObjeto().setData(LocalDate.now());
 		atualizarLista();
 		
@@ -127,7 +132,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		
 		menuModel = new DefaultMenuModel();
 		for (HorarioAgendado horario : horarioAgendadoRepository
-				.findByClienteOrderByHoraInicio(usuarioLogadoBean.getUsuario())) {
+				.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(),LocalDate.now())) {
 
 			DefaultSubMenu submenu = new DefaultSubMenu(horario.getData().toString() + " - "
 					+ horario.getHoraInicio().toString() + " - " + horario.getUsuarioServico().getServico().getNome()); // Cria
@@ -233,6 +238,8 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 				setObjeto(new HorarioAgendado());
 				servicosSelecionados.clear();
 				atualizarLista();
+				RequestContext request = RequestContext.getCurrentInstance(); 
+				request.addCallbackParam("sucesso", true);
 			}
 		}
 	}

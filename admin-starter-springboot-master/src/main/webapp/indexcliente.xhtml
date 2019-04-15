@@ -51,8 +51,18 @@
 
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-6">
-							<p:panelMenu model="#{indexClienteBean.menuModel}" />
+							<p:dataList value="#{indexClienteBean.horariosCliente}"
+								var="horario" type="definition">
+								
+								<p:panel id="panel-#{horario.id}" header="#{horario.data} - #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}" toggleable="true"
+									toggleSpeed="500" widgetVar="panel" style="margin-bottom:20px" collapsed="true">
 
+									<h:panelGrid columns="2" cellpadding="10">
+										<h:outputText value="#{horario.data}" />
+									</h:panelGrid>
+
+								</p:panel>
+							</p:dataList>
 						</div>
 
 					</div>
@@ -62,8 +72,8 @@
 
 					<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
 
-					<p:dialog id="dialogAgendar" widgetVar="inserir" header="Cadastrar Horario"
-						showEffect="clip" hideEffect="clip">
+					<p:dialog id="dialogAgendar" widgetVar="inserir"
+						header="Cadastrar Horario" showEffect="clip" hideEffect="clip">
 
 						<h:panelGrid id="eventDetails" columns="1">
 							<p:outputPanel id="idGeral">
@@ -71,22 +81,26 @@
 
 
 
-									<p:outputLabel for="servico" value="Serviço:" id="olServico"/>
+									<p:outputLabel for="servico" value="Serviço:" id="olServico" />
 
 									<p:selectCheckboxMenu id="servico"
-										value="#{indexClienteBean.servicosSelecionados}" label="Serviços"
-										multiple="true" filter="true" filterMatchMode="startsWith"
-										required="true" requiredMessage="Selecione um serviço"
+										value="#{indexClienteBean.servicosSelecionados}"
+										label="Serviços" multiple="true" filter="true"
+										filterMatchMode="startsWith" required="true"
+										requiredMessage="Selecione um serviço"
 										panelStyle="width:250px">
-										<f:selectItems value="#{indexClienteBean.servicos}" var="servico"
-											itemLabel="#{servico.nome}" itemValue="#{servico}" />
-										<p:ajax event="change" update="funcionario horario" render="@this olServico"
+										<f:selectItems value="#{indexClienteBean.servicos}"
+											var="servico" itemLabel="#{servico.nome}"
+											itemValue="#{servico}" />
+										<p:ajax event="change" update="funcionario horario"
+											render="@this olServico"
 											listener="#{indexClienteBean.buscarFuncionarios()}" />
-											
+
 									</p:selectCheckboxMenu>
 
 
-									<p:outputPanel rendered="#{indexClienteBean.mostrarFuncionario()}">
+									<p:outputPanel
+										rendered="#{indexClienteBean.mostrarFuncionario()}">
 										<p:outputLabel for="funcionario" value="Funcionario:" />
 
 										<p:selectOneMenu id="funcionario"
@@ -103,29 +117,31 @@
 									<p:outputLabel for="data" value="Dia:" />
 
 									<p:calendar id="data" value="#{indexClienteBean.objeto.data}"
-										required="true" requiredMessage="Selecione um dia" mindate="#{indexClienteBean.dataMinima}"
-										pattern="dd/MM/yyyy" converter="#{localDateConverter}">
+										required="true" requiredMessage="Selecione um dia"
+										mindate="#{indexClienteBean.dataMinima}" pattern="dd/MM/yyyy"
+										converter="#{localDateConverter}">
 										<p:ajax event="dateSelect"
-											listener="#{indexClienteBean.buscarHorarios}" update="horario" />
+											listener="#{indexClienteBean.buscarHorarios}"
+											update="horario" />
 									</p:calendar>
 
 									<p:outputLabel value="Horario:" for="horario" id="olHorario" />
 
-									<p:selectOneMenu id="horario" converter="#{localTimeConverter}"									
+									<p:selectOneMenu id="horario" converter="#{localTimeConverter}"
 										required="true" requiredMessage="Selecione um horario"
 										value="#{indexClienteBean.objeto.horaInicio}">
 										<f:selectItem itemLabel="#{indexClienteBean.stringHorario}"
 											itemValue="" />
-										<f:selectItems value="#{indexClienteBean.horarios}" var="horario"
-											itemLabel="#{horario}" itemValue="#{localTime}" />
-											
-											<f:ajax event="change" render="@this olHorario" />
+										<f:selectItems value="#{indexClienteBean.horarios}"
+											var="horario" itemLabel="#{horario}" itemValue="#{localTime}" />
+
+										<f:ajax event="change" render="@this olHorario" />
 									</p:selectOneMenu>
 								</h:panelGrid>
 								<p:commandButton value="Salvar"
 									action="#{indexClienteBean.salvarAgendamento()}"
-									update="growl eventDetails" icon="fa fa-check" 
-									oncomplete="if(args.sucesso == true) { PF('inserir').hide();location.reload(); }"/>
+									update="growl eventDetails" icon="fa fa-check"
+									oncomplete="if(args.sucesso == true) { PF('inserir').hide(); }" />
 
 							</p:outputPanel>
 

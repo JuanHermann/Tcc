@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.omnifaces.util.Faces;
+import org.primefaces.component.panel.Panel;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
@@ -59,6 +60,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	private ScheduleEvent event = new DefaultScheduleEvent();
 
+	private List<HorarioAgendado> horariosCliente;
 	private Date dataMinima;
 	private String stringHorario;
 	private TimeZone timeZoneBrasil;
@@ -72,21 +74,20 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	private LocalTime tempoTotalServicos;
 	private List<LocalTime> horarios;
 	private Date data = Calendar.getInstance().getTime();
-	
-	
+
 	@Autowired
 	private UsuarioLogadoBean usuarioLogadoBean;
 	private List<Usuario> funcionarios;
 	private Set<Usuario> setFuncionarios;
 	private Usuario funcionario;
-	
+
 	@Autowired
 	private HorarioAgendadoRepository horarioAgendadoRepository;
 	private List<HorarioAgendado> horarioAgendados;
-	
+
 	@Autowired
 	private PermissaoRepository permissaoRepository;
-	
+
 	@Autowired
 	private UsuarioServicoRepository usuarioServicoRepository;
 	private List<UsuarioServico> usuarioServicos;
@@ -104,7 +105,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	@Override
 	public void init() throws InstantiationException, IllegalAccessException {
-		
+
 		inicioSchedule = HORA_INICIO_EMPRESA.toString();
 		finalSchedule = HORA_FINAL_EMPRESA.toString();
 		inicioHoraCalendar = HORA_INICIO_EMPRESA.getHour();
@@ -114,8 +115,8 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 		servicos = servicoRepository.findByAtivo(true);
 		servicosSelecionados = new ArrayList<>();
-		
-		dataMinima=Calendar.getInstance().getTime();
+
+		dataMinima = Calendar.getInstance().getTime();
 		funcionario = new Usuario();
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
@@ -125,14 +126,20 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		getObjeto().setCliente(usuarioLogadoBean.getUsuario());
 		getObjeto().setData(LocalDate.now());
 		atualizarLista();
-		
+
 	}
 
 	public void atualizarLista() {
-		
+		horariosCliente = horarioAgendadoRepository
+				.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(), LocalDate.now());
+		Panel panel = new Panel();
+		panel.setHeader("Titulo");
+		panel.setFooter("abriu");
+		panel.setVisible(true);
+
 		menuModel = new DefaultMenuModel();
 		for (HorarioAgendado horario : horarioAgendadoRepository
-				.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(),LocalDate.now())) {
+				.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(), LocalDate.now())) {
 
 			DefaultSubMenu submenu = new DefaultSubMenu(horario.getData().toString() + " - "
 					+ horario.getHoraInicio().toString() + " - " + horario.getUsuarioServico().getServico().getNome()); // Cria
@@ -146,13 +153,16 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 			submenu.addElement(item); // adiciona o menuitem ao submenu
 
 			menuModel.addElement(submenu); // adiciona o submenu ao menu
+			System.out.println(0);
 		}
+		System.out.println(1);
 	}
 
 	public boolean mostrarFuncionario() {
 		return permissaoRepository.findByNome("ROLE_FUNCIONARIO").getUsuarios().size() > 1;
 
 	}
+
 	public void buscarFuncionarios() {
 		System.out.println("passou");
 		if (servicosSelecionados != null && mostrarFuncionario()) {
@@ -165,7 +175,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		}
 		buscarHorarios();
 	}
-	
+
 	public void buscarHorarios() {
 
 		tempoTotalServicos = LocalTime.of(0, 0, 0);
@@ -179,9 +189,34 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	public void salvarAgendamento() {
 		if (mostrarFuncionario()) {
+			
+			HorarioAgendado agendado;
+			boolean primeiro = true;
+			LocalTime tempo = LocalTime.of(0, 0, 0);
 			for (Servico servico : servicosSelecionados) {
+				agendado = new HorarioAgendado();
+				agendado.setCliente(getObjeto().getCliente());
+				agendado.setData(getObjeto().getData());
+				if (primeiro) {
+					agendado.setHoraInicio(getObjeto().getHoraInicio());
+
+					tempo = somarLocalTime(getObjeto().getHoraInicio(), servico.getTempo());
+					agendado.setHoraTermino(tempo);
+					primeiro = false;
+				} else {
+					agendado.setHoraInicio(tempo);
+					tempo = somarLocalTime(tempo, servico.getTempo());
+					agendado.setHoraTermino(tempo);
+				}
+				agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
+				getRepository().save(agendado);
 
 			}
+			setObjeto(new HorarioAgendado());
+			servicosSelecionados.clear();
+			atualizarLista();
+			RequestContext request = RequestContext.getCurrentInstance();
+			request.addCallbackParam("sucesso", true);
 		} else {
 			if (getObjeto().getId() != null) {
 				HorarioAgendado agendado;
@@ -211,6 +246,8 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 				setObjeto(new HorarioAgendado());
 				servicosSelecionados.clear();
 				atualizarLista();
+				RequestContext request = RequestContext.getCurrentInstance();
+				request.addCallbackParam("sucesso", true);
 
 			} else {
 				HorarioAgendado agendado;
@@ -238,11 +275,12 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 				setObjeto(new HorarioAgendado());
 				servicosSelecionados.clear();
 				atualizarLista();
-				RequestContext request = RequestContext.getCurrentInstance(); 
+				RequestContext request = RequestContext.getCurrentInstance();
 				request.addCallbackParam("sucesso", true);
 			}
 		}
 	}
+
 	private boolean verificaEspacoTempo(LocalTime primeiroHorarioLivre, LocalTime tempoTotalServico,
 			LocalTime proximoServico) {
 		LocalTime total = somarLocalTime(primeiroHorarioLivre, tempoTotalServico);

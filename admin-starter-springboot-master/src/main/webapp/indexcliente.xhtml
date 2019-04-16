@@ -51,11 +51,28 @@
 
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-6">
+							<p:accordionPanel>
+								<p:dataList value="#{indexClienteBean.horariosCliente}"
+									emptyMessage="Nenhum Horario Cadastrado." var="horario"
+									type="definition">
+									<p:tab
+										title="#{horario.data} - #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}">
+										<h:panelGrid columns="2" cellpadding="10">
+											<h:outputText value="#{horario.data}" />
+										</h:panelGrid>
+									</p:tab>
+
+								</p:dataList>
+							</p:accordionPanel>
+
 							<p:dataList value="#{indexClienteBean.horariosCliente}"
-								var="horario" type="definition">
-								
-								<p:panel id="panel-#{horario.id}" header="#{horario.data} - #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}" toggleable="true"
-									toggleSpeed="500" widgetVar="panel" style="margin-bottom:20px" collapsed="true">
+								emptyMessage="Nenhum Horario Cadastrado." var="horario"
+								type="definition">
+
+								<p:panel id="panel-#{horario.id}"
+									header="#{horario.data} - #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}"
+									toggleable="true" toggleSpeed="500" widgetVar="panel"
+									style="margin-bottom:20px" collapsed="true">
 
 									<h:panelGrid columns="2" cellpadding="10">
 										<h:outputText value="#{horario.data}" />
@@ -92,8 +109,8 @@
 										<f:selectItems value="#{indexClienteBean.servicos}"
 											var="servico" itemLabel="#{servico.nome}"
 											itemValue="#{servico}" />
-										<p:ajax event="change" update="funcionario horario"
-											render="@this olServico"
+										<p:ajax event="change"
+											update="funcionario horario btnSalvar olServico @this"
 											listener="#{indexClienteBean.buscarFuncionarios()}" />
 
 									</p:selectCheckboxMenu>
@@ -135,10 +152,11 @@
 										<f:selectItems value="#{indexClienteBean.horarios}"
 											var="horario" itemLabel="#{horario}" itemValue="#{localTime}" />
 
-										<f:ajax event="change" render="@this olHorario" />
+										<f:ajax event="change" update="@this olHorario btnSalvar" />
 									</p:selectOneMenu>
 								</h:panelGrid>
-								<p:commandButton value="Salvar"
+								<p:commandButton value="Salvar" id="btnSalvar"
+									disabled="#{indexClienteBean.objeto.horaInicio == null or indexClienteBean.servicosSelecionados.size() == 0}"
 									action="#{indexClienteBean.salvarAgendamento()}"
 									update="growl eventDetails" icon="fa fa-check"
 									oncomplete="if(args.sucesso == true) { PF('inserir').hide(); }" />

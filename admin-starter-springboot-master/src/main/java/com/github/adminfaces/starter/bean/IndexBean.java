@@ -338,8 +338,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			System.out.println("agendar");
 			if (mostrarFuncionario()) {
 				for (Servico servico : servicosSelecionados) {
-					getObjeto().setUsuarioServico(
-							usuarioServicoRepository.findByServicoAndUsuarioOrderByUsuario(servico, funcionario));
+					
 				}
 			} else {
 				if (getObjeto().getId() != null) {
@@ -363,7 +362,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 							tempo = somarLocalTime(tempo, servico.getTempo());
 							agendado.setHoraTermino(tempo);
 						}
-						agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
+						agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndAtivo(servico,true).get(0));
 						getRepository().save(agendado);
 
 					}
@@ -390,7 +389,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 							tempo = somarLocalTime(tempo, servico.getTempo());
 							agendado.setHoraTermino(tempo);
 						}
-						agendado.setUsuarioServico(usuarioServicoRepository.findByServico(servico));
+						agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndAtivo(servico,true).get(0));
 						getRepository().save(agendado);
 
 					}

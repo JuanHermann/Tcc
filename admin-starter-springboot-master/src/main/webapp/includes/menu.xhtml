@@ -26,13 +26,13 @@
             </p:link>
         </li>
         <li>
-            <p:link outcome="/car-list.jsf" onclick="clearBreadCrumbs()">
+            <p:link outcome="/car-list.jsf" onclick="clearBreadCrumbs()" rendered="false">
                 <i class="fa fa-list-alt"></i>
                 <span>Adicionar Horario Cliente</span>
             </p:link>
         </li>        
         <li>
-            <p:link outcome="/bloqueioAgenda.jsf" onclick="clearBreadCrumbs()">
+            <p:link outcome="/bloqueioAgenda.jsf" onclick="clearBreadCrumbs()" rendered="false">
                 <i class="fa fa-times-circle-o"></i>
                 <span>Bloquear Agenda</span>
             </p:link>
@@ -62,6 +62,12 @@
         <p:link outcome="/perfil.jsf" >
             <i class="fa fa-user"></i>
             <span>Perfil</span>
+        </p:link>
+        </li>
+        <li>
+        <p:link outcome="/perfil.jsf" >
+            <i class="fa fa-user"></i>
+            <span>Empresa</span>
         </p:link>
         </li>
         <li>

@@ -126,36 +126,12 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		getObjeto().setCliente(usuarioLogadoBean.getUsuario());
 		getObjeto().setData(LocalDate.now());
 		atualizarLista();
-
 	}
 
 	public void atualizarLista() {
 		horariosCliente = horarioAgendadoRepository
 				.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(), LocalDate.now());
-		Panel panel = new Panel();
-		panel.setHeader("Titulo");
-		panel.setFooter("abriu");
-		panel.setVisible(true);
 
-		menuModel = new DefaultMenuModel();
-		for (HorarioAgendado horario : horarioAgendadoRepository
-				.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(), LocalDate.now())) {
-
-			DefaultSubMenu submenu = new DefaultSubMenu(horario.getData().toString() + " - "
-					+ horario.getHoraInicio().toString() + " - " + horario.getUsuarioServico().getServico().getNome()); // Cria
-																														// o
-																														// submenu
-
-			DefaultMenuItem item = new DefaultMenuItem(); // Cria o menuitem
-
-			item.setValue(horario.getHoraTermino() + horario.getUsuarioServico().getUsuario().getNome());
-			item.setStyleClass("btn-info");
-			submenu.addElement(item); // adiciona o menuitem ao submenu
-
-			menuModel.addElement(submenu); // adiciona o submenu ao menu
-			System.out.println(0);
-		}
-		System.out.println(1);
 	}
 
 	public boolean mostrarFuncionario() {

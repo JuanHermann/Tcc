@@ -51,40 +51,38 @@
 
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-6">
-							<p:accordionPanel>
-								<p:dataList value="#{indexClienteBean.horariosCliente}"
-									emptyMessage="Nenhum Horario Cadastrado." var="horario"
-									type="definition">
-									<p:tab
-										title="#{horario.data} - #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}">
-										<h:panelGrid columns="2" cellpadding="10">
-											<h:outputText value="#{horario.data}" />
-										</h:panelGrid>
-									</p:tab>
-
-								</p:dataList>
-							</p:accordionPanel>
-
-							<p:dataList value="#{indexClienteBean.horariosCliente}"
-								emptyMessage="Nenhum Horario Cadastrado." var="horario"
-								type="definition">
-
-								<p:panel id="panel-#{horario.id}"
-									header="#{horario.data} - #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}"
-									toggleable="true" toggleSpeed="500" widgetVar="panel"
-									style="margin-bottom:20px" collapsed="true">
-
+							<p:accordionPanel value="#{indexClienteBean.horariosCliente}"
+								multiple="true" var="horario">
+								<p:tab
+									title="#{horario.data.dayOfMonth}/#{horario.data.monthValue} ás #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}">
 									<h:panelGrid columns="2" cellpadding="10">
-										<h:outputText value="#{horario.data}" />
+										<h:outputText value="Inicio: "  style="font-weight: bold"/>
+										<h:outputText value="#{horario.horaInicio}" />
+										<h:outputText value="Termino: "  style="font-weight: bold"/>
+										<h:outputText value="#{horario.horaTermino}" />
+										<h:outputText value="Prestador do serviço: "  style="font-weight: bold"/>
+										<h:outputText value=" #{horario.usuarioServico.usuario.nome}" />
+										
+											<p:commandButton value="Alterar"
+												action="#{indexClienteBean.novo()}" process="@this"
+												icon="fa fa-refresh" styleClass="btn-warning" update="@form" />
+												
+											<p:commandButton value="Cancelar"
+												action="#{indexClienteBean.remover()}" process="@this"
+												icon="fa fa-trash" styleClass="btn-danger" update="@form"
+												resetValues="true">
+												<f:setPropertyActionListener value="true"
+													target="#{facesContext.externalContext.flash.keepMessages}" />
+												<p:confirm header="Confirmação"
+													message="Tem certeza que deseja deletar?"
+													icon="ui-icon-danger" />
+											</p:commandButton>
+										
 									</h:panelGrid>
-
-								</p:panel>
-							</p:dataList>
+								</p:tab>
+							</p:accordionPanel>
 						</div>
-
 					</div>
-
-
 
 
 					<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
@@ -110,7 +108,7 @@
 											var="servico" itemLabel="#{servico.nome}"
 											itemValue="#{servico}" />
 										<p:ajax event="change"
-											update="funcionario horario btnSalvar olServico @this"
+											update="funcionario horario btnSalvar olServico "
 											listener="#{indexClienteBean.buscarFuncionarios()}" />
 
 									</p:selectCheckboxMenu>
@@ -152,11 +150,11 @@
 										<f:selectItems value="#{indexClienteBean.horarios}"
 											var="horario" itemLabel="#{horario}" itemValue="#{localTime}" />
 
-										<f:ajax event="change" update="@this olHorario btnSalvar" />
+										<f:ajax event="change" update="@this olHorario " render="btnSalvar" />
 									</p:selectOneMenu>
 								</h:panelGrid>
 								<p:commandButton value="Salvar" id="btnSalvar"
-									disabled="#{indexClienteBean.objeto.horaInicio == null or indexClienteBean.servicosSelecionados.size() == 0}"
+									disabled="#{indexClienteBean.objeto.horaInicio == null}"
 									action="#{indexClienteBean.salvarAgendamento()}"
 									update="growl eventDetails" icon="fa fa-check"
 									oncomplete="if(args.sucesso == true) { PF('inserir').hide(); }" />

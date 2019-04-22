@@ -83,6 +83,7 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 				UsuarioServico us = new UsuarioServico();
 				us.setServico(servico);
 				us.setUsuario(usuario);
+				us.setAtivo(true);
 				usuarioServicoRepository.save(us);
 			}
 		}

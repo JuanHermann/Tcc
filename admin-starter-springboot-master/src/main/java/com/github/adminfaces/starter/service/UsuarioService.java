@@ -68,6 +68,7 @@ public class UsuarioService implements UserDetailsService, CommandLineRunner {
 				UsuarioServico us = new UsuarioServico();
 				us.setServico(servico);
 				us.setUsuario(usuario);
+				us.setAtivo(true);
 				usuarioServicoRepository.save(us);
 			}
 		}

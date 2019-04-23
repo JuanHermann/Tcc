@@ -23,7 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.formLogin()
-				.loginPage("/login.xhtml")
+				.loginPage("/login.xhtml").defaultSuccessUrl("/index")
 				.failureUrl("/login.xhtml?error=bad-credentials")
 				.permitAll()
 			.and()

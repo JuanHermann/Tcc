@@ -6,9 +6,12 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.github.adminfaces.starter.bean.UsuarioLogadoBean;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +21,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "usuario")
 public class Usuario implements UserDetails {
-
+	
 	private static final long serialVersionUID = 1L;
 	public static final String ADMIN_EMAIL = "admin@admin.com";
 	public static final Integer COD_ADMIN = 1;
@@ -61,6 +64,16 @@ public class Usuario implements UserDetails {
 		auto.addAll(getPermissoes());
 
 		return auto;
+	}
+	
+	public boolean hasRole(String role) {
+		UsuarioLogadoBean usuarioLogadoBean = new UsuarioLogadoBean();
+		for(Permissao p : usuarioLogadoBean.getUsuario().getPermissoes()) {
+			if(p.getNome().equals(role)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void addPermissao(Permissao permissao) {
@@ -128,5 +141,7 @@ public class Usuario implements UserDetails {
 	public boolean hasNome() {
 		return nome != null && !"".equals(nome.trim());
 	}
+	
+	
 
 }

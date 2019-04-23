@@ -20,9 +20,10 @@ public class IndexController {
 	public String home(@AuthenticationPrincipal	Usuario logado) {
 		for(Permissao p : logado.getPermissoes()) {
 			if(p.getNome().equals(PERMISSAO_ADM)) {
-				return "redirect:top.jsf";
+				return "redirect:index.jsf";
+
 			}if(p.getNome().equals(PERMISSAO_ATENDENTE)) {
-				return "";
+				return "redirect:index.jsf";
 			}
 		}
 		return "redirect:indexcliente.jsf";

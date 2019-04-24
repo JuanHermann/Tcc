@@ -26,6 +26,7 @@ public class Usuario implements UserDetails {
 	public static final String ADMIN_EMAIL = "admin@admin.com";
 	public static final Integer COD_ADMIN = 1;
 	private static final BCryptPasswordEncoder bCrypt = new BCryptPasswordEncoder(10);
+	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,9 +67,8 @@ public class Usuario implements UserDetails {
 		return auto;
 	}
 	
-	public boolean hasRole(String role) {
-		UsuarioLogadoBean usuarioLogadoBean = new UsuarioLogadoBean();
-		for(Permissao p : usuarioLogadoBean.getUsuario().getPermissoes()) {
+	public boolean hasRole(String role,Usuario usuario) {		
+		for(Permissao p : usuario.getPermissoes()) {
 			if(p.getNome().equals(role)) {
 				return true;
 			}

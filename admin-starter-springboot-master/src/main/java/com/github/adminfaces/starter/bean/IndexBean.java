@@ -2,6 +2,7 @@ package com.github.adminfaces.starter.bean;
 
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
+import java.io.IOException;
 import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -56,8 +57,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private static LocalTime HORA_FINAL_INTERVALO = LocalTime.of(13, 30, 0);
 	private static LocalTime HORA_FINAL_EMPRESA = LocalTime.of(20, 0, 0);
 	private static LocalTime TEMPO_BUSCA_ENTRE_SERVICOS = LocalTime.of(0, 15, 0);
+	
 	private ScheduleModel eventModel = new DefaultScheduleModel();
-
 	private ScheduleEvent event = new DefaultScheduleEvent();
 
 	private String stringHorario;
@@ -89,6 +90,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	@Autowired
 	private UsuarioServicoRepository usuarioServicoRepository;
 	private List<UsuarioServico> usuarioServicos;
+	
+	@Autowired
+	private UsuarioLogadoBean usuarioLogadoBean;
 
 	@Autowired
 	private PermissaoRepository permissaoRepository;
@@ -104,7 +108,13 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	@PostConstruct
 	public void init() throws InstantiationException, IllegalAccessException {
-
+		if(!verificaPermissao()) {
+			try {
+				FacesContext.getCurrentInstance().getExternalContext().redirect("indexcliente.jsf");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		super.init();
 		inicioSchedule = HORA_INICIO_EMPRESA.toString();
 		finalSchedule = HORA_FINAL_EMPRESA.toString();
@@ -125,6 +135,11 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 		atualizarSchedule();
 
+	}
+
+	private boolean verificaPermissao() {
+		return usuarioLogadoBean.getUsuario().hasRole("ROLE_ADMIN",usuarioLogadoBean.getUsuario());
+		
 	}
 
 	private void atualizarSchedule() {

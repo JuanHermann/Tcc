@@ -14,21 +14,19 @@ import com.github.adminfaces.starter.model.Usuario;
 @RequestMapping
 public class IndexController {
 	private final String PERMISSAO_ADM = "ROLE_ADMIN";
-	private final String PERMISSAO_ATENDENTE= "ROLE_ATENDENTE";
-	
-	@GetMapping("/index")
-	public String home(@AuthenticationPrincipal	Usuario logado) {
-		for(Permissao p : logado.getPermissoes()) {
-			if(p.getNome().equals(PERMISSAO_ADM)) {
-				return "redirect:index.jsf";
+	private final String PERMISSAO_ATENDENTE = "ROLE_ATENDENTE";
 
-			}if(p.getNome().equals(PERMISSAO_ATENDENTE)) {
-				return "redirect:index.jsf";
-			}
+	@GetMapping("/index")
+	public String home(@AuthenticationPrincipal Usuario logado) {
+		if (logado.hasRole(PERMISSAO_ADM,logado)) {
+			return "redirect:index.jsf";
 		}
+		if (logado.hasRole(PERMISSAO_ATENDENTE,logado)) {
+			return "redirect:index.jsf";
+		}
+
 		return "redirect:indexcliente.jsf";
-		
-		
+
 	}
 
 }

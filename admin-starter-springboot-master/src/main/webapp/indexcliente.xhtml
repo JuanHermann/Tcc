@@ -54,7 +54,7 @@
 							<p:accordionPanel value="#{indexClienteBean.horariosCliente}"
 								multiple="true" var="horario">
 								<p:tab
-									title="#{horario.data.dayOfMonth}/#{horario.data.monthValue} ás #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}">
+									title="Dia #{horario.data.dayOfMonth}/#{horario.data.monthValue} ás #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}">
 									<h:panelGrid columns="2" cellpadding="10">
 										<h:outputText value="Inicio: "  style="font-weight: bold"/>
 										<h:outputText value="#{horario.horaInicio}" />
@@ -145,8 +145,8 @@
 									<p:selectOneMenu id="horario" converter="#{localTimeConverter}"
 										required="true" requiredMessage="Selecione um horario"
 										value="#{indexClienteBean.objeto.horaInicio}">
-										<f:selectItem itemLabel="#{indexClienteBean.stringHorario}"
-											itemValue="" />
+										<f:selectItem value="#{null}" itemLabel="#{indexClienteBean.stringHorario}"
+											itemValue="#{localTime}" />
 										<f:selectItems value="#{indexClienteBean.horarios}"
 											var="horario" itemLabel="#{horario}" itemValue="#{localTime}" />
 
@@ -154,7 +154,7 @@
 									</p:selectOneMenu>
 								</h:panelGrid>
 								<p:commandButton value="Salvar" id="btnSalvar"
-									disabled="#{indexClienteBean.objeto.horaInicio == null}"
+									disabled="#{indexClienteBean.objeto.horaInicio == null or indexClienteBean.servicosSelecionados.size() == 0}"
 									action="#{indexClienteBean.salvarAgendamento()}"
 									update="growl eventDetails" icon="fa fa-check"
 									oncomplete="if(args.sucesso == true) { PF('inserir').hide(); }" />

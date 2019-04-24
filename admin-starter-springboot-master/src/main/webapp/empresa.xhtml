@@ -8,11 +8,11 @@
 
 
 	<ui:define name="title">
-        Perfil
+        Empresa
     </ui:define>
 
 <ui:define name="description">
-        Informações do seu cadastro.
+        Algumas configurações sobre sua empresa.
     </ui:define>
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
@@ -21,7 +21,7 @@
 	<ui:define name="body">
 		<f:metadata>
 			<f:viewParam name="id" value="#{usuarioLogadoBean.usuario.id}" />
-			<f:viewAction action="#{perfil.init}" />
+			<f:viewAction action="#{empresa.init}" />
 		</f:metadata>
 
 
@@ -36,75 +36,15 @@
 							<p:outputLabel value="Nome" for="nome" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="nome" value="#{perfil.objeto.nome}"
+							<p:inputText id="nome" value="#{empresa.objeto.nome}"
 								required="true" />
 						</div>
 					</div>
 
-					<div class="ui-g ui-fluid">
 
-						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel value="Email" for="email" />
-						</div>
-						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputText id="email" value="#{perfil.objeto.email}"
-								type="email" styleClass="form-control"
-								placeholder="Informe seu E-mail" required="true"
-								requiredMessage="Email é obrigatório."
-								validatorMessage="Informe um email valido.">
-								<f:validateRegex
-									pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
-
-							</p:inputText>
-
-						</div>
-					</div>
-					<div class="ui-g ui-fluid">
-						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel value="Telefone" for="telefone" />
-						</div>
-						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:inputMask id="telefone" mask="(99) 99999-9999"
-								styleClass="form-control" placeholder="Informe seu Telefone"
-								required="true" requiredMessage="Telefone é obrigatório."
-								value="#{perfil.objeto.telefone}" />
-						</div>
-					</div>
-					<div class="ui-g ui-fluid">
-						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel value="Senha" for="senha" />
-						</div>						
-						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:commandButton id="senha" value="Alterar Senha"
-								onclick="javascript:mostrarSenha('senhaSumir')" type="button"
-								icon="fa fa-refresh" styleClass="btn-danger" />
-
-						</div>
-						<p:commandButton value="Salvar Alterações"
-							action="#{perfil.atualizar()}" update="@form" icon="fa fa-check"
-							styleClass="btn-success" />
-					</div>
 
 
 					<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
-
-					<p:dialog header="Login" widgetVar="dlg" resizable="false">
-						<h:panelGrid columns="2" cellpadding="5">
-							<h:outputLabel for="username" value="Username:" />
-							<p:inputText id="username" value="#" required="true"
-								label="username" />
-
-
-
-							<f:facet name="footer">
-								<p:commandButton value="Login" update="growl" action="#"
-									oncomplete="handleLoginRequest(xhr, status, args)" />
-							</f:facet>
-						</h:panelGrid>
-					</p:dialog>
-
-
-
 				</div>
 
 			</div>
@@ -119,7 +59,7 @@
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
 							<p:inputText type="password" styleClass="form-control"
-								required="false" id="senhaAtual" value="#{perfil.senhaAtual}"
+								required="false" id="senhaAtual" value="#{empresa.senhaAtual}"
 								requiredMessage="Senha é obrigatória." />
 
 						</div>
@@ -129,7 +69,7 @@
 							<p:outputLabel value="Nova senha" for="pw" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:password id="pw" value="#{perfil.novaSenha}"
+							<p:password id="pw" value="#{empresa.novaSenha}"
 								styleClass="form-control" required="true" match="pw2"
 								requiredMessage="Senha é obrigatória." redisplay="true"
 								validatorMessage="Senhas não conferem" />
@@ -140,7 +80,7 @@
 							<p:outputLabel value="Comfirme sua nova senha" for="pw2" />
 						</div>
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:password id="pw2" value="#{perfil.novaSenha}"
+							<p:password id="pw2" value="#{empresa.novaSenha}"
 								styleClass="form-control" required="true"
 								requiredMessage="Confirmação de senha é obrigatória."
 								validatorMessage="Senhas não conferem" />
@@ -148,7 +88,7 @@
 					</div>
 					<div class="ui-sm-12 ui-md-4 ui-lg-5">
 							<p:commandButton value="Salvar Alterações"
-							action="#{perfil.atualizarSenha()}" icon="fa fa-check"
+							action="#{empresa.atualizarSenha()}" icon="fa fa-check"
 							styleClass="btn-success" />
 							 <div style="text-align: right; float: right;">
                 	

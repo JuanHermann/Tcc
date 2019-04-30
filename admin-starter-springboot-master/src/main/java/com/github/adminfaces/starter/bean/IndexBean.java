@@ -33,11 +33,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.github.adminfaces.starter.model.Empresa;
 import com.github.adminfaces.starter.model.HorarioAgendado;
 import com.github.adminfaces.starter.model.Permissao;
 import com.github.adminfaces.starter.model.Servico;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.model.UsuarioServico;
+import com.github.adminfaces.starter.repository.EmpresaRepository;
 import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
 import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.ServicoRepository;
@@ -57,7 +59,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private static LocalTime HORA_FINAL_INTERVALO = LocalTime.of(13, 30, 0);
 	private static LocalTime HORA_FINAL_EMPRESA = LocalTime.of(20, 0, 0);
 	private static LocalTime TEMPO_BUSCA_ENTRE_SERVICOS = LocalTime.of(0, 15, 0);
-	
+
 	private ScheduleModel eventModel = new DefaultScheduleModel();
 	private ScheduleEvent event = new DefaultScheduleEvent();
 
@@ -90,7 +92,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	@Autowired
 	private UsuarioServicoRepository usuarioServicoRepository;
 	private List<UsuarioServico> usuarioServicos;
-	
+
 	@Autowired
 	private UsuarioLogadoBean usuarioLogadoBean;
 
@@ -101,6 +103,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private HorarioAgendadoRepository horarioAgendadoRepository;
 	private List<HorarioAgendado> horarioAgendados;
 
+	@Autowired
+	private EmpresaRepository empresaRepository;
+
 	public IndexBean() {
 		super(HorarioAgendado.class);
 
@@ -108,7 +113,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	@PostConstruct
 	public void init() throws InstantiationException, IllegalAccessException {
-		if(!verificaPermissao()) {
+		if (!verificaPermissao()) {
 			try {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("indexcliente.jsf");
 			} catch (IOException e) {
@@ -116,6 +121,16 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			}
 		}
 		super.init();
+		
+		if (empresaRepository.findAll().size()>0) {
+			Empresa empresa = empresaRepository.findAll().get(0);
+			HORA_INICIO_EMPRESA = empresa.getHoraAbertura();
+			HORA_INICIO_INTERVALO = empresa.getInicioIntervalo();
+			HORA_FINAL_INTERVALO = empresa.getFinalIntervalo();
+			HORA_FINAL_EMPRESA = empresa.getHoraFechamento();
+			TEMPO_BUSCA_ENTRE_SERVICOS = empresa.getTempoIntervalo();
+		}
+
 		inicioSchedule = HORA_INICIO_EMPRESA.toString();
 		finalSchedule = HORA_FINAL_EMPRESA.toString();
 		inicioHoraCalendar = HORA_INICIO_EMPRESA.getHour();
@@ -138,8 +153,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	private boolean verificaPermissao() {
-		return usuarioLogadoBean.getUsuario().hasRole("ROLE_ADMIN",usuarioLogadoBean.getUsuario());
-		
+		return usuarioLogadoBean.getUsuario().hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario());
+
 	}
 
 	private void atualizarSchedule() {
@@ -344,6 +359,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		return permissaoRepository.findByNome("ROLE_FUNCIONARIO").getUsuarios().size() > 1;
 
 	}
+
 	public void excluirAgendamento() throws InstantiationException, IllegalAccessException {
 		super.remover();
 	}
@@ -353,7 +369,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			System.out.println("agendar");
 			if (mostrarFuncionario()) {
 				for (Servico servico : servicosSelecionados) {
-					
+
 				}
 			} else {
 				if (getObjeto().getId() != null) {
@@ -361,7 +377,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 					boolean primeiro = true;
 					LocalTime tempo = LocalTime.of(0, 0, 0);
 					for (Servico servico : servicosSelecionados) {
-						
+
 						if (primeiro) {
 							agendado = getObjeto();
 							agendado.setHoraInicio(getObjeto().getHoraInicio());
@@ -377,7 +393,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 							tempo = somarLocalTime(tempo, servico.getTempo());
 							agendado.setHoraTermino(tempo);
 						}
-						agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndAtivo(servico,true).get(0));
+						agendado.setUsuarioServico(
+								usuarioServicoRepository.findByServicoAndAtivo(servico, true).get(0));
 						getRepository().save(agendado);
 
 					}
@@ -404,7 +421,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 							tempo = somarLocalTime(tempo, servico.getTempo());
 							agendado.setHoraTermino(tempo);
 						}
-						agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndAtivo(servico,true).get(0));
+						agendado.setUsuarioServico(
+								usuarioServicoRepository.findByServicoAndAtivo(servico, true).get(0));
 						getRepository().save(agendado);
 
 					}
@@ -488,6 +506,5 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		setObjeto(new HorarioAgendado());
 
 	}
-	
 
 }

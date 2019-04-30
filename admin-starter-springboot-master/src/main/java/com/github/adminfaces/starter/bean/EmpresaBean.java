@@ -1,10 +1,7 @@
 package com.github.adminfaces.starter.bean;
 
 import com.github.adminfaces.starter.model.Empresa;
-import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.repository.EmpresaRepository;
-import com.github.adminfaces.starter.repository.UsuarioRepository;
-import com.github.adminfaces.starter.service.UsuarioService;
 
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
@@ -14,7 +11,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @Scope("view")
 public class EmpresaBean extends AbastractFormBean<Empresa, EmpresaRepository> {
@@ -23,25 +19,27 @@ public class EmpresaBean extends AbastractFormBean<Empresa, EmpresaRepository> {
 	private UsuarioLogadoBean usuarioLogadoBean;
 	@Autowired
 	private EmpresaRepository empresaRepository;
-	
+
 	@Autowired
-	
-	
+
 	public EmpresaBean() {
 		super(Empresa.class);
 	}
+
 	@Override
 	public void init() throws InstantiationException, IllegalAccessException {
 		usuarioLogadoBean.getUsuario().hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario());
-		setId(empresaRepository.findAll().get(0).getId());
+		if (!empresaRepository.findAll().isEmpty()) {
+			setId(empresaRepository.findAll().get(0).getId());
+		}
+
 		super.init();
 	}
-	
-	public void atualizar() {		
-		getRepository().save(getObjeto());		
+
+	public void atualizar() {
+		getRepository().save(getObjeto());
 		addDetailMessage("Cadastro Atualizado com sucesso!");
-		Faces.getExternalContext().getFlash().setKeepMessages(true);		       
+		Faces.getExternalContext().getFlash().setKeepMessages(true);
 	}
 
-   
 }

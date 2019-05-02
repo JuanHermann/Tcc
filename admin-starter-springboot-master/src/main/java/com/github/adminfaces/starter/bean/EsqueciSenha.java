@@ -6,19 +6,20 @@ package com.github.adminfaces.starter.bean;
 
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
+import java.util.Random;
 
+import org.omnifaces.util.Faces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
-import com.github.adminfaces.starter.model.MailConf;
-import com.github.adminfaces.starter.model.MailLog;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.service.MailService;
+import com.github.adminfaces.starter.service.UsuarioService;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,12 @@ public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> 
 	private MailService service;
 	@Autowired
 	private UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	private UsuarioService usuarioService;
+	
+	@Autowired 
+	private JavaMailSender mailSender;
 
 	private String email;
 
@@ -43,24 +50,35 @@ public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> 
 		super(Usuario.class);
 	}
 
-	public void novaSenha() throws IOException {
+	public void novaSenha()  {
 		Usuario usuario = usuarioRepository.findByEmail(email);
-		if (usuario != null) {
-			MailConf conf = new MailConf();
-			conf.setEmail("juan.1998@alunos.utfpr.edu.br");
-			conf.setNome("juan Hermann");
-			conf.setPorta(8080);
-			conf.setProtocolo("SMTP");
-			conf.setSenha("ztrabu22");
-			conf.setServidor("localhost");
-			conf.setUsuario(usuario.getNome());
-			MailLog mailLog = new MailLog(conf, usuario.getEmail(), "Recuperação de Senha",
-					"Esta aqui sua nova senha", LocalDateTime.now(), false);
-			service.enviar(mailLog, true);
-			addDetailMessage("Enviado com sucesso");
-		} else {
-			addDetailMessage("Email não encontrado");
+		if(usuario != null) {
+			Random rand = new Random();
+			String novaSenha = String.valueOf(Long.toHexString(rand.nextLong()));
+			System.out.println(novaSenha);
+			usuario.setSenha(novaSenha);
+			usuarioService.criptografarSenha(usuario);
+			getRepository().save(usuario);
+			sendMail(usuario, novaSenha);
+			addDetailMessage("Email enviado com sucesso!");
+			Faces.getExternalContext().getFlash().setKeepMessages(true);
+		}else {
+			
 		}
 	}
+    public String sendMail(Usuario usuario, String novaSenha) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setText("Olá "+ usuario.getNome()+",\n\nSua nova senha é "+novaSenha+" ,\nVocê pode alterar sua senha no seu perfil, localhots:8080/perfil.jsf\n\nAtenciosamente,\nJuan Hermann");
+        message.setSubject("Recuração de Senha");
+        message.setTo("juanhs8@hotmail.com");
+
+        try {
+            mailSender.send(message);
+            return "Email enviado com sucesso!";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Erro ao enviar email.";
+        }
+    }
 
 }

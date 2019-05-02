@@ -67,6 +67,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private TimeZone timeZoneBrasil;
 	private String inicioSchedule;
 	private String finalSchedule;
+	private int tempoMinutosSchedule;
 	private int inicioHoraCalendar;
 	private int finalHoraCalendar;
 	private LocalDateTime dataInicioBloqueio;
@@ -133,9 +134,12 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 		inicioSchedule = HORA_INICIO_EMPRESA.toString();
 		finalSchedule = HORA_FINAL_EMPRESA.toString();
+		tempoMinutosSchedule = TEMPO_BUSCA_ENTRE_SERVICOS.getMinute();
+		
 		inicioHoraCalendar = HORA_INICIO_EMPRESA.getHour();
 		finalHoraCalendar = HORA_FINAL_EMPRESA.getHour();
-
+		
+		
 		timeZoneBrasil = TimeZone.getTimeZone("America/Sao_Paulo");
 		clientes = new ArrayList<>();
 		horarioAgendados = new ArrayList<>();

@@ -26,7 +26,7 @@
 			role="form">
 			<p:growl id="messages" showDetail="true" />
 
-			<p:schedule id="schedule" value="#{indexBean.eventModel}" slotMinutes="60" minTime="#{indexBean.inicioSchedule}" maxTime="#{indexBean.finalSchedule}"
+			<p:schedule id="schedule" value="#{indexBean.eventModel}" slotMinutes="#{indexBean.tempoMinutosSchedule}" minTime="#{indexBean.inicioSchedule}" maxTime="#{indexBean.finalSchedule}"
 				widgetVar="myschedule"  timeFormat="HH:mm" view="agendaWeek" >
 
 				<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"

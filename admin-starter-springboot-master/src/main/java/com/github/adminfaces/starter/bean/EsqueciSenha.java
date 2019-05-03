@@ -8,6 +8,9 @@ import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.util.Random;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
 import org.omnifaces.util.Faces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -60,13 +63,12 @@ public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> 
 			usuarioService.criptografarSenha(usuario);
 			getRepository().save(usuario);
 			sendMail(usuario, novaSenha);
-			addDetailMessage("Email enviado com sucesso!");
-			Faces.getExternalContext().getFlash().setKeepMessages(true);
+			setEmail("");
 		}else {
-			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Email não cadastrado em nosso sistema."));
 		}
 	}
-    public String sendMail(Usuario usuario, String novaSenha) {
+    public void sendMail(Usuario usuario, String novaSenha) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setText("Olá "+ usuario.getNome()+",\n\nSua nova senha é "+novaSenha+" ,\nVocê pode alterar sua senha no seu perfil, localhots:8080/perfil.jsf\n\nAtenciosamente,\nJuan Hermann");
         message.setSubject("Recuração de Senha");
@@ -74,10 +76,12 @@ public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> 
 
         try {
             mailSender.send(message);
-            return "Email enviado com sucesso!";
+			addDetailMessage("Email enviado com sucesso!");
+			Faces.getExternalContext().getFlash().setKeepMessages(true);
         } catch (Exception e) {
             e.printStackTrace();
-            return "Erro ao enviar email.";
+			addDetailMessage("Falha ao enviar o Email!");
+			Faces.getExternalContext().getFlash().setKeepMessages(true);
         }
     }
 

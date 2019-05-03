@@ -1,114 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" 
-      xmlns:adm="http://github.com/adminfaces"
-      xmlns:p="http://primefaces.org/ui">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:adm="http://github.com/adminfaces"
+	xmlns:p="http://primefaces.org/ui">
 
-    <h:head>
-        <title>Centro Estético Andressa Hermann</title>
-        <meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
-        <link rel="shortcut icon" type="image/x-icon" href="#{resource['favicon/favicon.ico']}"/>
-        <link rel="shortcut icon" type="image/x-icon" href="#{resource['favicon/favicon-16x16.png']}" sizes="16x16"/>
-        <link rel="shortcut icon" type="image/x-icon" href="#{resource['favicon/favicon-32x32.png']}" sizes="32x32"/>
-        <link rel="shortcut icon" type="image/x-icon" href="#{resource['favicon/favicon-96x96.png']}" sizes="96x96"/>
-        <link rel="shortcut icon" type="image/x-icon" href="#{resource['favicon/favicon-144x144.png']}" sizes="144x144"/>
-        <meta name="theme-color" content="#444"/>
-        <meta name="mobile-web-app-capable" content="yes"/>
+<h:head>
+	<title>Centro Estético Andressa Hermann</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['favicon/favicon.ico']}" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['favicon/favicon-16x16.png']}" sizes="16x16" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['favicon/favicon-32x32.png']}" sizes="32x32" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['favicon/favicon-96x96.png']}" sizes="96x96" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{resource['favicon/favicon-144x144.png']}" sizes="144x144" />
+	<meta name="theme-color" content="#444" />
+	<meta name="mobile-web-app-capable" content="yes" />
 
-        <style type="text/css">
+	<style type="text/css">
 
-            /* below css hides growls in small screens and makes messages visible */
-            @media (max-width: 768px) {
 
-                body div.ui-growl {
-                    display: none;
-                }
 
-                body div.ui-messages {
-                    display: block;
-                }
+body.login-page {
+	background-color: transparent;
+}
 
-            }
-            
-           /* below css hides messages in medium/big devices and makes growl visible in such devices */
-            @media (min-width: 769px) {
-                body div.ui-growl {
-                    display: block;
-                }
+html {
+	background: url(#{ resource [ 'images:login-bg.jpg' ]
+}
+)
+no-repeat
+ 
+center
+ 
+center
+ 
+fixed
+;
 
-                body div.ui-messages {
-                    display: none;
-                }
-            }
-
-            body.login-page {
-                background-color: transparent;
-            }
-
-            html {
-                background: url(#{resource[ 'images:login-bg.jpg' ]}) no-repeat center center fixed;
-                -webkit-background-size: cover;
-                -moz-background-size: cover;
-                -o-background-size: cover;
-                background-size: cover;
-            }
-        </style>
-    </h:head>
-
-    <h:body styleClass="hold-transition login-page">
-        <div id="loader" class="load-bar" style="display: none">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-        
-        <p:dialog id="adminStatusDialog" modal="true" widgetVar="statusDialog" draggable="false" closable="false"
-                  resizable="false" responsive="true" showHeader="false" appendTo="@(body)">
-            <p:graphicImage library="images" name="#{adminConfig.loadingImage}"/>
-        </p:dialog>
-
-        <div class="login-box">
-            <div class="login-logo">
-                <p:link href="index.xhtml"><b>Centro Estético </b>Andressa Hermann</p:link>
-            </div>
-            <!-- /.login-logo -->
-            <div class="box login-box-body">
-                <h:form >
-                    <p class="login-box-msg">Esqueci minha senha</p>
-                    <p:messages closable="true"/>
-                    
-                    <div class="form-group has-feedback">
-                        <p:inputText id="email" value="#{esqueciSenha.email}" type="email" styleClass="form-control" placeholder="Informe seu E-mail"
-                                     required="true" requiredMessage="Informe o seu E-mail." validatorMessage="Informe um email valido.">
-                                     <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
-
-						</p:inputText>
-						 <p:message for="email"/>
-                    </div>
-                    
-                    <div class="row">
-                        
-                        <div class="col-xs-12">
-                            <p:commandButton styleClass="btn btn-success btn-block" action="#{esqueciSenha.novaSenha}" update="@form" 
-                                             value="Enviar Email" />
-                        </div>
-                        
-                        <p:spacer height="2" />
-                    </div>
-                </h:form>
                 
+-webkit-background-size
+:
+ 
+cover
+;
 
-                <a href="login.xhtml" class="text-center">Voltar</a>
+                
+-moz-background-size
+:
+ 
+cover
+;
 
-            </div>
-        </div>
-        <adm:ripple />
-        <h:outputScript library="js" name="admintemplate.js" target="head"/>
+                
+-o-background-size
+:
+ 
+cover
+;
+
+                
+background-size
+:
+ 
+cover
+;
+
+            
+}
+</style>
+</h:head>
+
+<h:body styleClass="hold-transition login-page">
+	<div id="loader" class="load-bar" style="display: none">
+		<div class="bar"></div>
+		<div class="bar"></div>
+		<div class="bar"></div>
+	</div>
 
 
-    </h:body>
+	<div class="login-box">
+		<div class="login-logo">
+			<p:link href="index.xhtml">
+				<b>Centro Estético </b>Andressa Hermann</p:link>
+		</div>
+		<!-- /.login-logo -->
+		<div class="box login-box-body">
+			<h:form>
+				<p class="login-box-msg">Esqueci minha senha</p>
+				<p:messages id="messages" showDetail="true" closable="true"/>
+
+				<div class="form-group has-feedback">
+					<p:inputText id="email" value="#{esqueciSenha.email}" type="email"
+						styleClass="form-control" placeholder="Informe seu E-mail"
+						required="true" requiredMessage="Informe o seu E-mail."
+						validatorMessage="Informe um email valido.">
+						<f:validateRegex
+							pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+
+					</p:inputText>
+					<p:message for="email" />
+				</div>
+
+				<div class="row">
+
+					<div class="col-xs-12">
+						<p:commandButton styleClass="btn btn-success btn-block"
+							action="#{esqueciSenha.novaSenha}" update="@form"
+							value="Enviar Email" />
+					</div>
+
+					<p:spacer height="2" />
+				</div>
+			</h:form>
+
+
+			<a href="login.xhtml" class="text-center">Voltar</a>
+
+		</div>
+	</div>
+	<adm:ripple />
+	<h:outputScript library="js" name="admintemplate.js" target="head" />
+
+
+</h:body>
 </html>

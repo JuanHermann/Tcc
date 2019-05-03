@@ -24,27 +24,6 @@
 	<meta name="mobile-web-app-capable" content="yes" />
 
 	<style type="text/css">
-
-/* below css hides growls in small screens and makes messages visible */
-@media ( max-width : 768px) {
-	body div.ui-growl {
-		display: none;
-	}
-	body div.ui-messages {
-		display: block;
-	}
-}
-
-/* below css hides messages in medium/big devices and makes growl visible in such devices */
-@media ( min-width : 769px) {
-	body div.ui-growl {
-		display: block;
-	}
-	body div.ui-messages {
-		display: none;
-	}
-}
-
 body.login-page {
 	background-color: transparent;
 }
@@ -54,60 +33,76 @@ html {
 }
 )
 no-repeat
+
  
+
 center
+
  
+
 center
+
  
+
 fixed
-;
 
-                
+
+;
 -webkit-background-size
-:
- 
-cover
-;
 
-                
+
+:
+
+ 
+
+cover
+
+
+;
 -moz-background-size
-:
- 
-cover
-;
 
-                
+
+:
+
+ 
+
+cover
+
+
+;
 -o-background-size
-:
- 
-cover
-;
 
-                
+
+:
+
+ 
+
+cover
+
+
+;
 background-size
-:
- 
-cover
-;
 
-            
+
+:
+
+ 
+
+cover
+
+
+;
 }
 </style>
 </h:head>
 
 <h:body styleClass="hold-transition login-page">
-	<p:growl autoUpdate="true" sticky="true" />
 	<div id="loader" class="load-bar" style="display: none">
 		<div class="bar"></div>
 		<div class="bar"></div>
 		<div class="bar"></div>
 	</div>
 
-	<p:dialog id="adminStatusDialog" modal="true" widgetVar="statusDialog"
-		draggable="false" closable="false" resizable="false" responsive="true"
-		showHeader="false" appendTo="@(body)">
-		<p:graphicImage library="images" name="#{adminConfig.loadingImage}" />
-	</p:dialog>
 
 	<div class="login-box">
 		<div class="login-logo">
@@ -133,7 +128,7 @@ cover
 					<i class="fa fa-lock form-control-feedback" style="font-size: 18px"></i>
 				</div>
 				<div class="row">
-				<!-- 
+					<!-- 
 					<div class="col-xs-12">
 						<p:selectBooleanCheckbox itemLabel="Lembrar-me" />
 					</div>
@@ -149,12 +144,14 @@ cover
 			</form>
 
 
-			<br /> 
-			
-                            <p:commandLink styleClass="btn btn-link" value="Criar Conta" onclick="location.href='/cadastro.xhtml'" />
+			<br />
+
+			<p:commandLink styleClass="btn btn-link" value="Criar Conta"
+				onclick="location.href='/cadastro.xhtml'" />
 			<div style="text-align: right; float: right;">
-				
-					<p:commandLink styleClass="btn btn-link" value="Esqueci	minha senha" onclick="location.href='/esquecisenha.xhtml'" />
+
+				<p:commandLink styleClass="btn btn-link" value="Esqueci	minha senha"
+					onclick="location.href='/esquecisenha.xhtml'" />
 			</div>
 
 		</div>

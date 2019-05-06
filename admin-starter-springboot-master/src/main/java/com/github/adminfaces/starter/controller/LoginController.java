@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping
 public class LoginController {
 
-	@GetMapping("/login.xhtml?error=bad-credentials")
-	public void loginIncorreto() {
-
+	@GetMapping("/login")
+	public String loginIncorreto() {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Email não cadastrado em nosso sistema."));
+		return "redirect:login.jsf";
 
 	}
 

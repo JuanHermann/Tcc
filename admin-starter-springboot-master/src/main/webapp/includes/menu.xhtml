@@ -64,12 +64,14 @@
             <span>Perfil</span>
         </p:link>
         </li>
-        <li>
-        <p:link outcome="/empresa.jsf" >
+        
+        <li >
+        <p:link outcome="/empresa.jsf" rendered="#{usuarioLogadoBean.hasRole('ROLE_ADMIN')}" >
             <i class="fa fa-user"></i>
             <span>Empresa</span>
         </p:link>
         </li>
+        
         <li>
         <p:link outcome="/car-list.jsf" > 
             <i class="fa fa-sign-out"></i>

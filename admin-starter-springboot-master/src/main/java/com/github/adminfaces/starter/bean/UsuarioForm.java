@@ -46,8 +46,8 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 		getRepository().save(getObjeto());
 		getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_CADASTRADO"));
 		getRepository().save(getObjeto());
-		addDetailMessage("Cadastro criado com sucesso!");
 		Faces.getExternalContext().getFlash().setKeepMessages(true);
+		addDetailMessage("Cadastro criado com sucesso!");
 		Faces.redirect("index.jsf");
 	}
 

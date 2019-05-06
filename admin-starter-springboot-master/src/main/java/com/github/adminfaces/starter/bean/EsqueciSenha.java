@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.github.adminfaces.starter.model.Usuario;
@@ -54,13 +55,14 @@ public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> 
 	}
 
 	public void novaSenha()  {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		Usuario usuario = usuarioRepository.findByEmail(email);
 		if(usuario != null) {
 			Random rand = new Random();
 			String novaSenha = String.valueOf(Long.toHexString(rand.nextLong()));
 			System.out.println(novaSenha);
 			usuario.setSenha(novaSenha);
-			usuarioService.criptografarSenha(usuario);
+			usuario.setSenha(encoder.encode(usuario.getSenha()));
 			getRepository().save(usuario);
 			sendMail(usuario, novaSenha);
 			setEmail("");
@@ -72,7 +74,7 @@ public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setText("Olá "+ usuario.getNome()+",\n\nSua nova senha é "+novaSenha+" ,\nVocê pode alterar sua senha no seu perfil, localhots:8080/perfil.jsf\n\nAtenciosamente,\nJuan Hermann");
         message.setSubject("Recuração de Senha");
-        message.setTo("juanhs8@hotmail.com");
+        message.setTo(usuario.getEmail());
 
         try {
             mailSender.send(message);

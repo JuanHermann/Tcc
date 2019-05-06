@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.github.adminfaces.starter.model.Permissao;
 import com.github.adminfaces.starter.model.Usuario;
 
 
@@ -31,6 +32,15 @@ public class UsuarioLogadoBean {
 		if (authentication != null) {
 			usuario = (Usuario) authentication.getPrincipal();
 		}
+	}
+	
+	public boolean hasRole(String role) {		
+		for(Permissao p : usuario.getPermissoes()) {
+			if(p.getNome().equals(role)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

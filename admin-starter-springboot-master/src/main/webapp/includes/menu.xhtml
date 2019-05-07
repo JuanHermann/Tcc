@@ -1,83 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:p="http://primefaces.org/ui" xmlns:h="http://xmlns.jcp.org/jsf/html">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-    <ul class="sidebar-menu tree" data-widget="tree">
-        <li>
-            <p:link outcome="/index.jsf" >
-                <i class="fa fa-list-alt"></i>
-                <span>Agenda</span>
-            </p:link>
-        </li>
-        <li class="header">
-            Geral
-        </li>
-        <li>
-            <p:link outcome="/cadastro-list.jsf" >
-                <i class="fa fa-user-plus"></i>
-                <span>Novos Cadastros</span>
-            </p:link>
-        </li>
-        <li>
-            <p:link outcome="/servico-list.jsf" >
-                <i class="fa fa-plus-square-o"></i>
-                <span>Serviços Prestados</span>
-            </p:link>
-        </li>
-        <li>
-            <p:link outcome="/car-list.jsf" onclick="clearBreadCrumbs()" rendered="false">
-                <i class="fa fa-list-alt"></i>
-                <span>Adicionar Horario Cliente</span>
-            </p:link>
-        </li>        
-        <li>
-            <p:link outcome="/bloqueioAgenda.jsf" onclick="clearBreadCrumbs()" rendered="false">
-                <i class="fa fa-times-circle-o"></i>
-                <span>Bloquear Agenda</span>
-            </p:link>
-        </li>
-        <li>
-            <p:link outcome="/cliente-list.jsf" onclick="clearBreadCrumbs()">
-                <i class="fa fa-users"></i>
-                <span>Clientes</span>
-            </p:link>
-        </li>  
-         <li>
-            <p:link outcome="/funcionario-list.jsf" onclick="clearBreadCrumbs()">
-                <i class="fa fa-users"></i>
-                <span>Funcionarios</span>
-            </p:link>
-        </li>      
-        <li>
-        <p:link outcome="/car-list.jsf" onclick="clearBreadCrumbs()">
-            <i class="fa fa-table"></i>
-            <span>Relatórios</span>
-        </p:link>
-        </li>
-        <li class="header">
-            Outros
-        </li>
-		<li>
-        <p:link outcome="/perfil.jsf" >
-            <i class="fa fa-user"></i>
-            <span>Perfil</span>
-        </p:link>
-        </li>
-        
-        <li >
-        <p:link outcome="/empresa.jsf" rendered="#{usuarioLogadoBean.hasRole('ROLE_ADMIN')}" >
-            <i class="fa fa-user"></i>
-            <span>Empresa</span>
-        </p:link>
-        </li>
-        
-        <li>
-        <p:link outcome="/car-list.jsf" > 
-            <i class="fa fa-sign-out"></i>
-            <span>Sair</span>
-        </p:link>
-        </li>
-    </ul>
+
+
+	<ul class="sidebar-menu tree" data-widget="tree">
+		<li><p:link outcome="/index.jsf">
+				<i class="fa fa-list-alt"></i>
+				<span>Agenda</span>
+			</p:link></li>
+	</ul>
+	<ul class="sidebar-menu tree" data-widget="tree"
+		style="display: none;'} ">
+		<li class="header">Geral</li>
+		<li><p:link outcome="/cadastro-list.jsf">
+				<i class="fa fa-user-plus"></i>
+				<span>Novos Cadastros</span>
+			</p:link></li>
+		<li><p:link outcome="/servico-list.jsf">
+				<i class="fa fa-plus-square-o"></i>
+				<span>Serviços Prestados</span>
+			</p:link></li>
+		<li><p:link outcome="/car-list.jsf" onclick="clearBreadCrumbs()"
+				rendered="false">
+				<i class="fa fa-list-alt"></i>
+				<span>Adicionar Horario Cliente</span>
+			</p:link></li>
+		<li><p:link outcome="/bloqueioAgenda.jsf"
+				onclick="clearBreadCrumbs()" rendered="false">
+				<i class="fa fa-times-circle-o"></i>
+				<span>Bloquear Agenda</span>
+			</p:link></li>
+		<li><p:link outcome="/cliente-list.jsf"
+				onclick="clearBreadCrumbs()">
+				<i class="fa fa-users"></i>
+				<span>Clientes</span>
+			</p:link></li>
+		<li><p:link outcome="/funcionario-list.jsf"
+				onclick="clearBreadCrumbs()">
+				<i class="fa fa-users"></i>
+				<span>Funcionarios</span>
+			</p:link></li>
+		<li><p:link outcome="/car-list.jsf" onclick="clearBreadCrumbs()">
+				<i class="fa fa-table"></i>
+				<span>Relatórios</span>
+			</p:link></li>
+	</ul>
+	<ul class="sidebar-menu tree" data-widget="tree">
+		<li class="header">Outros</li>
+		<li><p:link outcome="/perfil.jsf">
+				<i class="fa fa-user"></i>
+				<span>Perfil</span>
+			</p:link></li>
+
+		<li><p:link outcome="/empresa.jsf"
+				rendered="#{usuarioLogadoBean.hasRole('ROLE_ADMIN')}">
+				<i class="fa fa-user"></i>
+				<span>Empresa</span>
+			</p:link></li>
+
+		<li><p:link outcome="/car-list.jsf">
+				<i class="fa fa-sign-out"></i>
+				<span>Sair</span>
+			</p:link></li>
+	</ul>
 
 </ui:composition>

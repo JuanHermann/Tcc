@@ -173,7 +173,10 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			dataFinal = Date.from(localDataFinal.toInstant(ZoneOffset.UTC));
 
 			if (horario.getUsuarioServico() == null) {
-				eventModel.addEvent(new DefaultScheduleEvent("Bloqueio", dataInicio, dataFinal, "btn-danger"));
+				DefaultScheduleEvent df = new DefaultScheduleEvent("Bloqueio", dataInicio, dataFinal, horario);
+				df.setStyleClass("btn-danger");
+				eventModel.addEvent(df);
+				
 			} else {
 
 				eventModel.addEvent(new DefaultScheduleEvent(

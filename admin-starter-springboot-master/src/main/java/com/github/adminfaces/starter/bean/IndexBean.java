@@ -150,7 +150,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		funcionario = new Usuario();
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
-		stringHorario = "Selecione um Horairio";
+		stringHorario = "Selecione um Horário";
 
 		atualizarSchedule();
 
@@ -324,9 +324,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			}
 		}
 		if (horarios.isEmpty()) {
-			stringHorario = "Nenhum Horario disponivel nessa Data";
+			stringHorario = "Nenhum Horário disponivel";
 		} else {
-			stringHorario = "Selecione um horario";
+			stringHorario = "Selecione um Horário";
 		}
 
 	}

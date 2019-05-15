@@ -28,6 +28,7 @@
 	<style type="text/css">
 
 /* below css hides growls in small screens and makes messages visible */
+
 @media ( max-width : 768px) {
 	body div.ui-growl {
 		display: none;
@@ -60,7 +61,9 @@ no-repeat
 
 
 
+
  
+
 
 
 
@@ -70,7 +73,9 @@ center
 
 
 
+
  
+
 
 
 
@@ -80,12 +85,16 @@ center
 
 
 
+
  
+
 
 
 
 
 fixed
+
+
 
 
 
@@ -104,7 +113,10 @@ fixed
 
 
 
+
+
 :
+
 
 
 
@@ -114,7 +126,10 @@ fixed
 
 
 
+
 cover
+
+
 
 
 
@@ -133,7 +148,10 @@ cover
 
 
 
+
+
 :
+
 
 
 
@@ -143,7 +161,10 @@ cover
 
 
 
+
 cover
+
+
 
 
 
@@ -162,7 +183,10 @@ cover
 
 
 
+
+
 :
+
 
 
 
@@ -172,7 +196,10 @@ cover
 
 
 
+
 cover
+
+
 
 
 
@@ -191,7 +218,10 @@ background-size
 
 
 
+
+
 :
+
 
 
 
@@ -201,7 +231,10 @@ background-size
 
 
 
+
 cover
+
+
 
 
 
@@ -278,7 +311,13 @@ cover
 
 					<p:message id="msgTelefone" for="telefone" display="text" />
 				</div>
-
+				<div class="form-group has-feedback">
+					<fieldset class="form-group">
+    <label for="exampleInputEmail1" class="bmd-label-floating">label-floating</label>
+    <input type="email" class="form-control" id="exampleInputEmail1"/>
+    <span class="bmd-help">We'll never share your email with anyone else.</span>
+  </fieldset>
+				</div>
 				<div class="form-group has-feedback">
 					<p:password id="senha" value="#{usuarioForm.objeto.senha}"
 						styleClass="form-control" placeholder="Informe sua Senha"

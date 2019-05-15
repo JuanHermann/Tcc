@@ -42,7 +42,7 @@
 
 
 
-			<p:dialog widgetVar="inserir" header="Cadastrar Horario" 
+			<p:dialog widgetVar="inserir" header="Cadastrar Horário" 
 				showEffect="clip" hideEffect="clip">
 
 				<h:panelGrid id="eventDetails" columns="1">
@@ -104,7 +104,7 @@
 										listener="#{indexBean.buscarHorarios}" update="horario" />
 								</p:calendar>
 
-								<p:outputLabel value="Horario:" for="horario" />
+								<p:outputLabel value="Horário:" for="horario" />
 
 								<p:selectOneMenu id="horario" converter="#{localTimeConverter}"
 									value="#{indexBean.objeto.horaInicio}">

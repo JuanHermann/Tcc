@@ -85,7 +85,7 @@
 					</div>
 
 
-					<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+					<p:growl id="growl" sticky="true" showDetail="true" life="3000"  />
 
 					<p:dialog id="dialogAgendar" widgetVar="inserir"
 						header="Cadastrar Horario" showEffect="clip" hideEffect="clip">
@@ -154,12 +154,12 @@
 									</p:selectOneMenu>
 								</h:panelGrid>
 								<p:commandButton value="Salvar" id="btnSalvar"
-									disabled="#{indexClienteBean.objeto.horaInicio == null or indexClienteBean.servicosSelecionados.size() == 0}"
 									action="#{indexClienteBean.salvarAgendamento()}"
 									update="growl eventDetails" icon="fa fa-check"
 									oncomplete="if(args.sucesso == true) { PF('inserir').hide(); }" />
 
-							</p:outputPanel>
+							</p:outputPanel><!-- 
+									disabled="#{indexClienteBean.objeto.horaInicio == null or indexClienteBean.servicosSelecionados.size() == 0}"  -->
 
 						</h:panelGrid>
 

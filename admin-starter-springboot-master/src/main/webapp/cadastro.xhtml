@@ -105,17 +105,7 @@ background-size:cover;
 				<b>Centro Estético </b>Andressa Hermann</p:link>
 		</div>
 		
-		<div class="container my-5">
-  <div class="row">
-    <div class="col-md-6 mx-auto">
-      <div class="form-group">
-        <input type="text" id="name" class="form-control">
-        <label class="form-control-placeholder" for="name">Name</label>
-      </div>
 
-    </div>
-  </div>
-</div>
 
 		<p:tooltip />
 
@@ -126,6 +116,7 @@ background-size:cover;
 				<p class="login-box-msg">Informe seus dados para o Cadastro</p>
 
 				<div class="form-group has-feedback">
+							<p:outputLabel value="Nome:" for="nome" />
 					<p:inputText value="#{usuarioForm.objeto.nome}" id="nome"
 						type="text" styleClass="form-control"
 						placeholder="Informe seu nome completo" required="true"
@@ -138,19 +129,21 @@ background-size:cover;
 				</div>
 
 				<div class="form-group has-feedback">
+							<p:outputLabel value="Email:" for="email" />
 					<p:inputText value="#{usuarioForm.objeto.email}" id="email"
 						type="email" styleClass="form-control"
 						placeholder="Informe seu E-mail" required="true"
 						requiredMessage="Email é obrigatório."
 						validatorMessage="Informe um email valido.">
 						<f:validateRegex
-							pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+		pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 						<f:ajax event="change" render="@this  msgEmail" />
 					</p:inputText>
 					<p:message id="msgEmail" for="email" display="text" />
 				</div>
 
 				<div class="form-group has-feedback">
+							<p:outputLabel value="telefone:" for="telefone" />
 					<p:inputMask id="telefone" mask="(99) 99999-9999"
 						styleClass="form-control" placeholder="Informe seu Telefone"
 						required="true" requiredMessage="Telefone é obrigatório."
@@ -162,6 +155,7 @@ background-size:cover;
 				</div>
 
 				<div class="form-group has-feedback">
+							<p:outputLabel value="Senha:" for="senha" />
 					<p:password id="senha" value="#{usuarioForm.objeto.senha}"
 						styleClass="form-control" placeholder="Informe sua Senha"
 						required="true" match="pw2" requiredMessage="Senha é obrigatória."
@@ -172,6 +166,7 @@ background-size:cover;
 					<p:message id="msgSenha1" for="senha" display="text" />
 				</div>
 				<div class="form-group has-feedback">
+							<p:outputLabel value="Confirmação de Senha:" for="pw2" />
 					<p:password id="pw2" value="#{usuarioForm.objeto.senha}"
 						styleClass="form-control" placeholder="Confirme sua Senha"
 						required="true"

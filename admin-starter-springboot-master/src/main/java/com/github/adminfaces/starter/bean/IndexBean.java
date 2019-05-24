@@ -153,8 +153,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		stringHorario = "Selecione um Horário";
 
 		atualizarSchedule();
-
-	}
+		}
 
 	private boolean verificaPermissao() {
 		return usuarioLogadoBean.getUsuario().hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario());
@@ -341,21 +340,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		return false;
 	}
 
-	public Time somarTime(Time tempo1, Time tempo2) {
-		GregorianCalendar gc = new GregorianCalendar();
-		gc.setTimeInMillis(tempo1.getTime());
-		String[] tempo = String.valueOf(tempo2).split(":");
-		int hora = Integer.parseInt(tempo[0]), minuto = Integer.parseInt(tempo[1]);
-		if (hora > 0) {
-			gc.add(Calendar.HOUR, hora);
-		}
-		if (minuto > 0) {
-			gc.add(Calendar.MINUTE, minuto);
-		}
 
-		Time soma = new Time(gc.getTime().getTime());
-		return soma;
-	}
 
 	public boolean mostrarForm() {
 		return "servico".equalsIgnoreCase(tipo);

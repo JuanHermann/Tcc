@@ -62,7 +62,7 @@
 								<p:outputLabel for="cliente" value="Cliente:" />
 
 								<p:selectOneMenu id="cliente" value="#{indexBean.objeto.cliente}"
-									filter="true" converter="#{usuarioConverter}">
+									filter="true" converter="#{usuarioConverter}" required="true">
 									<f:selectItem itemLabel="Selecione o cliente"
 										itemValue="#{null}" />
 									<f:selectItems value="#{indexBean.clientes}" var="usuario"
@@ -74,7 +74,7 @@
 
 								<p:selectCheckboxMenu id="servico"
 									value="#{indexBean.servicosSelecionados}" label="Serviços" 
-									multiple="true" filter="true" filterMatchMode="startsWith"
+									multiple="true" filter="true" filterMatchMode="startsWith" required="true"
 									panelStyle="width:250px">
 									<f:selectItems value="#{indexBean.servicos}" var="servico"
 										itemLabel="#{servico.nome}" itemValue="#{servico}" />
@@ -87,7 +87,7 @@
 									<p:outputLabel for="funcionario" value="Funcionario:" />
 
 									<p:selectOneMenu id="funcionario"
-										value="#{indexBean.funcionario}"
+										value="#{indexBean.funcionario}" required="true"
 										converter="#{usuarioConverter}">
 										<f:selectItem itemLabel="Nenhuma Preferencia"
 											itemValue="#{null}" />
@@ -99,7 +99,7 @@
 
 								<p:outputLabel for="data" value="Dia:" />
 
-								<p:calendar id="data" value="#{indexBean.objeto.data}"
+								<p:calendar id="data" value="#{indexBean.objeto.data}" required="true"
 									pattern="dd/MM/yyyy" converter="#{localDateConverter}">
 									<p:ajax event="dateSelect"
 										listener="#{indexBean.buscarHorarios}" update="horario" />
@@ -107,7 +107,7 @@
 
 								<p:outputLabel value="Horário:" for="horario" />
 
-								<p:selectOneMenu id="horario" converter="#{localTimeConverter}"
+								<p:selectOneMenu id="horario" converter="#{localTimeConverter}" required="true"
 									value="#{indexBean.objeto.horaInicio}">
 									<f:selectItem itemLabel="#{indexBean.stringHorario}" itemValue="" />
 									<f:selectItems value="#{indexBean.horarios}" var="horario"
@@ -119,13 +119,13 @@
 						<p:outputPanel rendered="#{!indexBean.mostrarForm()}">
 							<h:panelGrid columns="1">
 								<p:outputLabel for="inicio" value="Inicio" />
-								<p:calendar id="inicio" value="#{indexBean.dataInicioBloqueio}" 
+								<p:calendar id="inicio" value="#{indexBean.dataInicioBloqueio}"  required="true"
 								minHour="#{indexBean.inicioHoraCalendar}" maxHour="#{indexBean.finalHoraCalendar}" 
 									pattern="dd/MM/yyyy HH:mm" converter="#{localDateTimeConverter}" />
 
 
 								<p:outputLabel for="final" value="Final" />
-								<p:calendar id="final" value="#{indexBean.dataFinalBloqueio}"
+								<p:calendar id="final" value="#{indexBean.dataFinalBloqueio}" required="true"
 								 minHour="#{indexBean.inicioHoraCalendar}" maxHour="#{indexBean.finalHoraCalendar}" 
 									 pattern="dd/MM/yyyy HH:mm" converter="#{localDateTimeConverter}" />
 
@@ -135,12 +135,12 @@
 							<p:commandButton value="Salvar"
 							action="#{indexBean.salvarAgendamento()}" update="@form schedule"
 							icon="fa fa-check" 
-							oncomplete="PF('myschedule').update();PF('inserir').hide();"  />
+							oncomplete="if(args.sucesso == true) { PF('inserir').hide(); }"  />
 							
 							<p:commandButton value="Excluir"
 							action="#{indexBean.excluirAgendamento()}" update="@form schedule"
 							icon="fa fa-trash" styleClass="btn-danger" rendered="#{indexBean.objeto.id != null}"
-							oncomplete="PF('myschedule').update();PF('inserir').hide();"  />
+							oncomplete="if(args.sucesso == true) { PF('myschedule').update();PF('inserir').hide(); }"  />
 
 					</p:outputPanel>
 

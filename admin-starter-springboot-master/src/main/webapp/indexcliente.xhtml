@@ -25,7 +25,7 @@
 		</f:metadata>
 
 
-		<h:form id="form" prependId="false">
+		<h:form id="form" prependId="false" >
 
 
 			<div class="box box-primary">
@@ -52,7 +52,7 @@
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-6">
 							<p:accordionPanel value="#{indexClienteBean.horariosCliente}"
-								multiple="true" var="horario">
+								multiple="true" var="horario" widgetVar="myschedule"  >
 								<p:tab
 									title="Dia #{horario.data.dayOfMonth}/#{horario.data.monthValue} ás #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}">
 									<h:panelGrid columns="2" cellpadding="10">
@@ -155,7 +155,7 @@
 								</h:panelGrid>
 								<p:commandButton value="Salvar" id="btnSalvar"
 									action="#{indexClienteBean.salvarAgendamento()}"
-									update="growl eventDetails" icon="fa fa-check"
+									update="growl form eventDetails" icon="fa fa-check"
 									oncomplete="if(args.sucesso == true) { PF('inserir').hide(); }" />
 
 							</p:outputPanel><!-- 

@@ -3,7 +3,6 @@ package com.github.adminfaces.starter.bean;
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.io.IOException;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -11,7 +10,6 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,13 +19,12 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
-import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +74,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private LocalTime tempoTotalServicos;
 	private List<LocalTime> horarios;
 	private Date data = Calendar.getInstance().getTime();
+	
+	@Autowired
+	protected ContextBean context;
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -357,8 +357,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				servicosSelecionados.clear();
 				atualizarSchedule();
 				addDetailMessage("Cadastrado com sucesso");
-				RequestContext request = RequestContext.getCurrentInstance();
-				request.addCallbackParam("sucesso", true);
+				context.fecharDialog("inserir");
 
 			}
 		} else {
@@ -414,6 +413,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			tipo = "servico";
 			servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
 			buscarHorarios();
+			horarios.add(getObjeto().getHoraInicio());
+			
 		}
 
 	}
@@ -444,5 +445,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		setObjeto(new HorarioAgendado());
 
 	}
+
 
 }

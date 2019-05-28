@@ -310,6 +310,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	public void excluirAgendamento() throws InstantiationException, IllegalAccessException {
 		super.remover();
 		atualizarSchedule();
+		context.fecharDialog("inserir");
 	}
 
 	public void salvarAgendamento() {

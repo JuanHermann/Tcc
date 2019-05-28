@@ -141,9 +141,8 @@
 							icon="fa fa-check" />
 							
 							<p:commandButton value="Excluir"
-							action="#{indexBean.excluirAgendamento()}" update="@form schedule"
-							icon="fa fa-trash" styleClass="btn-danger" rendered="#{indexBean.objeto.id != null}"
-							oncomplete="if(indexBean.fecharDialog == true) { PF('myschedule').update();PF('inserir').hide(); }"  />
+							action="#{indexBean.excluirAgendamento()}" update="eventDetails schedule messages"
+							icon="fa fa-trash" styleClass="btn-danger" rendered="#{indexBean.objeto.id != null}"  />
 
 					</p:outputPanel>
 

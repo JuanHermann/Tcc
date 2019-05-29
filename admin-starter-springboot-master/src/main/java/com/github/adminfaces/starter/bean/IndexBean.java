@@ -144,7 +144,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		clientes = new ArrayList<>();
 		horarioAgendados = new ArrayList<>();
 		buscarClientes();
-		servicos = servicoRepository.findByAtivo(true);
+		servicos = servicoRepository.findByAtivoOrderByNome(true);
 		servicosSelecionados = new ArrayList<>();
 		cliente = new Usuario();
 		funcionario = new Usuario();

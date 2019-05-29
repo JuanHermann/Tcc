@@ -11,9 +11,13 @@
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
 	</ui:define>
+	
+		<ui:define name="title">
+        Novos Cadastros
+    </ui:define>
 
 	<ui:define name="description">
-        Novos cadastros que precisam ser aceitos.
+        cadastros que precisam ser aceitos.
     </ui:define>
 
 	<ui:define name="body">
@@ -29,7 +33,7 @@
 						<p:spacer width="5" />
 						<p:commandButton value="Recusar Selecionados" icon="fa fa-trash" action="#{cadastroList.recusarSelecionados()}"						
 							disabled="#{empty cadastroList.registrosSelecionados or cadastroList.registrosSelecionados.size() == 0}"
-							styleClass="btn-danger" process="@this" update=":form">
+							styleClass="btn-danger" process="@this" update=":form @form form">
 							<p:confirm header="Confirmation" message="Você tem Certeza que deseja Recusar #{cadastroList.registrosSelecionados.size()} registros selecionados?"
 								icon="ui-icon-danger" />
 						</p:commandButton>
@@ -72,33 +76,32 @@
 						<p:column selectionMode="multiple" width="5%"
 							styleClass="align-center"  />
 
-						<p:column headerText="Nome">
-							<p:link value="#{usuario.nome}">
-								<f:param name="id" value="#{usuario.id}" />
-							</p:link>
+						<p:column headerText="Nome" styleClass="align-center" >
+							<p:outputLabel value="#{usuario.nome}"/>
 						</p:column>
 
-						<p:column headerText="Email">
+						<p:column headerText="Email" styleClass="align-center">
 							<p:outputLabel value="#{usuario.email}" />
 						</p:column>
 
-						<p:column headerText="Telefone">
+						<p:column headerText="Telefone" styleClass="align-center">
 							 <p:outputLabel value="#{usuario.telefone}" />
 						</p:column>
 
 					</p:dataTable>
 				</div>
 			</div>
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+
+		</h:form>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade" 
 				styleClass="box-danger box-solid">
-				<p:commandButton value="Sim" type="button" update="@form"
+				<p:commandButton value="Sim" type="button"
 					styleClass="btn-material btn-primary ui-confirmdialog-yes"
 					icon="fa fa-check" />
 				<p:commandButton value="Não" type="button"
 					styleClass="btn-material btn-danger ui-confirmdialog-no"
 					icon="fa fa-close" />
 			</p:confirmDialog>
-		</h:form>
 
 
 	</ui:define>

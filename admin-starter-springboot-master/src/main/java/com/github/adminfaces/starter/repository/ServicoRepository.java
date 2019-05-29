@@ -9,5 +9,5 @@ import java.util.List;
 public interface ServicoRepository extends JpaRepository<Servico, Integer> {
 
 	List<Servico> findByNomeLikeAndAtivoOrderByNome(String nome,boolean ativo);
-	List<Servico> findByAtivo(boolean ativo);
+	List<Servico> findByAtivoOrderByNome(boolean ativo);
 }

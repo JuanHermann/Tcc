@@ -22,16 +22,18 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 	private UsuarioRepository usuarioRepository;
 	@Autowired
 	private PermissaoRepository permissaoRepository;
-
-	private boolean role = false;
+	private Usuario usuario;
 	
 	public CadastroList() {
 		super(Usuario.class);
 	}
+	
+	
 
 	public void buscarNovos() {
 		if (getNome() != "") {
-			setLista(retirarCadastrosCliente(usuarioRepository.findByNomeLikeAndAtivoOrderByNome("%"+getNome()+"%",true)));
+			
+			setLista(usuario.filtraPorNovosCadastros(usuarioRepository.findByNomeLikeAndAtivoOrderByNome("%"+getNome()+"%",true)));
 		} else {
 			listar();
 		}
@@ -42,38 +44,18 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 		
 	@Override
 	public void listar() {
-		Permissao permissao =  permissaoRepository.findByNome("ROLE_CADASTRADO");
-		setLista(retirarCadastrosCliente(permissao.getUsuarios()));
+		usuario = new Usuario();
+		setLista(usuario.filtraPorNovosCadastros(usuarioRepository.findByAtivoOrderByNome(true)));
 		
 	}
-	
-	private List<Usuario> retirarCadastrosCliente(List<Usuario> lista) {
-		List<Usuario> usuarios = lista;
-		List<Usuario> pesquisa  = new ArrayList<>();
-		for (Usuario usuario : usuarios) {
-			List<Permissao> permissoes= usuario.getPermissoes();
-			role = false;
-			for (Permissao p : permissoes) {
-				
-				if(p.getNome().equals("ROLE_CLIENTE")) {
-					role =true;
-				}else if(p.getNome().equals("ROLE_ADMIN")) {
-					role =true;
-				}
-			}
-			if(role == false) {
-				pesquisa.add(usuario);
-			}
-		}
-		
-		return pesquisa;		
-	}
+
 
 	public void aceitarSelecionados() {
 		int num =0;
-		for (int i = 0; i < getRegistrosSelecionados().size(); i++) {
-			getRegistrosSelecionados().get(i).addPermissao(permissaoRepository.findByNome("ROLE_CLIENTE"));
-			usuarioRepository.save(getRegistrosSelecionados().get(i));
+		for (Usuario usuario :getRegistrosSelecionados()) {
+			usuario.addPermissao(permissaoRepository.findByNome("ROLE_CLIENTE"));
+			usuario.removePermissao(permissaoRepository.findByNome("ROLE_CADASTRO"));
+			usuarioRepository.save(usuario);
 			num++;
 		}
 		getRegistrosSelecionados().clear();

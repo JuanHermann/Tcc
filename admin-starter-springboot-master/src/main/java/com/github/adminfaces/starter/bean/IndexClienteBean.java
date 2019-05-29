@@ -113,7 +113,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 		timeZoneBrasil = TimeZone.getTimeZone("America/Sao_Paulo");
 
-		servicos = servicoRepository.findByAtivo(true);
+		servicos = servicoRepository.findByAtivoOrderByNome(true);
 		servicosSelecionados = new ArrayList<>();
 
 		dataMinima = Calendar.getInstance().getTime();
@@ -121,7 +121,6 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
 		stringHorario = "Selecione um Horairio";
-		servicos = servicoRepository.findByAtivo(true);
 		super.init();
 		getObjeto().setCliente(usuarioLogadoBean.getUsuario());
 		getObjeto().setData(LocalDate.now());

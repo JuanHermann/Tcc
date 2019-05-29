@@ -6,12 +6,9 @@ import java.util.List;
 
 import javax.persistence.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.github.adminfaces.starter.bean.UsuarioLogadoBean;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -81,6 +78,37 @@ public class Usuario implements UserDetails {
 			permissoes = new ArrayList<>();
 		}
 		permissoes.add(permissao);
+	}
+	
+	public void removePermissao(Permissao permissao) {
+		if (permissoes != null) {
+			permissoes.remove(permissao);
+		}
+	}
+	
+	public List<Usuario> getNovosCadastros(){
+		List<Usuario> lista = new ArrayList<>();
+
+		
+		return lista;
+	}
+	
+	public List<Usuario> filtraPorNovosCadastros(List<Usuario> listalGeral){
+		List<Usuario> lista = new ArrayList<>();
+		boolean tem;
+		for(Usuario usuario: listalGeral) {
+			tem = false;
+			for(Permissao permissao: usuario.getPermissoes()) {
+				if(permissao.getNome().equals("ROLE_CADASTRADO")) {
+					tem = true;
+				}
+			}
+			if(tem==true) {
+				lista.add(usuario);
+			}
+		}
+		
+		return lista;
 	}
 
 	@Override

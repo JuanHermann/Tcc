@@ -29,7 +29,7 @@ public class ServicoList extends AbastractListBean<Servico, ServicoRepository> {
 		if (getNome() != "") {
 			setLista(servicoRepository.findByNomeLikeAndAtivoOrderByNome("%" + getNome() + "%",true));
 		} else {
-			setLista(servicoRepository.findByAtivo(true));
+			setLista(servicoRepository.findByAtivoOrderByNome(true));
 		}
 		setNome("");
 		setRegistrosSelecionados(null);
@@ -38,7 +38,7 @@ public class ServicoList extends AbastractListBean<Servico, ServicoRepository> {
 	
 	@Override
 	public void listar() {
-		setLista(getRepository().findByAtivo(true));
+		setLista(getRepository().findByAtivoOrderByNome(true));
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ServicoList extends AbastractListBean<Servico, ServicoRepository> {
 			}
 		}
 		getRegistrosSelecionados().clear();
-		addDetailMessage(num + " Registros deletado com sucesso!");
+		addDetailMessage(num + " Registros deletados com sucesso!");
 		listar();
 	}
 

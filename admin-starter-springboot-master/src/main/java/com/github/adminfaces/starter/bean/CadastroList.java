@@ -46,6 +46,7 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 	public void listar() {
 		usuario = new Usuario();
 		setLista(usuario.filtraPorNovosCadastros(usuarioRepository.findByAtivoOrderByNome(true)));
+		System.out.println();
 		
 	}
 
@@ -53,8 +54,9 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 	public void aceitarSelecionados() {
 		int num =0;
 		for (Usuario usuario :getRegistrosSelecionados()) {
+			usuario.removePermissao(permissaoRepository.findByNome("ROLECADASTRADO"));
 			usuario.addPermissao(permissaoRepository.findByNome("ROLE_CLIENTE"));
-			usuario.removePermissao(permissaoRepository.findByNome("ROLE_CADASTRO"));
+			usuario.getPermissoes().remove(permissaoRepository.findByNome("ROLE_CADASTRADO"));
 			usuarioRepository.save(usuario);
 			num++;
 		}

@@ -35,4 +35,11 @@ public class Servico implements Serializable {
     
     private boolean ativo;
 
+	@Override
+	public String toString() {
+		return nome;
+	}
+    
+    
+
 }

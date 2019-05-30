@@ -29,7 +29,7 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 	@Autowired
 	private UsuarioServicoRepository usuarioServicoRepository;
 
-	private boolean role;
+	private Usuario usuario;
 
 	public ClienteList() {
 		super(Usuario.class);
@@ -38,7 +38,7 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 	public void buscar() {
 
 		if (getNome() != "") {
-			setLista(filtrarCliente(usuarioRepository.findByNomeLikeAndAtivoOrderByNome("%" + getNome() + "%", true)));
+			setLista(usuario.filtraPorClientes(usuarioRepository.findByNomeLikeAndAtivoOrderByNome("%" + getNome() + "%", true)));
 		} else {
 			listar();
 		}
@@ -47,31 +47,6 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 
 	}
 
-	private List<Usuario> filtrarCliente(List<Usuario> lista) {
-		List<Usuario> usuarios = lista;
-		List<Usuario> pesquisa = new ArrayList<>();
-		for (Usuario usuario : usuarios) {
-			List<Permissao> permissoes = usuario.getPermissoes();
-			role = false;
-			for (Permissao p : permissoes) {
-				if (p.getNome().equals("ROLE_ATENDENTE")) {
-					role = false;
-					break;
-				} else if (p.getNome().equals("ROLE_FUNCIONARIO")) {
-					role = false;
-					break;
-				} else if (p.getNome().equals("ROLE_CLIENTE")) {
-					role = true;
-					break;
-				}
-			}
-			if (role == true) {
-				pesquisa.add(usuario);
-			}
-		}
-
-		return pesquisa;
-	}
 
 	public void tornarFuncionairo() {
 		List<Usuario> usuarios = getRegistrosSelecionados();
@@ -91,8 +66,8 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 
 	@Override
 	public void listar() {
-		Permissao permissao = permissaoRepository.findByNome("ROLE_CLIENTE");
-		setLista(filtrarCliente(permissao.getUsuarios()));
+		usuario = new Usuario();
+		setLista(usuario.filtraPorClientes(usuarioRepository.findByAtivoOrderByNome(true)));
 
 	}
 

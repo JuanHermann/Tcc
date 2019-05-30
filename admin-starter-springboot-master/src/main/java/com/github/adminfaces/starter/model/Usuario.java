@@ -86,13 +86,6 @@ public class Usuario implements UserDetails {
 		}
 	}
 	
-	public List<Usuario> getNovosCadastros(){
-		List<Usuario> lista = new ArrayList<>();
-
-		
-		return lista;
-	}
-	
 	public List<Usuario> filtraPorNovosCadastros(List<Usuario> listalGeral){
 		List<Usuario> lista = new ArrayList<>();
 		boolean tem;
@@ -100,6 +93,24 @@ public class Usuario implements UserDetails {
 			tem = false;
 			for(Permissao permissao: usuario.getPermissoes()) {
 				if(permissao.getNome().equals("ROLE_CADASTRADO")) {
+					tem = true;
+				}
+			}
+			if(tem==true) {
+				lista.add(usuario);
+			}
+		}
+		
+		return lista;
+	}
+	
+	public List<Usuario> filtraPorClientes(List<Usuario> listalGeral){
+		List<Usuario> lista = new ArrayList<>();
+		boolean tem;
+		for(Usuario usuario: listalGeral) {
+			tem = false;
+			for(Permissao permissao: usuario.getPermissoes()) {
+				if(permissao.getNome().equals("ROLE_CLIENTE")) {
 					tem = true;
 				}
 			}

@@ -18,12 +18,11 @@
 	</ui:define>
 
 	<ui:define name="body">
-	<f:metadata>
-			<f:viewAction action="#{servicoForm.init}" />
-		</f:metadata>
 
 		<h:form id="form" data-toggle="validator" 
 			role="form">
+					<div class="box box-primary">
+				<div class="box-header with-border">
 			<p:growl id="messages" showDetail="true" />
 
 			<p:schedule id="schedule" value="#{indexBean.eventModel}" slotMinutes="#{indexBean.tempoMinutosSchedule}" 
@@ -76,7 +75,7 @@
 
 								<p:selectCheckboxMenu id="servico"
 									value="#{indexBean.servicosSelecionados}" label="Serviços" 
-									multiple="true" filter="true" filterMatchMode="startsWith" required="true"
+									multiple="true" filter="true" filterMatchMode="contains" required="true"
 									panelStyle="width:250px">
 									<f:selectItems value="#{indexBean.servicos}" var="servico"
 										itemLabel="#{servico.nome}" itemValue="#{servico}" />
@@ -149,7 +148,8 @@
 				</h:panelGrid>
 
 			</p:dialog>
-			
+			</div>
+			</div>
 		</h:form>
 
 	</ui:define>

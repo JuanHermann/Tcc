@@ -15,6 +15,8 @@ import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.util.List;
 
+import javax.faces.context.FacesContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -36,6 +38,12 @@ public class ServicoForm extends AbastractFormBean<Servico, ServicoRepository> {
 
 	public ServicoForm() {
 		super(Servico.class);
+	}
+	
+	@Override
+	public void init() throws InstantiationException, IllegalAccessException {
+		setId(Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id")));
+		super.init();
 	}
 	
 	@Override

@@ -16,11 +16,6 @@
 	</ui:define>
 
 	<ui:define name="body">
-		<f:metadata>
-			<f:viewParam name="id" value="#{funcionarioForm.id}" />
-			<f:viewAction action="#{funcionarioForm.init}" />
-		</f:metadata>
-
 
 		<h:form id="form" prependId="false">
 
@@ -40,7 +35,8 @@
 							<f:setPropertyActionListener value="true"
 								target="#{facesContext.externalContext.flash.keepMessages}" />
 							<p:confirm header="Confirmação"
-								message="Tem certeza que deseja desativar?" icon="ui-icon-danger" />
+								message="Tem certeza que deseja desativar?"
+								icon="ui-icon-danger" />
 						</p:commandButton>
 
 					</div>
@@ -101,6 +97,17 @@
 								required="true" requiredMessage="Telefone é obrigatório."
 								value="#{funcionarioForm.objeto.telefone}" />
 						</div>
+
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel value="Permissões" for="permissao" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:selectManyCheckbox id="permissao"
+								value="#{funcionarioForm.permissaoSelecionados}" layout="responsive" columns="3">
+								<f:selectItems value="#{funcionarioForm.permissoes}" var="permissao"
+									itemLabel="#{permissao}" itemValue="#{permissao}" />
+							</p:selectManyCheckbox>
+						</div>
 					</div>
 
 
@@ -120,8 +127,9 @@
 					<p:dataTable value="#{servicoList.lista}" var="servico"
 						id="servicoDT" emptyMessage="Nenhum serviço cadastrado"
 						rowKey="#{servico.id}"
-						selection="#{funcionarioForm.servicosSelecionados}" widgetVar="table"
-						rows="15" paginator="true" paginatorPosition="bottom"
+						selection="#{funcionarioForm.servicosSelecionados}"
+						widgetVar="table" rows="15" paginator="true"
+						paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15,20,40">
 
@@ -146,7 +154,7 @@
 								styleClass="btn-flat bg-black btn-states" partialSubmit="true" />
 						</f:facet>
 
-						<p:column selectionMode="multiple" width="5%" 
+						<p:column selectionMode="multiple" width="5%"
 							styleClass="align-center" />
 
 						<p:column headerText="Nome">
@@ -177,7 +185,7 @@
 					styleClass="btn-material btn-danger ui-confirmdialog-no"
 					icon="fa fa-close" />
 			</p:confirmDialog>
-		
+
 
 		</h:form>
 

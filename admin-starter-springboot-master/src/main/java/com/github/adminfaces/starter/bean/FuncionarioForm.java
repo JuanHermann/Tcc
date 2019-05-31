@@ -34,7 +34,7 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 	@Override
 	public void init() throws InstantiationException, IllegalAccessException {		
 		super.init();
-		carregarServicos();
+		//carregarServicos();
 	}
 	
 	public void carregarServicos() {

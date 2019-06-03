@@ -370,10 +370,15 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				bloquear.setHoraInicio(dataInicioBloqueio.toLocalTime());
 				bloquear.setHoraTermino(dataFinalBloqueio.toLocalTime());
 				getRepository().save(bloquear);
+				
 
 			} else {
 				System.out.println("diferente");
 			}
+			setObjeto(new HorarioAgendado());
+			atualizarSchedule();
+			addDetailMessage("Bloqueio realizado com sucesso");
+			context.fecharDialog("inserir");
 
 		}
 

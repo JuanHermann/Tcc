@@ -19,136 +19,158 @@
 
 	<ui:define name="body">
 
-		<h:form id="form" data-toggle="validator" 
-			role="form">
-					<div class="box box-primary">
+		<h:form id="form" data-toggle="validator" role="form">
+
+
+				<p:selectOneMenu id="asd" value="#{indexBean.objeto.cliente}" rendered="#{indexBean.mostrarFuncionario()}"
+					filter="true" converter="#{usuarioConverter}" required="true">
+					<f:selectItem itemLabel="Selecione o Funcionario" itemValue="#{null}" />
+					<f:selectItems value="#{indexBean.clientes}" var="usuario"
+						itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+					<p:ajax event="change" update="cliente lblCliente" />
+				</p:selectOneMenu>
+
+			<div class="box box-primary">
 				<div class="box-header with-border">
-			<p:growl id="messages" showDetail="true" />
+					<p:growl id="messages" showDetail="true" />
 
-			<p:schedule id="schedule" value="#{indexBean.eventModel}" slotMinutes="#{indexBean.tempoMinutosSchedule}" 
-			minTime="#{indexBean.inicioSchedule}" maxTime="#{indexBean.finalSchedule}"
-				widgetVar="myschedule"  timeFormat="HH:mm" view="agendaWeek" >
+					<p:schedule id="schedule" value="#{indexBean.eventModel}"
+						slotMinutes="#{indexBean.tempoMinutosSchedule}"
+						minTime="#{indexBean.inicioSchedule}"
+						maxTime="#{indexBean.finalSchedule}" widgetVar="myschedule"
+						timeFormat="HH:mm" view="agendaWeek">
 
-				<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
-					update="eventDetails" oncomplete="PF('inserir').show();" />
-				<p:ajax event="eventSelect" listener="#{indexBean.onEventSelect}"
-					update="eventDetails" oncomplete="PF('inserir').show();" />
-				<p:ajax event="eventMove" listener="#{indexBean.onEventMove}"
-					update="messages" />
-				<p:ajax event="eventResize" listener="#{indexBean.onEventResize}"
-					update="messages" />
+						<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
+							update="eventDetails" oncomplete="PF('inserir').show();" />
+						<p:ajax event="eventSelect" listener="#{indexBean.onEventSelect}"
+							update="eventDetails" oncomplete="PF('inserir').show();" />
+						<p:ajax event="eventMove" listener="#{indexBean.onEventMove}"
+							update="messages" />
+						<p:ajax event="eventResize" listener="#{indexBean.onEventResize}"
+							update="messages" />
 
-			</p:schedule>
-
-
-
-			<p:dialog id="dlgInserir" widgetVar="inserir" header="Cadastrar Horário" 
-				showEffect="clip" hideEffect="clip">
-
-				<h:panelGrid id="eventDetails" columns="1">
-					<p:outputLabel for="tipo" value="Tipo:" />
-					<p:selectOneRadio id="tipo" value="#{indexBean.tipo}"
-						unselectable="true">
-						<f:selectItem itemLabel="Serviço" itemValue="servico"
-							id="radioServico" />
-						<f:selectItem itemLabel="Bloqueio" itemValue="bloqueio"
-							id="radioBloqueio" />
-						<p:ajax event="change" process="@this" update="idGeral" />
-					</p:selectOneRadio>
-					<p:outputPanel id="idGeral">
-						<p:outputPanel rendered="#{indexBean.mostrarForm()}">
-							<h:panelGrid columns="1">
-								<p:outputLabel for="cliente" value="Cliente:" id="lblCliente" />
-
-								<p:selectOneMenu id="cliente" value="#{indexBean.objeto.cliente}"
-									filter="true" converter="#{usuarioConverter}" required="true">
-									<f:selectItem itemLabel="Selecione o cliente"
-										itemValue="#{null}" />
-									<f:selectItems value="#{indexBean.clientes}" var="usuario"
-										itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
-										<p:ajax event="change"
-											update="cliente lblCliente" />
-								</p:selectOneMenu>
+					</p:schedule>
 
 
-								<p:outputLabel for="servico" value="Serviço:" id="lblServico" />
 
-								<p:selectCheckboxMenu id="servico"
-									value="#{indexBean.servicosSelecionados}" label="Serviços" 
-									multiple="true" filter="true" filterMatchMode="contains" required="true"
-									panelStyle="width:250px">
-									<f:selectItems value="#{indexBean.servicos}" var="servico"
-										itemLabel="#{servico.nome}" itemValue="#{servico}" />
-									<p:ajax event="change" update="funcionario horario lblServico"
-										listener="#{indexBean.buscarFuncionarios()}" />
-								</p:selectCheckboxMenu>
+					<p:dialog id="dlgInserir" widgetVar="inserir"
+						header="Cadastrar Horário" showEffect="clip" hideEffect="clip">
+
+						<h:panelGrid id="eventDetails" columns="1">
+							<p:outputLabel for="tipo" value="Tipo:" />
+							<p:selectOneRadio id="tipo" value="#{indexBean.tipo}"
+								unselectable="true">
+								<f:selectItem itemLabel="Serviço" itemValue="servico"
+									id="radioServico" />
+								<f:selectItem itemLabel="Bloqueio" itemValue="bloqueio"
+									id="radioBloqueio" />
+								<p:ajax event="change" process="@this" update="idGeral" />
+							</p:selectOneRadio>
+							<p:outputPanel id="idGeral">
+								<p:outputPanel rendered="#{indexBean.mostrarForm()}">
+									<h:panelGrid columns="1">
+										<p:outputLabel for="cliente" value="Cliente:" id="lblCliente" />
+
+										<p:selectOneMenu id="cliente"
+											value="#{indexBean.objeto.cliente}" filter="true"
+											converter="#{usuarioConverter}" required="true">
+											<f:selectItem itemLabel="Selecione o cliente"
+												itemValue="#{null}" />
+											<f:selectItems value="#{indexBean.clientes}" var="usuario"
+												itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+											<p:ajax event="change" update="cliente lblCliente" />
+										</p:selectOneMenu>
 
 
-								<p:outputPanel rendered="#{indexBean.mostrarFuncionario()}">
-									<p:outputLabel for="funcionario" value="Funcionario:" />
+										<p:outputLabel for="servico" value="Serviço:" id="lblServico" />
 
-									<p:selectOneMenu id="funcionario"
-										value="#{indexBean.funcionario}"
-										converter="#{usuarioConverter}">
-										<f:selectItem itemLabel="Nenhuma Preferencia"
-											itemValue="#{null}" />
-										<f:selectItems value="#{indexBean.setFuncionarios}"
-											var="funcionario" itemLabel="#{funcionario.nome}"
-											itemValue="#{usuario}" />
-									</p:selectOneMenu>
+										<p:selectCheckboxMenu id="servico"
+											value="#{indexBean.servicosSelecionados}" label="Serviços"
+											multiple="true" filter="true" filterMatchMode="contains"
+											required="true" panelStyle="width:250px">
+											<f:selectItems value="#{indexBean.servicos}" var="servico"
+												itemLabel="#{servico.nome}" itemValue="#{servico}" />
+											<p:ajax event="change"
+												update="funcionario horario lblServico"
+												listener="#{indexBean.buscarFuncionarios()}" />
+										</p:selectCheckboxMenu>
+
+
+										<p:outputPanel rendered="#{indexBean.mostrarFuncionario()}">
+											<p:outputLabel for="funcionario" value="Funcionario:" />
+
+											<p:selectOneMenu id="funcionario"
+												value="#{indexBean.funcionario}"
+												converter="#{usuarioConverter}">
+												<f:selectItem itemLabel="Nenhuma Preferencia"
+													itemValue="#{null}" />
+												<f:selectItems value="#{indexBean.setFuncionarios}"
+													var="funcionario" itemLabel="#{funcionario.nome}"
+													itemValue="#{usuario}" />
+											</p:selectOneMenu>
+										</p:outputPanel>
+
+										<p:outputLabel for="data" value="Dia:" id="lblData" />
+
+										<p:calendar id="data" value="#{indexBean.objeto.data}"
+											required="true" pattern="dd/MM/yyyy"
+											converter="#{localDateConverter}">
+											<p:ajax event="dateSelect"
+												listener="#{indexBean.buscarHorarios}"
+												update="horario data lblData" />
+										</p:calendar>
+
+										<p:outputLabel value="Horário:" for="horario" id="lblHorario" />
+
+										<p:selectOneMenu id="horario"
+											converter="#{localTimeConverter}" required="true"
+											value="#{indexBean.objeto.horaInicio}">
+											<f:selectItem itemLabel="#{indexBean.stringHorario}"
+												itemValue="" />
+											<f:selectItems value="#{indexBean.horarios}" var="horario"
+												itemLabel="#{horario}" itemValue="#{localTime}" />
+											<p:ajax event="change" update="horario lblHorario" />
+										</p:selectOneMenu>
+									</h:panelGrid>
+
 								</p:outputPanel>
-
-								<p:outputLabel for="data" value="Dia:" id="lblData" />
-
-								<p:calendar id="data" value="#{indexBean.objeto.data}" required="true"
-									pattern="dd/MM/yyyy" converter="#{localDateConverter}">
-									<p:ajax event="dateSelect"
-										listener="#{indexBean.buscarHorarios}" update="horario data lblData" />
-								</p:calendar>
-
-								<p:outputLabel value="Horário:" for="horario" id="lblHorario" />
-
-								<p:selectOneMenu id="horario" converter="#{localTimeConverter}" required="true"
-									value="#{indexBean.objeto.horaInicio}">
-									<f:selectItem itemLabel="#{indexBean.stringHorario}" itemValue="" />
-									<f:selectItems value="#{indexBean.horarios}" var="horario"
-										itemLabel="#{horario}" itemValue="#{localTime}" />
-										<p:ajax event="change"
-											update="horario lblHorario" />
-								</p:selectOneMenu>
-							</h:panelGrid>
-
-						</p:outputPanel>
-						<p:outputPanel rendered="#{!indexBean.mostrarForm()}">
-							<h:panelGrid columns="1">
-								<p:outputLabel for="inicio" value="Inicio" />
-								<p:calendar id="inicio" value="#{indexBean.dataInicioBloqueio}"  required="true"
-								minHour="#{indexBean.inicioHoraCalendar}" maxHour="#{indexBean.finalHoraCalendar}" 
-									pattern="dd/MM/yyyy HH:mm" converter="#{localDateTimeConverter}" />
+								<p:outputPanel rendered="#{!indexBean.mostrarForm()}">
+									<h:panelGrid columns="1">
+										<p:outputLabel for="inicio" value="Inicio" />
+										<p:calendar id="inicio"
+											value="#{indexBean.dataInicioBloqueio}" required="true"
+											minHour="#{indexBean.inicioHoraCalendar}"
+											maxHour="#{indexBean.finalHoraCalendar}"
+											pattern="dd/MM/yyyy HH:mm"
+											converter="#{localDateTimeConverter}" />
 
 
-								<p:outputLabel for="final" value="Final" />
-								<p:calendar id="final" value="#{indexBean.dataFinalBloqueio}" required="true"
-								 minHour="#{indexBean.inicioHoraCalendar}" maxHour="#{indexBean.finalHoraCalendar}" 
-									 pattern="dd/MM/yyyy HH:mm" converter="#{localDateTimeConverter}" />
+										<p:outputLabel for="final" value="Final" />
+										<p:calendar id="final" value="#{indexBean.dataFinalBloqueio}"
+											required="true" minHour="#{indexBean.inicioHoraCalendar}"
+											maxHour="#{indexBean.finalHoraCalendar}"
+											pattern="dd/MM/yyyy HH:mm"
+											converter="#{localDateTimeConverter}" />
 
 
-							</h:panelGrid>
-						</p:outputPanel>							
-							<p:commandButton value="Salvar"
-							action="#{indexBean.salvarAgendamento()}" update="eventDetails schedule messages"
-							icon="fa fa-check" />
-							
-							<p:commandButton value="Excluir"
-							action="#{indexBean.excluirAgendamento()}" update="eventDetails schedule messages"
-							icon="fa fa-trash" styleClass="btn-danger" rendered="#{indexBean.objeto.id != null}"  />
+									</h:panelGrid>
+								</p:outputPanel>
+								<p:commandButton value="Salvar"
+									action="#{indexBean.salvarAgendamento()}"
+									update="eventDetails schedule messages" icon="fa fa-check" />
 
-					</p:outputPanel>
+								<p:commandButton value="Excluir"
+									action="#{indexBean.excluirAgendamento()}"
+									update="eventDetails schedule messages" icon="fa fa-trash"
+									styleClass="btn-danger"
+									rendered="#{indexBean.objeto.id != null}" />
 
-				</h:panelGrid>
+							</p:outputPanel>
 
-			</p:dialog>
-			</div>
+						</h:panelGrid>
+
+					</p:dialog>
+				</div>
 			</div>
 		</h:form>
 

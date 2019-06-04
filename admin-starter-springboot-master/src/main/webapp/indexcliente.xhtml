@@ -64,8 +64,8 @@
 										<h:outputText value=" #{horario.usuarioServico.usuario.nome}" />
 										
 											<p:commandButton value="Alterar"
-												action="#{indexClienteBean.novo()}" process="@this"
-												icon="fa fa-refresh" styleClass="btn-warning" update="@form" />
+												action="#{indexClienteBean.carregarObjeto(horario.id)}" onclick="PF('inserir').show();"
+												icon="fa fa-refresh" styleClass="btn-warning" />
 												
 											<p:commandButton value="Cancelar"
 												action="#{indexClienteBean.remover()}" process="@this"

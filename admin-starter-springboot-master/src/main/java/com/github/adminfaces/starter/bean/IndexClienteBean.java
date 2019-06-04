@@ -196,8 +196,6 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 			setObjeto(new HorarioAgendado());
 			servicosSelecionados.clear();
 			atualizarLista();
-			RequestContext request = RequestContext.getCurrentInstance();
-			request.addCallbackParam("sucesso", true);
 		} else {
 			if (getObjeto().getId() != null) {
 				HorarioAgendado agendado;
@@ -227,8 +225,6 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 				setObjeto(new HorarioAgendado());
 				servicosSelecionados.clear();
 				atualizarLista();
-				RequestContext request = RequestContext.getCurrentInstance();
-				request.addCallbackParam("sucesso", true);
 
 			} else {
 				HorarioAgendado agendado;
@@ -370,5 +366,16 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		tempo = tempo.plusMinutes(tempo2.getMinute());
 		return tempo;
 	}
-
+	
+	@Override
+	public void remover() throws InstantiationException, IllegalAccessException {
+		if(true) {
+		super.remover();
+		}
+	}
+	
+	public void carregarObjeto(Integer id) {
+		System.out.println(id);
+		//setObjeto((HorarioAgendado ) horarioAgendadoRepository.findById(id));
+	}
 }

@@ -7,43 +7,29 @@ import com.github.adminfaces.starter.model.UsuarioServico;
 import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
 import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.ServicoRepository;
-import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
-import com.github.adminfaces.starter.service.UsuarioService;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
-
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import org.omnifaces.util.Faces;
-import org.primefaces.component.panel.Panel;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
-import org.primefaces.model.menu.DefaultMenuItem;
-import org.primefaces.model.menu.DefaultMenuModel;
-import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -75,6 +61,9 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	private List<LocalTime> horarios;
 	private Date data = Calendar.getInstance().getTime();
 
+	@Autowired
+	protected ContextBean context;
+	
 	@Autowired
 	private UsuarioLogadoBean usuarioLogadoBean;
 	private List<Usuario> funcionarios;
@@ -249,13 +238,19 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 					getRepository().save(agendado);
 
 				}
-				setObjeto(new HorarioAgendado());
+				limparObjeto();
 				servicosSelecionados.clear();
 				atualizarLista();
-				RequestContext request = RequestContext.getCurrentInstance();
-				request.addCallbackParam("sucesso", true);
 			}
 		}
+		context.fecharDialog("inserir");
+	}
+
+	private void limparObjeto() {
+		setObjeto(new HorarioAgendado());
+		getObjeto().setCliente(usuarioLogadoBean.getUsuario());
+		getObjeto().setData(LocalDate.now());
+		
 	}
 
 	private Usuario selecionarFuncionarioSemPreferencia() {
@@ -366,16 +361,20 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		tempo = tempo.plusMinutes(tempo2.getMinute());
 		return tempo;
 	}
-	
-	@Override
-	public void remover() throws InstantiationException, IllegalAccessException {
-		if(true) {
-		super.remover();
+
+	public void remover(Integer id) throws InstantiationException, IllegalAccessException {
+		setObjeto(horarioAgendadoRepository.findById(id).get());
+		if (true) {
+			super.remover();
 		}
 	}
-	
+
 	public void carregarObjeto(Integer id) {
-		System.out.println(id);
-		//setObjeto((HorarioAgendado ) horarioAgendadoRepository.findById(id));
+		servicosSelecionados = new ArrayList<>();
+		setObjeto(horarioAgendadoRepository.findById(id).get());
+		servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
+		buscarHorarios();
+		horarios.add(getObjeto().getHoraInicio());
+
 	}
 }

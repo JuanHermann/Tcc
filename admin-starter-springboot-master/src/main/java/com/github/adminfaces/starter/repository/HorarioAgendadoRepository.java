@@ -11,7 +11,7 @@ import com.github.adminfaces.starter.model.Usuario;
 
 
 public interface HorarioAgendadoRepository extends JpaRepository<HorarioAgendado, Integer> {
-
+	
 	List<HorarioAgendado> findByDataOrderByHoraInicio(LocalDate data);
 	
 	List<HorarioAgendado> findByClienteAndDataGreaterThanEqualOrderByDataAsc(Usuario usuario,LocalDate data);

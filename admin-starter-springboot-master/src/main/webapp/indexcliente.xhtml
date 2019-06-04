@@ -25,7 +25,7 @@
 		</f:metadata>
 
 
-		<h:form id="form" prependId="false" >
+		<h:form id="form" prependId="false">
 
 
 			<div class="box box-primary">
@@ -52,32 +52,38 @@
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-6">
 							<p:accordionPanel value="#{indexClienteBean.horariosCliente}"
-								multiple="true" var="horario" widgetVar="myschedule"  >
+								multiple="true" var="horario" widgetVar="myschedule">
 								<p:tab
 									title="Dia #{horario.data.dayOfMonth}/#{horario.data.monthValue} ás #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}">
 									<h:panelGrid columns="2" cellpadding="10">
-										<h:outputText value="Inicio: "  style="font-weight: bold"/>
+										<h:outputText value="Inicio: " style="font-weight: bold" />
 										<h:outputText value="#{horario.horaInicio}" />
-										<h:outputText value="Termino: "  style="font-weight: bold"/>
+										<h:outputText value="Termino: " style="font-weight: bold" />
 										<h:outputText value="#{horario.horaTermino}" />
-										<h:outputText value="Prestador do serviço: "  style="font-weight: bold"/>
+										<h:outputText value="Prestador do serviço: " style="font-weight: bold" />
 										<h:outputText value=" #{horario.usuarioServico.usuario.nome}" />
-										
-											<p:commandButton value="Alterar"
-												action="#{indexClienteBean.carregarObjeto(horario.id)}" onclick="PF('inserir').show();"
-												icon="fa fa-refresh" styleClass="btn-warning" />
-												
-											<p:commandButton value="Cancelar"
-												action="#{indexClienteBean.remover()}" process="@this"
-												icon="fa fa-trash" styleClass="btn-danger" update="@form"
-												resetValues="true">
-												<f:setPropertyActionListener value="true"
-													target="#{facesContext.externalContext.flash.keepMessages}" />
-												<p:confirm header="Confirmação"
-													message="Tem certeza que deseja deletar?"
-													icon="ui-icon-danger" />
-											</p:commandButton>
-										
+
+										<p:commandButton value="Alterar"
+											action="#{indexClienteBean.carregarObjeto(horario.id)}" process="@this"
+											icon="fa fa-refresh" onclick="PF('inserir').show();" update="eventDetails"
+											styleClass="btn-warning"/>
+
+										<p:commandButton value="Cancelar"
+											action="#{indexClienteBean.remover(horario.id)}" 
+											icon="fa fa-trash" styleClass="btn-danger" update="@form">
+											<f:setPropertyActionListener value="true"
+												target="#{facesContext.externalContext.flash.keepMessages}" />
+											<p:confirm header="Confirmação"
+												message="Tem certeza que deseja deletar?"
+												icon="ui-icon-danger" />
+										</p:commandButton>
+																<p:commandButton value="Deletar Selecionados" icon="fa fa-trash"
+							styleClass="btn-danger" >
+							<p:confirm header="Confirmation"
+								message="Você tem Certeza que deseja cancelar?"
+								icon="ui-icon-danger" />
+						</p:commandButton>
+
 									</h:panelGrid>
 								</p:tab>
 							</p:accordionPanel>
@@ -85,16 +91,14 @@
 					</div>
 
 
-					<p:growl id="growl" sticky="true" showDetail="true" life="3000"  />
+					<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
 
 					<p:dialog id="dialogAgendar" widgetVar="inserir"
 						header="Cadastrar Horario" showEffect="clip" hideEffect="clip">
 
 						<h:panelGrid id="eventDetails" columns="1">
-							<p:outputPanel id="idGeral">
+							<p:outputPanel >
 								<h:panelGrid columns="1">
-
-
 
 									<p:outputLabel for="servico" value="Serviço:" id="olServico" />
 
@@ -108,7 +112,7 @@
 											var="servico" itemLabel="#{servico.nome}"
 											itemValue="#{servico}" />
 										<p:ajax event="change"
-											update="funcionario horario btnSalvar olServico "
+											update="funcionario horario olServico "
 											listener="#{indexClienteBean.buscarFuncionarios()}" />
 
 									</p:selectCheckboxMenu>
@@ -145,20 +149,22 @@
 									<p:selectOneMenu id="horario" converter="#{localTimeConverter}"
 										required="true" requiredMessage="Selecione um horario"
 										value="#{indexClienteBean.objeto.horaInicio}">
-										<f:selectItem value="#{null}" itemLabel="#{indexClienteBean.stringHorario}"
+										<f:selectItem value="#{null}"
+											itemLabel="#{indexClienteBean.stringHorario}"
 											itemValue="#{localTime}" />
 										<f:selectItems value="#{indexClienteBean.horarios}"
 											var="horario" itemLabel="#{horario}" itemValue="#{localTime}" />
 
-										<f:ajax event="change" update="@this olHorario " render="btnSalvar" />
+										<f:ajax event="change" update="@this olHorario "
+											render="btnSalvar" />
 									</p:selectOneMenu>
 								</h:panelGrid>
 								<p:commandButton value="Salvar" id="btnSalvar"
 									action="#{indexClienteBean.salvarAgendamento()}"
-									update="growl form eventDetails" icon="fa fa-check"
-									oncomplete="if(args.sucesso == true) { PF('inserir').hide(); }" />
+									update="eventDetails @form" icon="fa fa-check" />
 
-							</p:outputPanel><!-- 
+							</p:outputPanel>
+							<!-- 
 									disabled="#{indexClienteBean.objeto.horaInicio == null or indexClienteBean.servicosSelecionados.size() == 0}"  -->
 
 						</h:panelGrid>

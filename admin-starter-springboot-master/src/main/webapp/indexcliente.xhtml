@@ -26,7 +26,7 @@
 
 
 		<h:form id="form" prependId="false">
-
+<p:growl id="message" showDetail="true" />
 
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -60,13 +60,15 @@
 										<h:outputText value="#{horario.horaInicio}" />
 										<h:outputText value="Termino: " style="font-weight: bold" />
 										<h:outputText value="#{horario.horaTermino}" />
-										<h:outputText value="Prestador do serviço: " style="font-weight: bold" />
+										<h:outputText value="Prestador do serviço: "
+											style="font-weight: bold" />
 										<h:outputText value=" #{horario.usuarioServico.usuario.nome}" />
 
 										<p:commandButton value="Alterar"
-											action="#{indexClienteBean.carregarObjeto(horario.id)}" process="@this"
-											icon="fa fa-refresh" onclick="PF('inserir').show();" update="eventDetails"
-											styleClass="btn-warning"/>
+											action="#{indexClienteBean.carregarObjeto(horario.id)}"
+											process="@this" icon="fa fa-refresh"
+											onclick="PF('inserir').show();" update="eventDetails"
+											styleClass="btn-warning" />
 
 										<p:commandButton value="Cancelar"
 											action="#{indexClienteBean.remover(horario.id)}" 
@@ -77,12 +79,8 @@
 												message="Tem certeza que deseja deletar?"
 												icon="ui-icon-danger" />
 										</p:commandButton>
-																<p:commandButton value="Deletar Selecionados" icon="fa fa-trash"
-							styleClass="btn-danger" >
-							<p:confirm header="Confirmation"
-								message="Você tem Certeza que deseja cancelar?"
-								icon="ui-icon-danger" />
-						</p:commandButton>
+
+
 
 									</h:panelGrid>
 								</p:tab>
@@ -97,7 +95,7 @@
 						header="Cadastrar Horario" showEffect="clip" hideEffect="clip">
 
 						<h:panelGrid id="eventDetails" columns="1">
-							<p:outputPanel >
+							<p:outputPanel>
 								<h:panelGrid columns="1">
 
 									<p:outputLabel for="servico" value="Serviço:" id="olServico" />
@@ -111,8 +109,7 @@
 										<f:selectItems value="#{indexClienteBean.servicos}"
 											var="servico" itemLabel="#{servico.nome}"
 											itemValue="#{servico}" />
-										<p:ajax event="change"
-											update="funcionario horario olServico "
+										<p:ajax event="change" update="funcionario horario olServico "
 											listener="#{indexClienteBean.buscarFuncionarios()}" />
 
 									</p:selectCheckboxMenu>
@@ -176,6 +173,15 @@
 				</div>
 
 			</div>
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+				styleClass="box-danger box-solid">
+				<p:commandButton value="Sim" type="button" update="@form"
+					styleClass="btn-material btn-primary ui-confirmdialog-yes"
+					icon="fa fa-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="btn-material btn-danger ui-confirmdialog-no"
+					icon="fa fa-close" />
+			</p:confirmDialog>
 
 		</h:form>
 

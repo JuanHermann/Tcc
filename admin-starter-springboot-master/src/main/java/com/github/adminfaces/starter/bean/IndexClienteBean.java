@@ -364,9 +364,12 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	public void remover(Integer id) throws InstantiationException, IllegalAccessException {
 		setObjeto(horarioAgendadoRepository.findById(id).get());
-		if (true) {
+		if (verificaTempoCancelamento()) {
 			super.remover();
 		}
+	}
+	public boolean verificaTempoCancelamento() {
+		return true;
 	}
 
 	public void carregarObjeto(Integer id) {

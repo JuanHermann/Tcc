@@ -34,7 +34,7 @@
 							action="#{servicoList.deletarSelecionados()}"
 							disabled="#{empty servicoList.registrosSelecionados or servicoList.registrosSelecionados.size() == 0}"
 							styleClass="btn-danger" process="@this" update="@form">
-							<p:confirm header="Confirmation"
+							<p:confirm header="Confirmação"
 								message="Você tem Certeza que deseja Excluir #{servicoList.registrosSelecionados.size()} registros selecionados?"
 								icon="ui-icon-danger" />
 						</p:commandButton>

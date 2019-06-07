@@ -72,7 +72,7 @@
 										<p:outputLabel for="cliente" value="Cliente:" id="lblCliente" />
 
 										<p:selectOneMenu id="cliente"
-											value="#{indexBean.objeto.cliente}" filter="true"
+											value="#{indexBean.objeto.cliente}" filter="true" filterMatchMode="contains"
 											converter="#{usuarioConverter}" required="true">
 											<f:selectItem itemLabel="Selecione o cliente"
 												itemValue="#{null}" />

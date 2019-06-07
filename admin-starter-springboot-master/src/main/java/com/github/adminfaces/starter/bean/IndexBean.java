@@ -16,10 +16,8 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
@@ -379,6 +377,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			atualizarSchedule();
 			addDetailMessage("Bloqueio realizado com sucesso");
 			context.fecharDialog("inserir");
+			tipo="servico";
 
 		}
 

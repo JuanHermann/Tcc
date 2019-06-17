@@ -59,6 +59,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private ScheduleModel eventModel = new DefaultScheduleModel();
 	private ScheduleEvent event = new DefaultScheduleEvent();
 
+	private Usuario isFuncionario;
+
 	private String stringHorario;
 	private TimeZone timeZoneBrasil;
 	private String inicioSchedule;
@@ -72,7 +74,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private LocalTime tempoTotalServicos;
 	private List<LocalTime> horarios;
 	private Date data = Calendar.getInstance().getTime();
-	
+
 	@Autowired
 	protected ContextBean context;
 
@@ -113,13 +115,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	@PostConstruct
 	public void init() throws InstantiationException, IllegalAccessException {
-		if (!verificaPermissao()) {
-			try {
-				FacesContext.getCurrentInstance().getExternalContext().redirect("indexcliente.jsf");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		verificaPermissao();
 		super.init();
 
 		if (empresaRepository.findAll().size() > 0) {
@@ -153,8 +149,18 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		atualizarSchedule();
 	}
 
-	private boolean verificaPermissao() {
-		return usuarioLogadoBean.getUsuario().hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario());
+	private void verificaPermissao() {
+		isFuncionario = new Usuario();
+		if (!usuarioLogadoBean.getUsuario().hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario())
+				&& usuarioLogadoBean.getUsuario().hasRole("ROLE_FUNCIONARIO", usuarioLogadoBean.getUsuario())) {
+			isFuncionario = usuarioLogadoBean.getUsuario();
+		} else if (!usuarioLogadoBean.getUsuario().hasRole("ROLE_FUNCIONARIO", usuarioLogadoBean.getUsuario())) {
+			try {
+				FacesContext.getCurrentInstance().getExternalContext().redirect("indexcliente.jsf");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -301,7 +307,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public boolean mostrarFuncionario() {
-		return permissaoRepository.findByNome("ROLE_FUNCIONARIO").getUsuarios().size() > 1;
+		return permissaoRepository.findByNome("ROLE_FUNCIONARIO").getUsuarios().size() > 1 && isFuncionario.equals(null);
 
 	}
 
@@ -320,7 +326,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				}
 			} else {
 
-				HorarioAgendado agendado= new HorarioAgendado();
+				HorarioAgendado agendado = new HorarioAgendado();
 				boolean primeiro = true;
 				LocalTime tempo = LocalTime.of(0, 0, 0);
 				for (Servico servico : servicosSelecionados) {
@@ -368,7 +374,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				bloquear.setHoraInicio(dataInicioBloqueio.toLocalTime());
 				bloquear.setHoraTermino(dataFinalBloqueio.toLocalTime());
 				getRepository().save(bloquear);
-				
 
 			} else {
 				System.out.println("diferente");
@@ -377,7 +382,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			atualizarSchedule();
 			addDetailMessage("Bloqueio realizado com sucesso");
 			context.fecharDialog("inserir");
-			tipo="servico";
+			tipo = "servico";
 
 		}
 
@@ -405,9 +410,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void onEventSelect(SelectEvent selectEvent) {
-		
+
 		servicosSelecionados = new ArrayList<>();
-		
+
 		event = (ScheduleEvent) selectEvent.getObject();
 		setObjeto((HorarioAgendado) event.getData());
 		if (getObjeto().getUsuarioServico() == null) {
@@ -419,7 +424,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
 			buscarHorarios();
 			horarios.add(getObjeto().getHoraInicio());
-			
+
 		}
 
 	}
@@ -450,6 +455,5 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		setObjeto(new HorarioAgendado());
 
 	}
-
 
 }

@@ -11,4 +11,5 @@ public interface PermissaoRepository extends CrudRepository<Permissao, Long> {
 	
 	Permissao findByNome(String nome);
 
+
 }

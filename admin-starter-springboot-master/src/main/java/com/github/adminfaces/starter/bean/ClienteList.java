@@ -9,6 +9,8 @@ import com.github.adminfaces.starter.repository.ServicoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 
+import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +40,8 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 	public void buscar() {
 
 		if (getNome() != "") {
-			setLista(usuario.filtraPorClientes(usuarioRepository.findByNomeLikeAndAtivoOrderByNome("%" + getNome() + "%", true)));
+			setLista(usuario.filtraPorClientes(
+					usuarioRepository.findByNomeLikeAndAtivoOrderByNome("%" + getNome() + "%", true)));
 		} else {
 			listar();
 		}
@@ -47,21 +50,24 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 
 	}
 
-
 	public void tornarFuncionairo() {
 		List<Usuario> usuarios = getRegistrosSelecionados();
 		for (Usuario usuario : usuarios) {
-			usuario.addPermissao(permissaoRepository.findByNome("ROLE_FUNCIONARIO"));
-			getRepository().save(usuario);
-			List<Servico> servicos = servicoRepository.findAll();
-			for (Servico servico : servicos) {
-				UsuarioServico us = new UsuarioServico();
-				us.setServico(servico);
-				us.setUsuario(usuario);
-				us.setAtivo(true);
-				usuarioServicoRepository.save(us);
+			if (!usuario.getPermissoes().contains(permissaoRepository.findByNome("ROLE_FUNCIONARIO"))) {
+				usuario.addPermissao(permissaoRepository.findByNome("ROLE_FUNCIONARIO"));
+				getRepository().save(usuario);
+				List<Servico> servicos = servicoRepository.findAll();
+				for (Servico servico : servicos) {
+					UsuarioServico us = new UsuarioServico();
+					us.setServico(servico);
+					us.setUsuario(usuario);
+					us.setAtivo(true);
+					usuarioServicoRepository.save(us);
+				}
 			}
 		}
+		addDetailMessage("Cliente atualizado para funcionario");
+
 	}
 
 	@Override

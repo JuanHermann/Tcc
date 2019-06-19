@@ -41,23 +41,6 @@
 
 					</div>
 
-					<p:splitButton value="Salvar" action="#{funcionarioForm.salvar()}"
-						update="@form" icon="fa fa-check"
-						styleClass="hidden-md hidden-lg btn-primary">
-						<p:menuitem value="Limpar" action="#{funcionarioForm.novo()}"
-							rendered="#{funcionarioForm.objeto.id == null}" process="@this"
-							update="@form" resetValues="true" icon="fa fa-refresh" />
-						<p:menuitem value="Deletar" action="#{funcionarioForm.remover()}"
-							rendered="#{funcionarioForm.objeto.id != null}" process="@this"
-							icon="fa fa-trash" update="@form" resetValues="true">
-							<p:confirm header="Confirmação"
-								message="Tem certeza que deseja deletar?" icon="ui-icon-danger" />
-						</p:menuitem>
-						<p:menuitem value="Voltar" immediate="true"
-							action="funcionario-list?faces-redirect=true" process="@this"
-							icon="fa fa-reply" />
-					</p:splitButton>
-
 					<p:separator />
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
@@ -98,21 +81,11 @@
 								value="#{funcionarioForm.objeto.telefone}" />
 						</div>
 
-						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel value="Permissões" for="permissao" />
-						</div>
-						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:selectManyCheckbox id="permissao"
-								value="#{funcionarioForm.permissaoSelecionados}" layout="responsive" columns="3">
-								<f:selectItems value="#{funcionarioForm.permissoes}" var="permissao"
-									itemLabel="#{permissao}" itemValue="#{permissao}" />
-							</p:selectManyCheckbox>
-						</div>
+
 					</div>
 
 
 
-					<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
 
 
 
@@ -124,7 +97,7 @@
 			<div class="box box-primary">
 				<div class="box-header with-border">
 
-					<p:dataTable value="#{servicoList.lista}" var="servico"
+					<p:dataTable value="#{funcionarioForm.lista}" var="servico"
 						id="servicoDT" emptyMessage="Nenhum serviço cadastrado"
 						rowKey="#{servico.id}"
 						selection="#{funcionarioForm.servicosSelecionados}"

@@ -15,13 +15,16 @@ public class UsuarioServico {
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     private Long id;
 
-    @ManyToOne
+    @ManyToOne( fetch = FetchType.EAGER)
     @JoinColumn(nullable=false, name= "usuario_id",referencedColumnName="id")
     private Usuario usuario;
 
-    @ManyToOne
+    @ManyToOne( fetch = FetchType.EAGER)
     @JoinColumn(nullable=false, name= "servico_id",referencedColumnName="id")
     private Servico servico;
     
-    private boolean ativo;    
+    @Column(nullable = false)
+    private boolean ativo;
+ 
+    
 }

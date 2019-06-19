@@ -51,11 +51,6 @@ public class Usuario implements UserDetails {
 	@JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "permissao_id"))
 	private List<Permissao> permissoes;
 
-	// public Usuario(String email, String senha) {
-	// this.email = email;
-	// this.senha = senha;
-	// }
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> auto = new ArrayList<>();

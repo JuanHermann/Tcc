@@ -49,7 +49,7 @@ public class ServicoList extends AbastractListBean<Servico, ServicoRepository> {
 			servico.setAtivo(false);
 			getRepository().save(servico);
 			num++;
-			for (UsuarioServico usuarioServico : usuarioServicoRepository.findByServicoAndAtivo(getObjeto(), true)) {
+			for (UsuarioServico usuarioServico : usuarioServicoRepository.findByServicoAndAtivo(servico, true)) {
 				usuarioServico.setAtivo(false);
 				usuarioServicoRepository.save(usuarioServico);
 			}

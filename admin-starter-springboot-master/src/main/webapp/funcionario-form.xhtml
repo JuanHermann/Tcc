@@ -120,10 +120,10 @@
 
 						<f:facet name="header">
                             Encontre um Serviço pelo seu nome :
-                             <p:inputText value="#{servicoList.nome}" />
+                             <p:inputText value="#{funcionarioForm.nome}" />
 							<p:spacer height="5" />
-							<p:commandButton value="Buscar" action="#{servicoList.buscar}"
-								process="@form" update="@form"
+							<p:commandButton value="Buscar" action="#{funcionarioForm.buscar}"
+								 update="servicoDT"
 								styleClass="btn-flat bg-black btn-states" partialSubmit="true" />
 						</f:facet>
 

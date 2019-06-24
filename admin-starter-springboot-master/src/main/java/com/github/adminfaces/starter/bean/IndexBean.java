@@ -59,7 +59,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private ScheduleModel eventModel = new DefaultScheduleModel();
 	private ScheduleEvent event = new DefaultScheduleEvent();
 
-	private Usuario isFuncionario;
+	private boolean isFuncionario;
 
 	private String stringHorario;
 	private TimeZone timeZoneBrasil;
@@ -150,10 +150,10 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	private void verificaPermissao() {
-		isFuncionario = new Usuario();
+		isFuncionario = false;
 		if (!usuarioLogadoBean.getUsuario().hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario())
 				&& usuarioLogadoBean.getUsuario().hasRole("ROLE_FUNCIONARIO", usuarioLogadoBean.getUsuario())) {
-			isFuncionario = usuarioLogadoBean.getUsuario();
+			isFuncionario = true;
 		} else if (!usuarioLogadoBean.getUsuario().hasRole("ROLE_FUNCIONARIO", usuarioLogadoBean.getUsuario())) {
 			try {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("indexcliente.jsf");
@@ -307,7 +307,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public boolean mostrarFuncionario() {
-		return permissaoRepository.findByNome("ROLE_FUNCIONARIO").getUsuarios().size() > 1 && isFuncionario.equals(null);
+		return permissaoRepository.findByNome("ROLE_FUNCIONARIO").getUsuarios().size() > 1 && isFuncionario == false;
 
 	}
 
@@ -358,7 +358,12 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 					getRepository().save(agendado);
 
 				}
-				setObjeto(new HorarioAgendado());
+				try {
+					novo();
+				} catch (InstantiationException | IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				servicosSelecionados.clear();
 				atualizarSchedule();
 				addDetailMessage("Cadastrado com sucesso");

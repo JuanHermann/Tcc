@@ -111,6 +111,7 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 		}
 		for (Servico servico : listaTodosServicosUsuario) {
 			UsuarioServico usuarioServico = usuarioServicoRepository.findByServicoAndUsuario(servico, getObjeto());
+			System.out.println(listaAtualizada.contains(servico));
 			if (listaAtualizada.contains(servico)) {
 				if (!usuarioServico.isAtivo()) {
 					usuarioServico.setAtivo(true);

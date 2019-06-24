@@ -43,7 +43,7 @@
 						<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
 							update="eventDetails" oncomplete="PF('inserir').show();" />
 						<p:ajax event="eventSelect" listener="#{indexBean.onEventSelect}"
-							update="eventDetails" oncomplete="PF('inserir').show();" />
+							update="eventDetails servico" oncomplete="PF('inserir').show();" />
 						<p:ajax event="eventMove" listener="#{indexBean.onEventMove}"
 							update="messages" />
 						<p:ajax event="eventResize" listener="#{indexBean.onEventResize}"

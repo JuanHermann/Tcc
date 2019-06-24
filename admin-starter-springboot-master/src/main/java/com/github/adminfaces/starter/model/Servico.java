@@ -39,7 +39,22 @@ public class Servico implements Serializable {
 	public String toString() {
 		return nome;
 	}
-    
-    
+	
+	@Override
+	public boolean equals(Object obj) {
+
+	if (obj == this) {
+	    return true;
+	}
+
+	if (!(obj instanceof Servico)) {
+	    return false;
+	}
+
+	Servico other = (Servico) obj;
+
+	return id == other.id && nome == other.nome && tempo == other.tempo && valor == other.valor && descricao == other.descricao && ativo == other.ativo;
+	}
+  
 
 }

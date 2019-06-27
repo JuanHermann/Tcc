@@ -80,6 +80,15 @@
 								required="true" requiredMessage="Telefone é obrigatório."
 								value="#{funcionarioForm.objeto.telefone}" />
 						</div>
+						
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel value="Permissões" for="permissao" />
+						</div>
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+   							 <p:selectManyCheckbox id="permissao" value="#{funcionarioForm.permissaoSelecionados}" layout="responsive" columns="3">
+     							   <f:selectItems value="#{funcionarioForm.permissoes}" var="permissao" itemLabel="#{permissao}" itemValue="#{permissao}" />
+   								 </p:selectManyCheckbox>
+						</div>
 
 
 					</div>

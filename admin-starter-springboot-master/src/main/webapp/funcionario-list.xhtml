@@ -26,11 +26,6 @@
 			<div class="box box-primary">
 				<div class="box-header with-border">
 					<div id="main-buttons" >
-						<p:commandButton action="#{funcionarioList.aceitarSelecionados()}"						
-							disabled="#{empty funcionarioList.registrosSelecionados or funcionarioList.registrosSelecionados.size() == 0}"
-							icon="fa fa-check" value="Aceitar" styleClass="btn-success" process="@this" update=":form"/>
-
-						<p:spacer width="5" />
 						<p:commandButton value="Deletar Selecionados" icon="fa fa-trash" action="#{funcionarioList.deletarSelecionados()}"						
 							disabled="#{empty funcionarioList.registrosSelecionados or funcionarioList.registrosSelecionados.size() == 0}"
 							styleClass="btn-danger" process="@this" update="@form">

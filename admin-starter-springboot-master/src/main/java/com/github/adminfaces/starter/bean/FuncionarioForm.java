@@ -45,8 +45,11 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 	private String nome;
 
 	private List<Servico> servicosSelecionados;
-	private List<Permissao> permissaoSelecionados;
-	private List<Permissao> permissoes;
+	private List<Permissao> permissaoSelecionadoss;
+	private List<Permissao> permissoess;
+	
+	private List<String> permissaoSelecionados;
+	private List<String> permissoes;
 
 	public FuncionarioForm() {
 		super(Usuario.class);
@@ -59,11 +62,16 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 		super.init();
 		lista = new ArrayList<>();
 
-		permissaoSelecionados = getObjeto().getPermissoes();
+//		permissaoSelecionados = getObjeto().getPermissoes();
+//		permissoes = new ArrayList<>();
+//		permissoes.add(permissaoRepository.findByNome("ROLE_FUNCIONARIO"));
+//		permissoes.add(permissaoRepository.findByNome("ROLE_ATENDENTE"));
+//		permissoes.add(permissaoRepository.findByNome("ROLE_ADMIN"));
+		permissaoSelecionados = permissaoToString(getObjeto().getPermissoes());
 		permissoes = new ArrayList<>();
-		permissoes.add(permissaoRepository.findByNome("ROLE_FUNCIONARIO"));
-		permissoes.add(permissaoRepository.findByNome("ROLE_ATENDENTE"));
-		permissoes.add(permissaoRepository.findByNome("ROLE_ADMIN"));
+		permissoes.add("Funcionario");
+		permissoes.add("Atendente");
+		permissoes.add("Administrador");
 
 		servicosSelecionados = new ArrayList<>();
 
@@ -85,7 +93,7 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 	@Override
 	public void salvar() throws InstantiationException, IllegalAccessException {
 		salvarServicos();
-		// salvarPermissoes();
+		salvarPermissoes();
 		getRepository().save(getObjeto());
 		addDetailMessage("Salvo com sucesso");
 		super.init();
@@ -93,9 +101,10 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 	}
 
 	private void salvarPermissoes() {
-		if (!getObjeto().getPermissoes().equals(permissaoSelecionados)) {
+		List<Permissao> lista = stringToPermissao(permissaoSelecionados);
+		if (!getObjeto().getPermissoes().equals(lista)) {
 			getObjeto().getPermissoes().clear();
-			getObjeto().setPermissoes(permissaoSelecionados);
+			getObjeto().setPermissoes(lista);
 			getRepository().save(getObjeto());
 			System.out.println("s");
 		}
@@ -135,6 +144,37 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 		}
 		setNome("");
 
+	}
+	
+	public List<String> permissaoToString(List<Permissao> lista) {
+		List<String> retorno = new ArrayList<>();
+		if(lista.contains(permissaoRepository.findByNome("ROLE_FUNCIONARIO"))) {
+			retorno.add("Funcionario");
+		}
+		if(lista.contains(permissaoRepository.findByNome("ROLE_ATENDENTE"))) {
+			retorno.add("Atendente");
+		}
+		if(lista.contains(permissaoRepository.findByNome("ROLE_ADMIN"))) {
+			retorno.add("Administrador");
+		}
+		return retorno;
+		
+		
+	}
+	public List<Permissao> stringToPermissao(List<String> lista) {
+		List<Permissao> retorno = new ArrayList<>();
+		if(lista.contains("Funcionario")) {
+			retorno.add(permissaoRepository.findByNome("ROLE_FUNCIONARIO"));
+		}
+		if(lista.contains("Atendente")) {
+			retorno.add(permissaoRepository.findByNome("ROLE_ATENDENTE"));
+		}
+		if(lista.contains("Administrador")) {
+			retorno.add(permissaoRepository.findByNome("ROLE_ADMIN"));
+		}
+		return retorno;
+		
+		
 	}
 
 }

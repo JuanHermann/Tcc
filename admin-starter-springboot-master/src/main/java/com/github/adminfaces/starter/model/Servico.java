@@ -18,43 +18,69 @@ public class Servico implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY )
-    private Integer id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-    @Column(length = 100,nullable = false)
-    private String nome;
+	@Column(length = 100, nullable = false)
+	private String nome;
 
-    @Column(nullable = false)
-    private LocalTime tempo;
+	@Column(nullable = false)
+	private LocalTime tempo;
 
-    @Column(nullable = false)
-    private Double valor;
+	@Column(nullable = false)
+	private Double valor;
 
-    @Column(length = 200,nullable = true)
-    private String descricao;
-    
-    private boolean ativo;
+	@Column(length = 200, nullable = true)
+	private String descricao;
+
+	private boolean ativo;
 
 	@Override
 	public String toString() {
 		return nome;
 	}
+
 	
-	@Override
-	public boolean equals(Object obj) {
+	public boolean equalsasda(Object obj) {
 
-	if (obj == this) {
-	    return true;
+		if (obj == this) {
+			return true;
+		}
+
+		if (!(obj instanceof Servico)) {
+			return false;
+		}
+
+		Servico other = (Servico) obj;
+
+		return id == other.id && nome == other.nome && tempo == other.tempo && valor == other.valor
+				&& descricao == other.descricao && ativo == other.ativo;
 	}
+	
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
-	if (!(obj instanceof Servico)) {
-	    return false;
-	}
-
-	Servico other = (Servico) obj;
-
-	return id == other.id && nome == other.nome && tempo == other.tempo && valor == other.valor && descricao == other.descricao && ativo == other.ativo;
-	}
-  
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final Servico other = (Servico) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
 
 }

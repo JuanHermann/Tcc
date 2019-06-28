@@ -101,9 +101,11 @@
 				</div>
 
 			</div>
-			Serviços realizados pelos funcionario.
+			<div  style="#{(funcionarioForm.monstrarServicos()) ? 'display: block;' : 'display:none;'}">
+				Serviços realizados pelo funcionario.
+			</div>
+			<div class="box box-primary"  style="#{(funcionarioForm.monstrarServicos()) ? 'display: block;' : 'display:none;'}" >
 			
-			<div class="box box-primary">
 				<div class="box-header with-border">
 
 					<p:dataTable value="#{funcionarioForm.lista}" var="servico"

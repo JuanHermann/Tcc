@@ -88,13 +88,13 @@
 						</div>
 					</div>
 
-
-					<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
-
 					<p:dialog id="dialogAgendar" widgetVar="inserir"
 						header="Cadastrar Horario" showEffect="clip" hideEffect="clip">
-
-						<h:panelGrid id="eventDetails" columns="1">
+						<h:panelGrid id="mensagem" columns="1" rendered="#{!indexClienteBean.verificarCadastroAceito()}" > 
+						<p:outputLabel>Seu cadastro não foi aceito ainda, por enquanto voce só pode realizar uma agendamento.</p:outputLabel>
+						</h:panelGrid>
+						
+						<h:panelGrid id="eventDetails" columns="1" rendered="#{indexClienteBean.verificarCadastroAceito()}">
 							<p:outputPanel>
 								<h:panelGrid columns="1">
 
@@ -134,7 +134,7 @@
 
 									<p:calendar id="data" value="#{indexClienteBean.objeto.data}"
 										required="true" requiredMessage="Selecione um dia"
-										mindate="#{indexClienteBean.dataMinima}" pattern="dd/MM/yyyy"
+										mindate="today" pattern="dd/MM/yyyy"
 										converter="#{localDateConverter}">
 										<p:ajax event="dateSelect"
 											listener="#{indexClienteBean.buscarHorarios}"

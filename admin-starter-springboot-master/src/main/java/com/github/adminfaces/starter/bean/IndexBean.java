@@ -224,14 +224,27 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	public void buscarFuncionarios() {
 		if (mostrarFuncionario()) {
+			List<Usuario> funcionariosCorreto = new ArrayList<>();
+			boolean primeiro = true;
 			setFuncionarios.clear();
 			for (Servico servico : servicosSelecionados) {
-				set
-				for (UsuarioServico usuarioServico : usuarioServicoRepository
-						.findByServicoAndAtivoOrderByUsuario(servico, true)) {
-					setFuncionarios.add(usuarioServico.getUsuario());
+				List<Usuario> funcionarios = new ArrayList<>();
+				for (UsuarioServico usuarioServico : usuarioServicoRepository.findByServicoAndAtivoOrderByUsuario(servico, true)) {
+					funcionarios.add(usuarioServico.getUsuario());
 				}
+				if(primeiro) {
+					funcionariosCorreto.addAll(funcionarios);
+					primeiro= false;					
+				}
+				for(Usuario u : funcionariosCorreto) {
+					if(!funcionarios.contains(u)) {
+						funcionariosCorreto.remove(u);
+					}
+				}
+				
+				
 			}
+			setFuncionarios.addAll(funcionariosCorreto);
 		}
 		buscarHorarios();
 	}
@@ -259,8 +272,22 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			horarios.add(horaAuxiliar);
 			horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 		}
+		 if(mostrarFuncionario()) {
+			 if(funcionario.getId() == null) {
+				 System.out.println("nem preferencia");
+			 }else {
+				 System.out.println(funcionario.getNome());
+			 }
+		 }else {
+				horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());	
+				retirarHorariosOcupados(TempoTotalServicos);
+		 }
 
-		horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());
+	}
+
+	private void retirarHorariosOcupados(LocalTime TempoTotalServicos) {
+
+		LocalTime horaAuxiliar = HORA_INICIO_EMPRESA;
 		if (!horarioAgendados.isEmpty()) {
 			for (HorarioAgendado horarioAgendado : horarioAgendados) {
 				if (verificaEspacoTempo(HORA_INICIO_EMPRESA, TempoTotalServicos,
@@ -290,6 +317,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				}
 			}
 		}
+		
 	}
 
 	private boolean verificaEspacoTempo(LocalTime primeiroHorarioLivre, LocalTime tempoTotalServico,

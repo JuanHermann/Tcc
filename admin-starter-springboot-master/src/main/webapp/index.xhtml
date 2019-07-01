@@ -20,16 +20,6 @@
 	<ui:define name="body">
 
 		<h:form id="form" data-toggle="validator" role="form">
-
-
-				<p:selectOneMenu id="asd" value="#{indexBean.objeto.cliente}" rendered="#{indexBean.mostrarFuncionario()}"
-					filter="true" converter="#{usuarioConverter}" required="true">
-					<f:selectItem itemLabel="Selecione o Funcionario" itemValue="#{null}" />
-					<f:selectItems value="#{indexBean.clientes}" var="usuario"
-						itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
-					<p:ajax event="change" update="cliente lblCliente" />
-				</p:selectOneMenu>
-
 			<div class="box box-primary">
 				<div class="box-header with-border">
 					<p:growl id="messages" showDetail="true" />

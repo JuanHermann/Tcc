@@ -97,21 +97,24 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 
 	private void salvarPermissoes() {
 		List<Permissao> lista = stringToPermissao(permissaoSelecionados);
+		boolean funcionario = getObjeto().hasRole("ROLE_FUNCIONARIO", getObjeto());
 		if (!getObjeto().getPermissoes().equals(lista)) {
 			getObjeto().getPermissoes().clear();
 			getObjeto().setPermissoes(lista);
 			getRepository().save(getObjeto());
-			if (!permissaoSelecionados.contains("Funcionario")) {
-				for (UsuarioServico us : usuarioServicoRepository.findByUsuarioAndAtivo(getObjeto(), true)) {
-					us.setAtivo(false);
-					usuarioServicoRepository.save(us);
-				}
-			} else {
-				for (Servico servico : getLista()) {
-					UsuarioServico us = usuarioServicoRepository.findByServicoAndUsuario(servico, getObjeto());
-					us.setAtivo(true);
-					usuarioServicoRepository.save(us);
+			if (!funcionario) {
+				if (!permissaoSelecionados.contains("Funcionario")) {
+					for (UsuarioServico us : usuarioServicoRepository.findByUsuarioAndAtivo(getObjeto(), true)) {
+						us.setAtivo(false);
+						usuarioServicoRepository.save(us);
+					}
+				} else {
+					for (Servico servico : getLista()) {
+						UsuarioServico us = usuarioServicoRepository.findByServicoAndUsuario(servico, getObjeto());
+						us.setAtivo(true);
+						usuarioServicoRepository.save(us);
 
+					}
 				}
 			}
 
@@ -181,6 +184,7 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 		return retorno;
 
 	}
+
 	public boolean monstrarServicos() {
 		return permissaoSelecionados.contains("Funcionario");
 	}

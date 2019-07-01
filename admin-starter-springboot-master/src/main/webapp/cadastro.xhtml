@@ -225,7 +225,13 @@ background-size
                                 </div>
                                  /.social-auth-links -->
 
-			<a href="login.xhtml" class="text-center">Já tenho Conta</a>
+			<p:commandLink styleClass="btn btn-link" value="Já tenho Conta"
+				onclick="location.href='/login.xhtml'" />
+			<div style="text-align: right; float: right;">
+
+				<p:commandLink styleClass="btn btn-link" value="Esqueci	minha senha"
+					onclick="location.href='/esquecisenha.xhtml'" />
+			</div>
 
 		</div>
 		<!-- /.login-box-body -->

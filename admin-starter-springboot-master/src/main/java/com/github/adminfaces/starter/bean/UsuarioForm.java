@@ -24,7 +24,12 @@ import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 import com.github.adminfaces.starter.service.UsuarioService;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Component
+@Getter
+@Setter
 @Scope("view")
 public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 
@@ -32,10 +37,17 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 	private UsuarioService usuarioService;
 	@Autowired
 	private PermissaoRepository permissaoRepository;
-
+	
+	private String senha2;
 
 	public UsuarioForm() {
 		super(Usuario.class);
+	}
+	
+	@Override
+	public void init() throws InstantiationException, IllegalAccessException {
+		senha2 = "";
+		super.init();
 	}
 
 	public void novoCadastro() throws IOException {

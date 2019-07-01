@@ -43,7 +43,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	private static LocalTime HORA_FINAL_EMPRESA = LocalTime.of(20, 0, 0);
 	private static LocalTime TEMPO_BUSCA_ENTRE_SERVICOS = LocalTime.of(0, 15, 0);
 	private static LocalTime TEMPO_PARA_CANCELAMENTO = LocalTime.of(24, 0, 0);
-	
+
 	private ScheduleModel eventModel = new DefaultScheduleModel();
 
 	private ScheduleEvent event = new DefaultScheduleEvent();
@@ -387,9 +387,9 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	}
 
 	public boolean verificaTempoCancelamento() {
-		if(getObjeto().getHoraInicio().isBefore(TEMPO_PARA_CANCELAMENTO.plus(LocalTime.now().getHour())))
-		return true;
-		
+		if (getObjeto().getHoraInicio().isAfter(LocalTime.now().plusHours(Long.valueOf(TEMPO_PARA_CANCELAMENTO.toString()))))
+			return true;
+
 		return false;
 	}
 

@@ -142,7 +142,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		System.out.println("passou");
 		if (servicosSelecionados != null && mostrarFuncionario()) {
 			for (Servico servico : servicosSelecionados) {
-				usuarioServicos = usuarioServicoRepository.findByServicoOrderByUsuario(servico);
+				usuarioServicos = usuarioServicoRepository.findByServicoAndAtivoOrderByUsuario(servico, true);
 				for (UsuarioServico usuarioServico : usuarioServicos) {
 					setFuncionarios.add(usuarioServico.getUsuario());
 				}

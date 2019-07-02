@@ -82,8 +82,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private UsuarioRepository usuarioRepository;
 	private List<Usuario> clientes;
 	private List<Usuario> funcionarios;
-	private Set<Usuario> setFuncionarios;
+	private List<Usuario> setFuncionarios;
 	private Usuario funcionario;
+	private Usuario funcionarioDoList;
 	private Usuario cliente;
 
 	@Autowired
@@ -142,8 +143,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		servicosSelecionados = new ArrayList<>();
 		cliente = new Usuario();
 		funcionario = new Usuario();
+		funcionarioDoList = new Usuario();
 		funcionarios = new ArrayList<>();
-		setFuncionarios = new HashSet<>();
+		setFuncionarios = new ArrayList<>();
 		stringHorario = "Selecione um Horário";
 
 		atualizarSchedule();
@@ -273,10 +275,14 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 		}
 		 if(mostrarFuncionario()) {
-			 if(funcionario.getId() == null) {
+			 if(funcionarioDoList.getId() == null) {
 				 System.out.println("nem preferencia");
+				for(Usuario funcionario: setFuncionarios) {
+					
+				}
 			 }else {
-				 System.out.println(funcionario.getNome());
+				 horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionarioDoList.getId(), getObjeto().getData());	
+					retirarHorariosOcupados(TempoTotalServicos);
 			 }
 		 }else {
 				horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());	
@@ -348,12 +354,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	public void salvarAgendamento() {
 		if (mostrarForm() == true) {
-			System.out.println("agendar");
-			if (mostrarFuncionario()) {
-				for (Servico servico : servicosSelecionados) {
-
-				}
-			} else {
+			if(funcionarioDoList.getId() == null) {
+				pegarFuncionarioCorrespondenteAoHorario();
+			}
 
 				HorarioAgendado agendado = new HorarioAgendado();
 				boolean primeiro = true;
@@ -383,7 +386,14 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 						tempo = somarLocalTime(tempo, servico.getTempo());
 						agendado.setHoraTermino(tempo);
 					}
-					agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndAtivo(servico, true).get(0));
+					if(mostrarFuncionario()) {
+						
+							agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndUsuarioAndAtivoOrderByUsuario(servico,funcionarioDoList, true));						
+						
+						
+					}else {
+						agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndUsuarioAndAtivoOrderByUsuario(servico,usuarioLogadoBean.getUsuario(), true));						
+					}
 					getRepository().save(agendado);
 
 				}
@@ -398,7 +408,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				addDetailMessage("Cadastrado com sucesso");
 				context.fecharDialog("inserir");
 
-			}
+			
 		} else {
 			System.out.println("bloquear");
 			if (dataInicioBloqueio.toLocalDate().equals(dataFinalBloqueio.toLocalDate())) {
@@ -420,6 +430,12 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 		}
 
+	}
+
+	private void pegarFuncionarioCorrespondenteAoHorario() {
+		funcionarioDoList = asdasdas;
+		
+		
 	}
 
 	private LocalTime somarLocalTime(LocalTime tempo, LocalTime tempo2) {

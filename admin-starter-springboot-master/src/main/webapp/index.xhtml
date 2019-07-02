@@ -59,6 +59,7 @@
 							<p:outputPanel id="idGeral">
 								<p:outputPanel rendered="#{indexBean.mostrarForm()}">
 									<h:panelGrid columns="1">
+									
 										<p:outputLabel for="cliente" value="Cliente:" id="lblCliente" />
 
 										<p:selectOneMenu id="cliente"
@@ -68,7 +69,8 @@
 												itemValue="#{null}" />
 											<f:selectItems value="#{indexBean.clientes}" var="usuario"
 												itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
-											<p:ajax event="change" update="cliente lblCliente" />
+											<p:ajax event="change" update="cliente lblCliente" 
+												listener="#{indexBean.buscarFuncionarios()}"/>
 										</p:selectOneMenu>
 
 
@@ -90,15 +92,14 @@
 											<p:outputLabel for="funcionario" value="Funcionario:" />
 
 											<p:selectOneMenu id="funcionario"
-												value="#{indexBean.funcionario}"
+												value="#{indexBean.funcionarioDoList}"
 												converter="#{usuarioConverter}">
 												<f:selectItem itemLabel="Nenhuma Preferencia"
 													itemValue="#{null}" />
-												<f:selectItems value="#{indexBean.setFuncionarios}"
-													var="funcionario" itemLabel="#{funcionario.nome}"
-													itemValue="#{usuario}" />
-														<p:ajax event="change"
-												listener="#{indexBean.buscarHorarios}" />asdasdas
+													<f:selectItems value="#{indexBean.clientes}" var="usuario"
+												itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+														<p:ajax event="change" update="horario"
+												listener="#{indexBean.buscarHorarios}" />
 											</p:selectOneMenu>
 										</p:outputPanel>
 

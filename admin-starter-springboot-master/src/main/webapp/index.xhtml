@@ -96,7 +96,7 @@
 												converter="#{usuarioConverter}">
 												<f:selectItem itemLabel="Nenhuma Preferencia"
 													itemValue="#{null}" />
-													<f:selectItems value="#{indexBean.clientes}" var="usuario"
+													<f:selectItems value="#{indexBean.setFuncionarios}" var="usuario"
 												itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
 														<p:ajax event="change" update="horario"
 												listener="#{indexBean.buscarHorarios}" />

@@ -183,10 +183,13 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				eventModel.addEvent(df);
 
 			} else {
-
-				eventModel.addEvent(new DefaultScheduleEvent(
-						horario.getCliente().getNome() + " - " + horario.getUsuarioServico().getServico().getNome(),
-						dataInicio, dataFinal, horario));
+				String titulo ="";
+				if(mostrarFuncionario()) {
+					titulo ="F: "+horario.getUsuarioServico().getUsuario().getNome()+ " - C: "+horario.getCliente().getNome() + " - " + horario.getUsuarioServico().getServico().getNome();
+				}else {
+					titulo =horario.getCliente().getNome() + " - " + horario.getUsuarioServico().getServico().getNome();
+				}
+				eventModel.addEvent(new DefaultScheduleEvent(titulo,dataInicio, dataFinal, horario));
 			}
 
 		}
@@ -277,9 +280,15 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		 if(mostrarFuncionario()) {
 			 if(funcionarioDoList.getId() == null) {
 				 System.out.println("nem preferencia");
+				 List<LocalTime> auxHorarios = horarios;
+				 Set<LocalTime> horariosFuncionarios = new HashSet<>();
 				for(Usuario funcionario: setFuncionarios) {
-					
+					horarios = auxHorarios;
+					horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(), getObjeto().getData());	
+					retirarHorariosOcupados(TempoTotalServicos);
+					horariosFuncionarios.addAll(horarios);
 				}
+				horarios.addAll(horariosFuncionarios);
 			 }else {
 				 horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionarioDoList.getId(), getObjeto().getData());	
 					retirarHorariosOcupados(TempoTotalServicos);
@@ -403,6 +412,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				if(mostrarFuncionario()) {
+					funcionarioDoList = new Usuario();
+				}
 				servicosSelecionados.clear();
 				atualizarSchedule();
 				addDetailMessage("Cadastrado com sucesso");
@@ -433,7 +445,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	private void pegarFuncionarioCorrespondenteAoHorario() {
-		funcionarioDoList = asdasdas;
+		
 		
 		
 	}
@@ -471,6 +483,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			dataFinalBloqueio = dataFinalBloqueio.of(getObjeto().getData(), getObjeto().getHoraTermino());
 		} else {
 			tipo = "servico";
+			
 			servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
 			buscarHorarios();
 			horarios.add(getObjeto().getHoraInicio());

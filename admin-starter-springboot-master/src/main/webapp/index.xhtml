@@ -22,7 +22,6 @@
 		<h:form id="form" data-toggle="validator" role="form">
 			<div class="box box-primary">
 				<div class="box-header with-border">
-					<p:growl id="messages" showDetail="true" />
 
 					<p:schedule id="schedule" value="#{indexBean.eventModel}"
 						slotMinutes="#{indexBean.tempoMinutosSchedule}"
@@ -91,15 +90,13 @@
 										<p:outputPanel rendered="#{indexBean.mostrarFuncionario()}">
 											<p:outputLabel for="funcionario" value="Funcionario:" />
 
-											<p:selectOneMenu id="funcionario"
-												value="#{indexBean.funcionarioDoList}"
+											<p:selectOneMenu id="funcionario" required="false"
+												value="#{indexBean.funcionarioDoList}" 
 												converter="#{usuarioConverter}">
-												<f:selectItem itemLabel="Nenhuma Preferencia"
-													itemValue="#{null}" />
-													<f:selectItems value="#{indexBean.setFuncionarios}" var="usuario"
+												<f:selectItems value="#{indexBean.setFuncionarios}" var="usuario"
 												itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
 														<p:ajax event="change" update="horario"
-												listener="#{indexBean.buscarHorarios}" />
+												listener="#{indexBean.buscarHorarios()}" />
 											</p:selectOneMenu>
 										</p:outputPanel>
 

@@ -21,7 +21,7 @@ public class UsuarioConverter implements Converter {
 		try {
 			return repository.findById(Integer.parseInt(value)).orElse(null);
 		} catch (Exception ex) {
-			return null;
+			return new Usuario();
 		}
 	}
 

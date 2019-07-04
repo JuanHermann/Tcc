@@ -14,7 +14,7 @@ import com.github.adminfaces.starter.model.Usuario;
 
 public interface HorarioAgendadoRepository extends JpaRepository<HorarioAgendado, Integer> {
 	
-	@Query(value = "select h from horario_agendado h INNER JOIN usuario_servico u ON h.usuario_servico_id = u.id WHERE u.usuario_id = :id AND h.data = :data", nativeQuery = true)
+	@Query(value = "select h.id, h.data, h.hora_inicio, h.hora_termino, h.usuario_servico_id, h.usuario_id from horario_agendado h INNER JOIN usuario_servico u ON h.usuario_servico_id = u.id WHERE u.usuario_id = :id AND h.data = :data", nativeQuery = true)
 	List<HorarioAgendado> findByFuncionarioAndData(@Param("id") Integer id,@Param("data")LocalDate data);
 	
 	List<HorarioAgendado> findByDataOrderByHoraInicio(LocalDate data);

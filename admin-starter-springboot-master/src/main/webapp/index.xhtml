@@ -68,8 +68,7 @@
 												itemValue="#{null}" />
 											<f:selectItems value="#{indexBean.clientes}" var="usuario"
 												itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
-											<p:ajax event="change" update="cliente lblCliente" 
-												listener="#{indexBean.buscarFuncionarios()}"/>
+											<p:ajax event="change" update="cliente lblCliente"/>
 										</p:selectOneMenu>
 
 

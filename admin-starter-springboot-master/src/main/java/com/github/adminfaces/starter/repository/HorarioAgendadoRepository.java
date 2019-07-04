@@ -2,6 +2,7 @@ package com.github.adminfaces.starter.repository;
 
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,9 @@ public interface HorarioAgendadoRepository extends JpaRepository<HorarioAgendado
 	
 	@Query(value = "select h.id, h.data, h.hora_inicio, h.hora_termino, h.usuario_servico_id, h.usuario_id from horario_agendado h INNER JOIN usuario_servico u ON h.usuario_servico_id = u.id WHERE u.usuario_id = :id AND h.data = :data", nativeQuery = true)
 	List<HorarioAgendado> findByFuncionarioAndData(@Param("id") Integer id,@Param("data")LocalDate data);
+	
+	@Query(value = "select h.id, h.data, h.hora_inicio, h.hora_termino, h.usuario_servico_id, h.usuario_id from horario_agendado h INNER JOIN usuario_servico u ON h.usuario_servico_id = u.id WHERE u.usuario_id = :id AND h.data = :data AND h.hora_inicio between :horaInicio and :horaTermino", nativeQuery = true)
+	List<HorarioAgendado> findByFuncionarioAndDataAndTempo(@Param("id") Integer id,@Param("data")LocalDate data,@Param("horaInicio")LocalTime horaInicio,@Param("horaTermino")LocalTime horaTermino);
 	
 	List<HorarioAgendado> findByDataOrderByHoraInicio(LocalDate data);
 	

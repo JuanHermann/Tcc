@@ -3,6 +3,7 @@ package com.github.adminfaces.starter.bean;
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -425,7 +426,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			try {
 				novo();
 			} catch (InstantiationException | IllegalAccessException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			}
 			if (mostrarFuncionario()) {
@@ -437,18 +438,46 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			context.fecharDialog("inserir");
 
 		} else {
-			System.out.println("bloquear");
-			if (dataInicioBloqueio.toLocalDate().equals(dataFinalBloqueio.toLocalDate())) {
-				System.out.println("igual");
-				HorarioAgendado bloquear = new HorarioAgendado();
-				bloquear.setData(dataInicioBloqueio.toLocalDate());
-				bloquear.setHoraInicio(dataInicioBloqueio.toLocalTime());
-				bloquear.setHoraTermino(dataFinalBloqueio.toLocalTime());
-				getRepository().save(bloquear);
-
-			} else {
-				System.out.println("diferente");
+			HorarioAgendado bloquear = new HorarioAgendado();
+			LocalDate dataInicio = dataInicioBloqueio.toLocalDate(), dataFinal = dataFinalBloqueio.toLocalDate();
+			if (getObjeto().getId() != null) {
+				bloquear = getObjeto();
 			}
+			if (!dataInicio.isEqual(dataFinal)) {
+
+				do {
+					if(bloquear.getId() == null) {
+						bloquear = new HorarioAgendado();						
+					}
+					bloquear.setData(dataInicio);
+					if (dataInicio.isEqual(dataInicioBloqueio.toLocalDate())) {
+						bloquear.setHoraInicio(dataInicioBloqueio.toLocalTime());
+					} else {
+
+						bloquear.setHoraInicio(HORA_INICIO_EMPRESA);
+					}
+
+					bloquear.setHoraTermino(HORA_FINAL_EMPRESA);
+
+					getRepository().save(bloquear);
+					bloquear = new HorarioAgendado();
+					dataInicio = dataInicio.plusDays(1L);
+
+				} while (!dataInicio.isEqual(dataFinal));
+
+			}
+
+			bloquear.setData(dataInicio);
+
+			if (dataInicio.isEqual(dataInicioBloqueio.toLocalDate())) {
+				bloquear.setHoraInicio(dataInicioBloqueio.toLocalTime());
+			}else {
+				bloquear.setHoraInicio(HORA_INICIO_EMPRESA);
+			}
+			bloquear.setHoraTermino(dataFinalBloqueio.toLocalTime());
+
+			getRepository().save(bloquear);
+
 			setObjeto(new HorarioAgendado());
 			atualizarSchedule();
 			addDetailMessage("Bloqueio realizado com sucesso");
@@ -460,10 +489,25 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	private void pegarFuncionarioCorrespondenteAoHorario() {
-		for(Usuario funcionario: setFuncionarios) {
-			if(horarioAgendadoRepository.findByFuncionarioAndDataAndTempo(funcionario.getId(),getObjeto().getData(),getObjeto().getHoraInicio(),somarLocalTime(getObjeto().getHoraInicio(), tempoTotalServicos)).isEmpty()) {
-				funcionarioDoList = funcionario;
+		LocalTime inicio = getObjeto().getHoraInicio(),
+				termino = somarLocalTime(getObjeto().getHoraInicio(), tempoTotalServicos);
+
+		boolean possivel = true;
+		for (Usuario funcionario : setFuncionarios) {
+			if (funcionario.getId() != null) {
+				possivel = true;
+				for (HorarioAgendado ha : horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
+						getObjeto().getData())) {
+					if (ha.getHoraInicio().isBefore(termino) && ha.getHoraTermino().isAfter(inicio)) {
+						possivel = false;
+					}
+				}
+				if (possivel == true) {
+					// possivel fazer outra combinação aqui
+					funcionarioDoList = funcionario;
+				}
 			}
+
 		}
 	}
 
@@ -500,7 +544,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			dataFinalBloqueio = dataFinalBloqueio.of(getObjeto().getData(), getObjeto().getHoraTermino());
 		} else {
 			tipo = "servico";
-
+			funcionarioDoList = getObjeto().getUsuarioServico().getUsuario();
 			servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
 			buscarHorarios();
 			horarios.add(getObjeto().getHoraInicio());

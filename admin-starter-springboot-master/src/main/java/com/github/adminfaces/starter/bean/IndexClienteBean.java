@@ -23,10 +23,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import org.primefaces.model.DefaultScheduleEvent;
-import org.primefaces.model.DefaultScheduleModel;
-import org.primefaces.model.ScheduleEvent;
-import org.primefaces.model.ScheduleModel;
 import org.primefaces.model.menu.MenuModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -43,10 +39,6 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	private static LocalTime HORA_FINAL_EMPRESA = LocalTime.of(20, 0, 0);
 	private static LocalTime TEMPO_BUSCA_ENTRE_SERVICOS = LocalTime.of(0, 15, 0);
 	private static LocalTime TEMPO_PARA_CANCELAMENTO = LocalTime.of(24, 0, 0);
-
-	private ScheduleModel eventModel = new DefaultScheduleModel();
-
-	private ScheduleEvent event = new DefaultScheduleEvent();
 
 	private List<HorarioAgendado> horariosCliente;
 	private Date dataMinima;

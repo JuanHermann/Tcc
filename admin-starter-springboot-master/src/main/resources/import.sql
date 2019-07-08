@@ -1,5 +1,5 @@
 
-INSERT INTO servico (nome,tempo,valor,descricao,ativo) VALUES ('sombrancelha','00:15:00',12,'muito bom',true);
+INSERT INTO servico (nome,tempo,valor,descricao,ativo) VALUES ('Bloqueio','00:15:00',0,'',true);
 INSERT INTO servico (nome,tempo,valor,descricao,ativo) VALUES ('Limpeza de pele','01:00:00',50,'',true);
 INSERT INTO servico (nome,tempo,valor,descricao,ativo) VALUES ('massagem','00:30:00',20,'muito bom',true);
 INSERT INTO servico (nome,tempo,valor,descricao,ativo) VALUES ('sombrancelha2','00:15:00',12,'muito bom',true);

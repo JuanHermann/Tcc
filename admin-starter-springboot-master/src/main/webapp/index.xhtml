@@ -11,7 +11,7 @@
 
 
 	<ui:define name="title">
-		<h2 class="align-center">Agenda #{isFuncionario.nome}</h2>
+		<h2 class="align-center">Agenda #{funcionarioDoList.nome}</h2>
 	</ui:define>
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
@@ -20,6 +20,20 @@
 	<ui:define name="body">
 
 		<h:form id="form" data-toggle="validator" role="form">
+
+			<p:outputPanel rendered="#{indexBean.mostrarFuncionario()}">
+				<p:outputLabel for="funcionarioSchedule" value="Funcionario:" />
+
+				<p:selectOneMenu id="funcionarioSchedule" required="false"
+					value="#{indexBean.funcionarioDoList}"
+					converter="#{usuarioConverter}">
+					<f:selectItems value="#{indexBean.setFuncionarios}" var="usuario"
+						itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+					<p:ajax event="change" update="schedule"
+						listener="#{indexBean.atualizarSchedule()}" />
+				</p:selectOneMenu>
+			</p:outputPanel>
+
 			<div class="box box-primary">
 				<div class="box-header with-border">
 
@@ -58,17 +72,18 @@
 							<p:outputPanel id="idGeral">
 								<p:outputPanel rendered="#{indexBean.mostrarForm()}">
 									<h:panelGrid columns="1">
-									
+
 										<p:outputLabel for="cliente" value="Cliente:" id="lblCliente" />
 
 										<p:selectOneMenu id="cliente"
-											value="#{indexBean.objeto.cliente}" filter="true" filterMatchMode="contains"
-											converter="#{usuarioConverter}" required="true">
+											value="#{indexBean.objeto.cliente}" filter="true"
+											filterMatchMode="contains" converter="#{usuarioConverter}"
+											required="true">
 											<f:selectItem itemLabel="Selecione o cliente"
 												itemValue="#{null}" />
 											<f:selectItems value="#{indexBean.clientes}" var="usuario"
 												itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
-											<p:ajax event="change" update="cliente lblCliente"/>
+											<p:ajax event="change" update="cliente lblCliente" />
 										</p:selectOneMenu>
 
 
@@ -90,12 +105,13 @@
 											<p:outputLabel for="funcionario" value="Funcionario:" />
 
 											<p:selectOneMenu id="funcionario" required="false"
-												value="#{indexBean.funcionarioDoList}" 
+												value="#{indexBean.funcionarioDoList}"
 												converter="#{usuarioConverter}">
-												<f:selectItems value="#{indexBean.setFuncionarios}" var="usuario"
-												itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
-														<p:ajax event="change" update="horario"
-												listener="#{indexBean.buscarHorarios()}" />
+												<f:selectItems value="#{indexBean.setFuncionarios}"
+													var="usuario" itemLabel="#{usuario.nome}"
+													itemValue="#{usuario}" />
+												<p:ajax event="change" update="horario"
+													listener="#{indexBean.buscarHorarios()}" />
 											</p:selectOneMenu>
 										</p:outputPanel>
 
@@ -125,6 +141,20 @@
 								</p:outputPanel>
 								<p:outputPanel rendered="#{!indexBean.mostrarForm()}">
 									<h:panelGrid columns="1">
+
+										<p:outputPanel rendered="#{indexBean.mostrarFuncionario()}">
+											<p:outputLabel for="funcionarioBloqueio" value="Funcionario:" />
+
+											<p:selectOneMenu id="funcionarioBloqueio" required="false"
+												value="#{indexBean.funcionarioDoBloqueio}"
+												converter="#{usuarioConverter}">
+												<f:selectItems value="#{indexBean.setFuncionariosBloqueio}"
+													var="usuario" itemLabel="#{usuario.nome}"
+													itemValue="#{usuario}" />
+
+											</p:selectOneMenu>
+										</p:outputPanel>
+
 										<p:outputLabel for="inicio" value="Inicio" />
 										<p:calendar id="inicio"
 											value="#{indexBean.dataInicioBloqueio}" required="true"

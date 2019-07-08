@@ -85,8 +85,10 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private List<Usuario> clientes;
 	private List<Usuario> funcionarios;
 	private List<Usuario> setFuncionarios;
+	private List<Usuario> setFuncionariosBloqueio;
 	private Usuario funcionario;
 	private Usuario funcionarioDoList;
+	private Usuario funcionarioDoBloqueio;
 	private Usuario cliente;
 
 	@Autowired
@@ -142,23 +144,36 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		horarioAgendados = new ArrayList<>();
 		buscarClientes();
 		servicos = servicoRepository.findByAtivoOrderByNome(true);
+		servicos.remove(servicoRepository.findById(1).get());
 		servicosSelecionados = new ArrayList<>();
 		cliente = new Usuario();
 		funcionario = new Usuario();
 		funcionarioDoList = new Usuario();
+		funcionarioDoBloqueio = new Usuario();
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new ArrayList<>();
+		setFuncionariosBloqueio = Usuario.filtraPorRole(usuarioRepository.findByAtivoOrderByNome(true),
+				"ROLE_FUNCIONARIO");
 		stringHorario = "Selecione um Horário";
 
 		atualizarSchedule();
 	}
 
 	private void verificaPermissao() {
-		isFuncionario = false;
-		if (!usuarioLogadoBean.getUsuario().hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario())
-				&& usuarioLogadoBean.getUsuario().hasRole("ROLE_FUNCIONARIO", usuarioLogadoBean.getUsuario())) {
+		isFuncionario = true;
+		String tipoUsuario = "";
+		if (Usuario.hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario())) {
+			tipoUsuario = "admin";
+			isFuncionario = false;
+		} else if (Usuario.hasRole("ROLE_ATENDENTE", usuarioLogadoBean.getUsuario())) {
+			tipoUsuario = "atendente";
+			isFuncionario = false;
+		} else if (Usuario.hasRole("ROLE_FUNCIONARIO", usuarioLogadoBean.getUsuario())) {
+			tipoUsuario = "funcionario";
 			isFuncionario = true;
-		} else if (!usuarioLogadoBean.getUsuario().hasRole("ROLE_FUNCIONARIO", usuarioLogadoBean.getUsuario())) {
+		}
+
+		if (tipoUsuario == "") {
 			try {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("indexcliente.jsf");
 			} catch (IOException e) {
@@ -170,7 +185,11 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	private void atualizarSchedule() {
 
-		horarioAgendados = horarioAgendadoRepository.findAll();
+		if (mostrarForm()) {
+			horarioAgendados = horarioAgendadoRepository.findAll();
+		}else {
+			horarioAgendados = horarioAgendadoRepository.findByFuncionario(usuarioLogadoBean.getUsuario().getId());
+		}
 		eventModel = new DefaultScheduleModel();
 		Date dataInicio = new Date(), dataFinal = new Date();
 		for (HorarioAgendado horario : horarioAgendados) {
@@ -178,14 +197,22 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			LocalDateTime localDataFinal = LocalDateTime.of(horario.getData(), horario.getHoraTermino());
 			dataInicio = Date.from(localDataInicio.toInstant(ZoneOffset.UTC));
 			dataFinal = Date.from(localDataFinal.toInstant(ZoneOffset.UTC));
+			String titulo = "";
+			if (horario.getCliente() == null) {
 
-			if (horario.getUsuarioServico() == null) {
-				DefaultScheduleEvent df = new DefaultScheduleEvent("Bloqueio", dataInicio, dataFinal, horario);
-				df.setStyleClass("btn-danger");
-				eventModel.addEvent(df);
+				if (mostrarFuncionario()) {
+					titulo = "Bloqueio do " + horario.getUsuarioServico().getUsuario().getNome();
+					DefaultScheduleEvent df = new DefaultScheduleEvent(titulo, dataInicio, dataFinal, horario);
+					df.setStyleClass("btn-danger");
+					eventModel.addEvent(df);
+				} else {
+					DefaultScheduleEvent df = new DefaultScheduleEvent("Bloqueio", dataInicio, dataFinal, horario);
+					df.setStyleClass("btn-danger");
+					eventModel.addEvent(df);
+				}
 
 			} else {
-				String titulo = "";
+
 				if (mostrarFuncionario()) {
 					titulo = "F: " + horario.getUsuarioServico().getUsuario().getNome() + " - C: "
 							+ horario.getCliente().getNome() + " - "
@@ -438,6 +465,15 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			context.fecharDialog("inserir");
 
 		} else {
+			UsuarioServico us = new UsuarioServico();
+			if (mostrarFuncionario()) {
+				us = usuarioServicoRepository.findByServicoAndUsuario(servicoRepository.findById(1).get(),
+						funcionarioDoBloqueio);
+			} else {
+				us = usuarioServicoRepository.findByServicoAndUsuario(servicoRepository.findById(1).get(),
+						usuarioLogadoBean.getUsuario());
+
+			}
 			HorarioAgendado bloquear = new HorarioAgendado();
 			LocalDate dataInicio = dataInicioBloqueio.toLocalDate(), dataFinal = dataFinalBloqueio.toLocalDate();
 			if (getObjeto().getId() != null) {
@@ -446,10 +482,11 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			if (!dataInicio.isEqual(dataFinal)) {
 
 				do {
-					if(bloquear.getId() == null) {
-						bloquear = new HorarioAgendado();						
+					if (bloquear.getId() == null) {
+						bloquear = new HorarioAgendado();
 					}
 					bloquear.setData(dataInicio);
+					bloquear.setUsuarioServico(us);
 					if (dataInicio.isEqual(dataInicioBloqueio.toLocalDate())) {
 						bloquear.setHoraInicio(dataInicioBloqueio.toLocalTime());
 					} else {
@@ -468,10 +505,11 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			}
 
 			bloquear.setData(dataInicio);
+			bloquear.setUsuarioServico(us);
 
 			if (dataInicio.isEqual(dataInicioBloqueio.toLocalDate())) {
 				bloquear.setHoraInicio(dataInicioBloqueio.toLocalTime());
-			}else {
+			} else {
 				bloquear.setHoraInicio(HORA_INICIO_EMPRESA);
 			}
 			bloquear.setHoraTermino(dataFinalBloqueio.toLocalTime());

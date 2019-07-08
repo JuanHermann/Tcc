@@ -59,7 +59,7 @@ public class Usuario implements UserDetails {
 		return auto;
 	}
 	
-	public boolean hasRole(String role,Usuario usuario) {		
+	public static boolean hasRole(String role,Usuario usuario) {		
 		for(Permissao p : usuario.getPermissoes()) {
 			if(p.getNome().equals(role)) {
 				return true;
@@ -107,6 +107,24 @@ public class Usuario implements UserDetails {
 			tem = false;
 			for(Permissao permissao: usuario.getPermissoes()) {
 				if(permissao.getNome().equals("ROLE_CLIENTE")) {
+					tem = true;
+				}
+			}
+			if(tem==true) {
+				lista.add(usuario);
+			}
+		}
+		
+		return lista;
+	}
+	
+	public static List<Usuario> filtraPorRole(List<Usuario> listalGeral,String nomeRole){
+		List<Usuario> lista = new ArrayList<>();
+		boolean tem;
+		for(Usuario usuario: listalGeral) {
+			tem = false;
+			for(Permissao permissao: usuario.getPermissoes()) {
+				if(permissao.getNome().equals(nomeRole)) {
 					tem = true;
 				}
 			}

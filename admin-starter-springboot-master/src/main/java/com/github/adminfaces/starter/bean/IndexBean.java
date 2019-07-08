@@ -313,6 +313,11 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());
 			retirarHorariosOcupados(TempoTotalServicos);
 		}
+		if (horarios.isEmpty()) {
+			stringHorario = "Nenhum Horario disponivel nesta Data";
+		} else {
+			stringHorario = "Selecione um horario";
+		}
 
 	}
 

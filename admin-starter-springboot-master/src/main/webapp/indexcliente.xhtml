@@ -5,9 +5,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" template="#{layoutMB.template}">
 
-
-
-	<ui:define name="title">
+<ui:define name="title">
         Meus Agendamentos
     </ui:define>
 	<ui:define name="description">
@@ -19,14 +17,10 @@
 	</ui:define>
 
 	<ui:define name="body">
-		<f:metadata>
-			<f:viewParam name="id" value="#{usuarioLogadoBean.usuario.id}" />
-			<f:viewAction action="#{indexClienteBean.init}" />
-		</f:metadata>
+
 
 
 		<h:form id="form" prependId="false">
-<p:growl id="message" showDetail="true" />
 
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -34,7 +28,7 @@
 
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-6">
-							<p:commandButton id="agendar" value="Agendar Novo Horario"
+							<p:commandButton id="agendar" value="Agendar Novo Horario" update="dialogAgendar"
 								onclick="PF('inserir').show();" type="button"
 								icon="fa fa-plus-square-o" styleClass="btn-info" />
 
@@ -49,9 +43,9 @@
 
 					</div>
 
-					<div class="ui-g ui-fluid">
+					<div class="ui-g ui-fluid" >
 						<div class="ui-sm-12 ui-md-4 ui-lg-6">
-							<p:accordionPanel value="#{indexClienteBean.horariosCliente}"
+							<p:accordionPanel id="lista" value="#{indexClienteBean.horariosCliente}"
 								multiple="true" var="horario" widgetVar="myschedule">
 								<p:tab
 									title="Dia #{horario.data.dayOfMonth}/#{horario.data.monthValue} ás #{horario.horaInicio} - #{horario.usuarioServico.servico.nome}">
@@ -64,14 +58,13 @@
 											style="font-weight: bold" />
 										<h:outputText value=" #{horario.usuarioServico.usuario.nome}" />
 
-										<p:commandButton value="Alterar"
+										<p:commandButton value="Alterar" rendered="#{indexClienteBean.verificaTempoCancelamento(horario)}"
 											action="#{indexClienteBean.carregarObjeto(horario.id)}"
-											process="@this" icon="fa fa-refresh"
-											onclick="PF('inserir').show();" update="eventDetails"
+											 icon="fa fa-refresh"
 											styleClass="btn-warning" />
 
-										<p:commandButton value="Cancelar"
-											action="#{indexClienteBean.remover(horario.id)}" 
+										<p:commandButton value="Cancelar" rendered="#{indexClienteBean.verificaTempoCancelamento(horario)}"
+											action="#{indexClienteBean.remover(horario.id)}"
 											icon="fa fa-trash" styleClass="btn-danger" update="@form">
 											<f:setPropertyActionListener value="true"
 												target="#{facesContext.externalContext.flash.keepMessages}" />
@@ -90,75 +83,68 @@
 
 					<p:dialog id="dialogAgendar" widgetVar="inserir"
 						header="Cadastrar Horario" showEffect="clip" hideEffect="clip">
-						<h:panelGrid id="mensagem" columns="1" rendered="#{!indexClienteBean.verificarCadastroAceito()}" > 
-						<p:outputLabel>Seu cadastro não foi aceito ainda, por enquanto voce só pode realizar uma agendamento.</p:outputLabel>
+						<h:panelGrid id="mensagem" columns="1"
+							rendered="#{!indexClienteBean.verificarCadastroAceito()}">
+							<p:outputLabel>Seu cadastro não foi aceito ainda, por enquanto voce só pode realizar uma agendamento.</p:outputLabel>
 						</h:panelGrid>
-						
-						<h:panelGrid id="eventDetails" columns="1" rendered="#{indexClienteBean.verificarCadastroAceito()}">
+
+						<h:panelGrid columns="1"
+							rendered="#{indexClienteBean.verificarCadastroAceito()}">
 							<p:outputPanel>
 								<h:panelGrid columns="1">
 
-									<p:outputLabel for="servico" value="Serviço:" id="olServico" />
+										<p:outputLabel for="servico" value="Serviço:" id="lblServico" />
 
-									<p:selectCheckboxMenu id="servico"
-										value="#{indexClienteBean.servicosSelecionados}"
-										label="Serviços" multiple="true" filter="true"
-										filterMatchMode="startsWith" required="true"
-										requiredMessage="Selecione um serviço"
-										panelStyle="width:250px">
-										<f:selectItems value="#{indexClienteBean.servicos}"
-											var="servico" itemLabel="#{servico.nome}"
-											itemValue="#{servico}" />
-										<p:ajax event="change" update="funcionario horario olServico "
-											listener="#{indexClienteBean.buscarFuncionarios()}" />
-
-									</p:selectCheckboxMenu>
+										<p:selectCheckboxMenu id="servico"
+											value="#{indexClienteBean.servicosSelecionados}" label="Serviços"
+											multiple="true" filter="true" filterMatchMode="contains"
+											required="true" panelStyle="width:250px">
+											<f:selectItems value="#{indexClienteBean.servicos}" var="servico"
+												itemLabel="#{servico.nome}" itemValue="#{servico}" />
+											<p:ajax event="change"
+												update="funcionario horario lblServico"
+												listener="#{indexClienteBean.buscarFuncionarios()}" />
+										</p:selectCheckboxMenu>
 
 
-									<p:outputPanel
-										rendered="#{indexClienteBean.mostrarFuncionario()}">
-										<p:outputLabel for="funcionario" value="Funcionario:" />
+										<p:outputPanel rendered="#{indexClienteBean.mostrarFuncionario()}">
+											<p:outputLabel for="funcionario" value="Funcionario:" />
 
-										<p:selectOneMenu id="funcionario"
-											value="#{indexClienteBean.funcionario}"
-											converter="#{usuarioConverter}">
-											<f:selectItem itemLabel="Nenhuma Preferencia"
-												itemValue="#{null}" />
-											<f:selectItems value="#{indexClienteBean.setFuncionarios}"
-												var="funcionario" itemLabel="#{funcionario.nome}"
-												itemValue="#{usuario}" />
+											<p:selectOneMenu id="funcionario" required="false"
+												value="#{indexClienteBean.funcionarioDoList}" 
+												converter="#{usuarioConverter}">
+												<f:selectItems value="#{indexClienteBean.setFuncionarios}" var="usuario"
+												itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+														<p:ajax event="change" update="horario"
+												listener="#{indexClienteBean.buscarHorarios()}" />
+											</p:selectOneMenu>
+										</p:outputPanel>
+
+										<p:outputLabel for="data" value="Dia:" id="lblData" />
+
+										<p:calendar id="data" value="#{indexClienteBean.objeto.data}"
+											required="true" pattern="dd/MM/yyyy"
+											converter="#{localDateConverter}">
+											<p:ajax event="dateSelect"
+												listener="#{indexClienteBean.buscarHorarios}"
+												update="horario data lblData" />
+										</p:calendar>
+
+										<p:outputLabel value="Horário:" for="horario" id="lblHorario" />
+
+										<p:selectOneMenu id="horario"
+											converter="#{localTimeConverter}" required="true"
+											value="#{indexClienteBean.objeto.horaInicio}">
+											<f:selectItem itemLabel="#{indexClienteBean.stringHorario}"
+												itemValue="" />
+											<f:selectItems value="#{indexClienteBean.horarios}" var="horario"
+												itemLabel="#{horario}" itemValue="#{localTime}" />
+											<p:ajax event="change" update="horario lblHorario" />
 										</p:selectOneMenu>
-									</p:outputPanel>
-
-									<p:outputLabel for="data" value="Dia:" />
-
-									<p:calendar id="data" value="#{indexClienteBean.objeto.data}"
-										required="true" requiredMessage="Selecione um dia"
-										mindate="today" pattern="dd/MM/yyyy"
-										converter="#{localDateConverter}">
-										<p:ajax event="dateSelect"
-											listener="#{indexClienteBean.buscarHorarios}"
-											update="horario" />
-									</p:calendar>
-
-									<p:outputLabel value="Horario:" for="horario" id="olHorario" />
-
-									<p:selectOneMenu id="horario" converter="#{localTimeConverter}"
-										required="true" requiredMessage="Selecione um horario"
-										value="#{indexClienteBean.objeto.horaInicio}">
-										<f:selectItem value="#{null}"
-											itemLabel="#{indexClienteBean.stringHorario}"
-											itemValue="#{localTime}" />
-										<f:selectItems value="#{indexClienteBean.horarios}"
-											var="horario" itemLabel="#{horario}" itemValue="#{localTime}" />
-
-										<f:ajax event="change" update="@this olHorario "
-											render="btnSalvar" />
-									</p:selectOneMenu>
 								</h:panelGrid>
 								<p:commandButton value="Salvar" id="btnSalvar"
 									action="#{indexClienteBean.salvarAgendamento()}"
-									update="eventDetails @form" icon="fa fa-check" />
+									update="dialogAgendar lista" icon="fa fa-check" />
 
 							</p:outputPanel>
 							<!-- 
@@ -173,7 +159,7 @@
 				</div>
 
 			</div>
-						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
 				styleClass="box-danger box-solid">
 				<p:commandButton value="Sim" type="button" update="@form"
 					styleClass="btn-material btn-primary ui-confirmdialog-yes"
@@ -188,3 +174,4 @@
 	</ui:define>
 
 </ui:composition>
+

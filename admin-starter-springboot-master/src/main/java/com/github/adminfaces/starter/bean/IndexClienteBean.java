@@ -12,11 +12,14 @@ import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 import lombok.Getter;
 import lombok.Setter;
 
+import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +41,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	private static LocalTime HORA_FINAL_INTERVALO = LocalTime.of(13, 30, 0);
 	private static LocalTime HORA_FINAL_EMPRESA = LocalTime.of(20, 0, 0);
 	private static LocalTime TEMPO_BUSCA_ENTRE_SERVICOS = LocalTime.of(0, 15, 0);
-	private static LocalTime TEMPO_PARA_CANCELAMENTO = LocalTime.of(24, 0, 0);
+	private static LocalTime TEMPO_PARA_CANCELAMENTO = LocalTime.of(23, 0, 0);
 
 	private List<HorarioAgendado> horariosCliente;
 	private Date dataMinima;
@@ -63,6 +66,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	private List<Usuario> funcionarios;
 	private Set<Usuario> setFuncionarios;
 	private Usuario funcionario;
+	private Usuario funcionarioDoList;
 
 	@Autowired
 	private HorarioAgendadoRepository horarioAgendadoRepository;
@@ -101,9 +105,10 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 		dataMinima = Calendar.getInstance().getTime();
 		funcionario = new Usuario();
+		funcionarioDoList = new Usuario();
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new HashSet<>();
-		stringHorario = "Selecione um Horairio";
+		stringHorario = "Selecione um Horário";
 		super.init();
 		getObjeto().setCliente(usuarioLogadoBean.getUsuario());
 		getObjeto().setData(LocalDate.now());
@@ -131,126 +136,106 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	}
 
 	public void buscarFuncionarios() {
-		System.out.println("passou");
-		if (servicosSelecionados != null && mostrarFuncionario()) {
+		if (mostrarFuncionario()) {
+			List<Usuario> funcionariosCorreto = new ArrayList<>();
+			boolean primeiro = true;
+			setFuncionarios.clear();
 			for (Servico servico : servicosSelecionados) {
-				usuarioServicos = usuarioServicoRepository.findByServicoAndAtivoOrderByUsuario(servico, true);
-				for (UsuarioServico usuarioServico : usuarioServicos) {
-					setFuncionarios.add(usuarioServico.getUsuario());
+				List<Usuario> funcionarios = new ArrayList<>();
+				for (UsuarioServico usuarioServico : usuarioServicoRepository
+						.findByServicoAndAtivoOrderByUsuario(servico, true)) {
+					funcionarios.add(usuarioServico.getUsuario());
 				}
+				if (primeiro) {
+					funcionariosCorreto.addAll(funcionarios);
+					primeiro = false;
+				}
+				for (Usuario u : funcionariosCorreto) {
+					if (!funcionarios.contains(u)) {
+						funcionariosCorreto.remove(u);
+					}
+				}
+
 			}
+			Usuario u = new Usuario();
+			u.setNome("Sem Preferência");
+			setFuncionarios.add(u);
+			setFuncionarios.addAll(funcionariosCorreto);
 		}
 		buscarHorarios();
 	}
 
 	public void buscarHorarios() {
-		if (servicosSelecionados.size() > 0) {
-			tempoTotalServicos = LocalTime.of(0, 0, 0);
-			for (Servico servico : servicosSelecionados) {
-				tempoTotalServicos = somarLocalTime(tempoTotalServicos, servico.getTempo());
-			}
-			System.out.println(tempoTotalServicos);
-			horariosLivres(tempoTotalServicos);
-		} else {
-			horarios = new ArrayList<>();
+
+		tempoTotalServicos = LocalTime.of(0, 0, 0);
+		for (Servico servico : servicosSelecionados) {
+			tempoTotalServicos = somarLocalTime(tempoTotalServicos, servico.getTempo());
 		}
+		System.out.println(tempoTotalServicos);
+		horariosLivres(tempoTotalServicos);
 
 	}
 
 	public void salvarAgendamento() {
-		if (verificarCadastroAceito()) {
-			if (mostrarFuncionario()) {
-				if (funcionario == null) {
-					funcionario = selecionarFuncionarioSemPreferencia();
-				}
-				HorarioAgendado agendado;
-				boolean primeiro = true;
-				LocalTime tempo = LocalTime.of(0, 0, 0);
-				for (Servico servico : servicosSelecionados) {
+			if (funcionarioDoList.getId() == null && mostrarFuncionario()) {
+				pegarFuncionarioCorrespondenteAoHorario();
+			}
+
+			HorarioAgendado agendado = new HorarioAgendado();
+			boolean primeiro = true;
+			LocalTime tempo = LocalTime.of(0, 0, 0);
+			for (Servico servico : servicosSelecionados) {
+				if (getObjeto().getId() == null) {
 					agendado = new HorarioAgendado();
-					agendado.setCliente(getObjeto().getCliente());
+					agendado.setCliente(usuarioLogadoBean.getUsuario());
 					agendado.setData(getObjeto().getData());
-					if (primeiro) {
-						agendado.setHoraInicio(getObjeto().getHoraInicio());
-
-						tempo = somarLocalTime(getObjeto().getHoraInicio(), servico.getTempo());
-						agendado.setHoraTermino(tempo);
-						primeiro = false;
-					} else {
-						agendado.setHoraInicio(tempo);
-						tempo = somarLocalTime(tempo, servico.getTempo());
-						agendado.setHoraTermino(tempo);
-					}
-					agendado.setUsuarioServico(usuarioServicoRepository
-							.findByServicoAndUsuarioAndAtivoOrderByUsuario(servico, funcionario, true));
-					getRepository().save(agendado);
-
 				}
-				limparObjeto();
-				servicosSelecionados.clear();
-				atualizarLista();
-			} else {
-				if (getObjeto().getId() != null) {
-					HorarioAgendado agendado;
-					boolean primeiro = true;
-					LocalTime tempo = LocalTime.of(0, 0, 0);
-					for (Servico servico : servicosSelecionados) {
-
-						if (primeiro) {
-							agendado = getObjeto();
-							agendado.setHoraInicio(getObjeto().getHoraInicio());
-
-							tempo = somarLocalTime(getObjeto().getHoraInicio(), servico.getTempo());
-							agendado.setHoraTermino(tempo);
-							primeiro = false;
-						} else {
-							agendado = new HorarioAgendado();
-							agendado.setCliente(getObjeto().getCliente());
-							agendado.setData(getObjeto().getData());
-							agendado.setHoraInicio(tempo);
-							tempo = somarLocalTime(tempo, servico.getTempo());
-							agendado.setHoraTermino(tempo);
-						}
-						agendado.setUsuarioServico(
-								usuarioServicoRepository.findByServicoAndAtivo(servico, true).get(0));
-						getRepository().save(agendado);
-
+				if (primeiro) {
+					if (getObjeto().getId() != null) {
+						agendado = getObjeto();
 					}
-					limparObjeto();
-					servicosSelecionados.clear();
-					atualizarLista();
+					agendado.setHoraInicio(getObjeto().getHoraInicio());
+
+					tempo = somarLocalTime(getObjeto().getHoraInicio(), servico.getTempo());
+					agendado.setHoraTermino(tempo);
+					primeiro = false;
+				} else {
+					if (getObjeto().getId() != null) {
+						agendado = new HorarioAgendado();
+						agendado.setCliente(usuarioLogadoBean.getUsuario());
+						agendado.setData(getObjeto().getData());
+					}
+					agendado.setHoraInicio(tempo);
+					tempo = somarLocalTime(tempo, servico.getTempo());
+					agendado.setHoraTermino(tempo);
+				}
+				if (mostrarFuncionario()) {
+
+					agendado.setUsuarioServico(usuarioServicoRepository
+							.findByServicoAndUsuarioAndAtivoOrderByUsuario(servico, funcionarioDoList, true));
 
 				} else {
-					HorarioAgendado agendado;
-					boolean primeiro = true;
-					LocalTime tempo = LocalTime.of(0, 0, 0);
-					for (Servico servico : servicosSelecionados) {
-						agendado = new HorarioAgendado();
-						agendado.setCliente(getObjeto().getCliente());
-						agendado.setData(getObjeto().getData());
-						if (primeiro) {
-							agendado.setHoraInicio(getObjeto().getHoraInicio());
-
-							tempo = somarLocalTime(getObjeto().getHoraInicio(), servico.getTempo());
-							agendado.setHoraTermino(tempo);
-							primeiro = false;
-						} else {
-							agendado.setHoraInicio(tempo);
-							tempo = somarLocalTime(tempo, servico.getTempo());
-							agendado.setHoraTermino(tempo);
-						}
-						agendado.setUsuarioServico(
-								usuarioServicoRepository.findByServicoAndAtivo(servico, true).get(0));
-						getRepository().save(agendado);
-
-					}
-					limparObjeto();
-					servicosSelecionados.clear();
-					atualizarLista();
+					agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndAtivo(
+							servico,  true).get(0));
 				}
+				getRepository().save(agendado);
+
 			}
-		}
-		context.fecharDialog("inserir");
+			try {
+				novo();
+			} catch (InstantiationException | IllegalAccessException e) {
+
+				e.printStackTrace();
+			}
+			if (mostrarFuncionario()) {
+				funcionarioDoList = new Usuario();
+			}
+			servicosSelecionados.clear();
+			atualizarLista();
+			addDetailMessage("Cadastrado com sucesso");
+			context.fecharDialog("inserir");
+
+		
 
 	}
 
@@ -261,10 +246,6 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	}
 
-	private Usuario selecionarFuncionarioSemPreferencia() {
-		List<Usuario> lista = new ArrayList<>(setFuncionarios);
-		return lista.get(0);
-	}
 
 	private boolean verificaEspacoTempo(LocalTime primeiroHorarioLivre, LocalTime tempoTotalServico,
 			LocalTime proximoServico) {
@@ -278,92 +259,115 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	private void horariosLivres(LocalTime TempoTotalServicos) {
 		horarios = new ArrayList<>();
-		horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());
-		if (!horarioAgendados.isEmpty()) {
-
-			LocalTime horaAuxiliar = LocalTime.of(0, 0);
-			horaAuxiliar = HORA_INICIO_EMPRESA;
-			for (HorarioAgendado horarioAgendado : horarioAgendados) {
-
-				if (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, horarioAgendado.getHoraInicio())) {
-					horarios.add(horaAuxiliar);
-					horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
-
-					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos,
-							horarioAgendado.getHoraInicio()) == true
-							&& verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
-						horarios.add(horaAuxiliar);
-						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
-
-					}
-					if (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos,
-							horarioAgendado.getHoraInicio()) == true) {
-						horaAuxiliar = HORA_FINAL_INTERVALO;
-
-						while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos,
-								horarioAgendado.getHoraInicio()) == true
-								&& verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
-							horarios.add(horaAuxiliar);
-							horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
-
-						}
-					}
-
-				}
-				horaAuxiliar = horarioAgendado.getHoraTermino();
-
-			}
-			if (horaAuxiliar.isBefore(HORA_FINAL_EMPRESA)) {
-				if (horaAuxiliar.isBefore(HORA_INICIO_INTERVALO)) {
-					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
-						horarios.add(horaAuxiliar);
-						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
-
-					}
-
-					horaAuxiliar = HORA_FINAL_INTERVALO;
-
-					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
-						horarios.add(horaAuxiliar);
-						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
-
-					}
-				} else {
-					if (horaAuxiliar.isBefore(HORA_FINAL_INTERVALO)) {
-						horaAuxiliar = HORA_FINAL_INTERVALO;
-					}
-					while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
-						horarios.add(horaAuxiliar);
-						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
-
+		LocalTime horaAuxiliar = HORA_INICIO_EMPRESA;
+		while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
+			horarios.add(horaAuxiliar);
+			horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+		}
+		horaAuxiliar = HORA_FINAL_INTERVALO;
+		while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
+			horarios.add(horaAuxiliar);
+			horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+		}
+		if (mostrarFuncionario()) {
+			if (funcionarioDoList.getId() == null) {
+				System.out.println("nem preferencia");
+				List<LocalTime> auxHorarios = new ArrayList<>();
+				auxHorarios.addAll(horarios);
+				Set<LocalTime> horariosFuncionarios = new HashSet<>();
+				for (Usuario funcionario : setFuncionarios) {
+					if (funcionario.getId() != null) {
+						horarios.clear();
+						horarios.addAll(auxHorarios);
+						horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
+								getObjeto().getData());
+						retirarHorariosOcupados(TempoTotalServicos);
+						horariosFuncionarios.addAll(horarios);
 					}
 				}
+				horarios.clear();
+				horarios.addAll(horariosFuncionarios);
+				Collections.sort(horarios);
+			} else {
+				horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionarioDoList.getId(),
+						getObjeto().getData());
+				retirarHorariosOcupados(TempoTotalServicos);
 			}
 		} else {
-			LocalTime horario = HORA_INICIO_EMPRESA;
-
-			while (verificaEspacoTempo(horario, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
-				horarios.add(horario);
-				horario = somarLocalTime(horario, TEMPO_BUSCA_ENTRE_SERVICOS);
-
-			}
-
-			horario = HORA_FINAL_INTERVALO;
-
-			while (verificaEspacoTempo(horario, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
-				horarios.add(horario);
-				horario = somarLocalTime(horario, TEMPO_BUSCA_ENTRE_SERVICOS);
-
-			}
+			horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());
+			retirarHorariosOcupados(TempoTotalServicos);
 		}
 		if (horarios.isEmpty()) {
-			stringHorario = "Nenhum Horario disponivel nessa Data";
+			stringHorario = "Nenhum Horario disponivel nesta Data";
 		} else {
-			stringHorario = "Selecione um horario";
+			stringHorario = "Selecione um horário";
 		}
 
 	}
 
+	private void retirarHorariosOcupados(LocalTime TempoTotalServicos) {
+
+		LocalTime horaAuxiliar = HORA_INICIO_EMPRESA;
+		if (!horarioAgendados.isEmpty()) {
+			for (HorarioAgendado horarioAgendado : horarioAgendados) {
+				if (verificaEspacoTempo(HORA_INICIO_EMPRESA, TempoTotalServicos,
+						horarioAgendado.getHoraInicio()) == false
+						&& horarioAgendado.getHoraInicio().isBefore(HORA_INICIO_INTERVALO)) {
+					horaAuxiliar = HORA_INICIO_EMPRESA;
+					while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
+						horarios.remove(horaAuxiliar);
+						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+					}
+				}
+				if (verificaEspacoTempo(HORA_FINAL_INTERVALO, TempoTotalServicos,
+						horarioAgendado.getHoraInicio()) == false
+						&& horarioAgendado.getHoraInicio().isAfter(HORA_FINAL_INTERVALO)) {
+					horaAuxiliar = HORA_FINAL_INTERVALO;
+					while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
+						horarios.remove(horaAuxiliar);
+						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+					}
+				} else {
+					horaAuxiliar = subtrairLocalTime(horarioAgendado.getHoraInicio(), TempoTotalServicos);
+					horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+					while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
+						horarios.remove(horaAuxiliar);
+						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+					}
+				}
+			}
+		}
+
+	}
+
+	private void pegarFuncionarioCorrespondenteAoHorario() {
+		LocalTime inicio = getObjeto().getHoraInicio(),
+				termino = somarLocalTime(getObjeto().getHoraInicio(), tempoTotalServicos);
+
+		boolean possivel = true;
+		for (Usuario funcionario : setFuncionarios) {
+			if (funcionario.getId() != null) {
+				possivel = true;
+				for (HorarioAgendado ha : horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
+						getObjeto().getData())) {
+					if (ha.getHoraInicio().isBefore(termino) && ha.getHoraTermino().isAfter(inicio)) {
+						possivel = false;
+					}
+				}
+				if (possivel == true) {
+					// possivel fazer outra combinação aqui
+					funcionarioDoList = funcionario;
+				}
+			}
+
+		}
+	}
+	private LocalTime subtrairLocalTime(LocalTime tempo, LocalTime tempo2) {
+		tempo = tempo.plusHours(-tempo2.getHour());
+		tempo = tempo.plusMinutes(-tempo2.getMinute());
+		return tempo;
+	}
+	
 	private LocalTime somarLocalTime(LocalTime tempo, LocalTime tempo2) {
 		tempo = tempo.plusHours(tempo2.getHour());
 		tempo = tempo.plusMinutes(tempo2.getMinute());
@@ -372,14 +376,17 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	public void remover(Integer id) throws InstantiationException, IllegalAccessException {
 		setObjeto(horarioAgendadoRepository.findById(id).get());
-		if (verificaTempoCancelamento()) {
+		if (verificaTempoCancelamento(getObjeto())) {
 			super.remover();
+			atualizarLista();
+			addDetailMessage("Cadastrado com sucesso");
 		}
-		atualizarLista();
+
+		
 	}
 
-	public boolean verificaTempoCancelamento() {
-		if (getObjeto().getHoraInicio().isAfter(LocalTime.now().plusHours(Long.valueOf(TEMPO_PARA_CANCELAMENTO.toString()))))
+	public boolean verificaTempoCancelamento(HorarioAgendado horario) {
+		if (horario.getHoraInicio().isAfter(somarLocalTime(LocalTime.now(),TEMPO_PARA_CANCELAMENTO)))
 			return true;
 
 		return false;
@@ -391,6 +398,8 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
 		buscarHorarios();
 		horarios.add(getObjeto().getHoraInicio());
+		context.abrirDialog("inserir");
+
 
 	}
 }

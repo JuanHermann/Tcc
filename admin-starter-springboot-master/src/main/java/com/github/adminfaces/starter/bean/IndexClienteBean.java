@@ -101,6 +101,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		timeZoneBrasil = TimeZone.getTimeZone("America/Sao_Paulo");
 
 		servicos = servicoRepository.findByAtivoOrderByNome(true);
+		servicos.remove(servicoRepository.findById(1).get());
 		servicosSelecionados = new ArrayList<>();
 
 		dataMinima = Calendar.getInstance().getTime();
@@ -238,14 +239,6 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		
 
 	}
-
-	private void limparObjeto() {
-		setObjeto(new HorarioAgendado());
-		getObjeto().setCliente(usuarioLogadoBean.getUsuario());
-		getObjeto().setData(LocalDate.now());
-
-	}
-
 
 	private boolean verificaEspacoTempo(LocalTime primeiroHorarioLivre, LocalTime tempoTotalServico,
 			LocalTime proximoServico) {

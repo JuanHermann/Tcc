@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.time.LocalTime;
 
 @Entity
@@ -40,22 +39,6 @@ public class Servico implements Serializable {
 		return nome;
 	}
 
-	
-	public boolean equalsasda(Object obj) {
-
-		if (obj == this) {
-			return true;
-		}
-
-		if (!(obj instanceof Servico)) {
-			return false;
-		}
-
-		Servico other = (Servico) obj;
-
-		return id == other.id && nome == other.nome && tempo == other.tempo && valor == other.valor
-				&& descricao == other.descricao && ativo == other.ativo;
-	}
 	
     @Override
     public int hashCode() {

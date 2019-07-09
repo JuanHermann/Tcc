@@ -86,9 +86,11 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	private List<Usuario> funcionarios;
 	private List<Usuario> setFuncionarios;
 	private List<Usuario> setFuncionariosBloqueio;
+	private List<Usuario> funcionariosAgenda;
 	private Usuario funcionario;
 	private Usuario funcionarioDoList;
 	private Usuario funcionarioDoBloqueio;
+	private Usuario funcionarioDaAgenda;
 	private Usuario cliente;
 
 	@Autowired
@@ -150,13 +152,23 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		funcionario = new Usuario();
 		funcionarioDoList = new Usuario();
 		funcionarioDoBloqueio = new Usuario();
+		funcionarioDaAgenda = new Usuario();
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new ArrayList<>();
 		setFuncionariosBloqueio = Usuario.filtraPorRole(usuarioRepository.findByAtivoOrderByNome(true),
 				"ROLE_FUNCIONARIO");
 		stringHorario = "Selecione um Horário";
-
+		carregarFuncionariosDaAgenda();
 		atualizarSchedule();
+	}
+
+	private void carregarFuncionariosDaAgenda() {
+		funcionariosAgenda = new ArrayList<>();
+		Usuario u = new Usuario();
+		u.setNome("Todos");
+		funcionariosAgenda.add(u);
+		funcionariosAgenda.addAll(Usuario.filtraPorRole(usuarioRepository.findByAtivoOrderByNome(true), "ROLE_FUNCIONARIO"));
+		
 	}
 
 	private void verificaPermissao() {
@@ -183,10 +195,16 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	}
 
-	private void atualizarSchedule() {
+	public void atualizarSchedule() {
 
-		if (mostrarForm()) {
-			horarioAgendados = horarioAgendadoRepository.findAll();
+		if (mostrarFuncionario()) {
+			if(funcionarioDaAgenda.getId() == null) {
+				horarioAgendados = horarioAgendadoRepository.findAll();
+				
+			}else {
+				horarioAgendados = horarioAgendadoRepository.findByFuncionario(funcionarioDaAgenda.getId());
+				
+			}
 		}else {
 			horarioAgendados = horarioAgendadoRepository.findByFuncionario(usuarioLogadoBean.getUsuario().getId());
 		}
@@ -576,15 +594,17 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void onEventSelect(SelectEvent selectEvent) {
+		stringHorario = "Selecione um horario";
 
 		servicosSelecionados = new ArrayList<>();
 
 		event = (ScheduleEvent) selectEvent.getObject();
 		setObjeto((HorarioAgendado) event.getData());
-		if (getObjeto().getUsuarioServico() == null) {
+		if (getObjeto().getCliente() == null) {
 			tipo = "bloqueio";
-			dataInicioBloqueio = dataInicioBloqueio.of(getObjeto().getData(), getObjeto().getHoraInicio());
-			dataFinalBloqueio = dataFinalBloqueio.of(getObjeto().getData(), getObjeto().getHoraTermino());
+			funcionarioDoBloqueio = getObjeto().getUsuarioServico().getUsuario();
+			dataInicioBloqueio = LocalDateTime.of(getObjeto().getData(), getObjeto().getHoraInicio());
+			dataFinalBloqueio = LocalDateTime.of(getObjeto().getData(), getObjeto().getHoraTermino());
 		} else {
 			tipo = "servico";
 			funcionarioDoList = getObjeto().getUsuarioServico().getUsuario();
@@ -597,13 +617,15 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void onDateSelect(SelectEvent selectEvent) {
+		stringHorario = "Selecione um horario";
 		setObjeto(new HorarioAgendado());
 		servicosSelecionados = new ArrayList<>();
+		funcionarioDaAgenda = new Usuario();
 		Date dataSelecionada = (Date) selectEvent.getObject();
 		event = new DefaultScheduleEvent("", dataSelecionada, dataSelecionada);
 		getObjeto().setData(dataSelecionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-		dataInicioBloqueio = dataInicioBloqueio.of(getObjeto().getData(), HORA_INICIO_EMPRESA);
-		dataFinalBloqueio = dataFinalBloqueio.of(getObjeto().getData(), HORA_FINAL_EMPRESA);
+		dataInicioBloqueio = LocalDateTime.of(getObjeto().getData(), HORA_INICIO_EMPRESA);
+		dataFinalBloqueio = LocalDateTime.of(getObjeto().getData(), HORA_FINAL_EMPRESA);
 	}
 
 	public void onEventMove(ScheduleEntryMoveEvent event) {

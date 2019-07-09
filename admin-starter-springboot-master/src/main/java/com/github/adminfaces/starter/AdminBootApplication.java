@@ -17,7 +17,6 @@
 package com.github.adminfaces.starter;
 
 import com.github.adminfaces.starter.model.Car;
-import com.github.adminfaces.starter.model.Servico;
 import com.github.adminfaces.starter.util.Utils;
 import java.util.List;
 import javax.inject.Inject;

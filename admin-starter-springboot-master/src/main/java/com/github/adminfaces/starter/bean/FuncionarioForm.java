@@ -97,7 +97,7 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 
 	private void salvarPermissoes() {
 		List<Permissao> lista = stringToPermissao(permissaoSelecionados);
-		boolean funcionario = getObjeto().hasRole("ROLE_FUNCIONARIO", getObjeto());
+		boolean funcionario = Usuario.hasRole("ROLE_FUNCIONARIO", getObjeto());
 		if (!getObjeto().getPermissoes().equals(lista)) {
 			getObjeto().getPermissoes().clear();
 			getObjeto().setPermissoes(lista);

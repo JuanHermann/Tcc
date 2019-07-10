@@ -59,24 +59,19 @@
 											style="font-weight: bold" />
 										<h:outputText value=" #{horario.usuarioServico.usuario.nome}" />
 
-										<p:commandButton value="Alterar"
-											onClick="#{indexClienteBean.mostrar(horario)}"
-											icon="fa fa-refresh" styleClass="btn-warning" />
-
-										<p:commandButton value="btn" type="button"
-											icon="fa fa-refresh" styleClass="btn-warning">
-											<p:ajax event="click" 
-												listener="#{indexClienteBean.mostrar(horario)}" />
-										</p:commandButton>
-
-										<p:commandButton value="Cancelar"
+										<p:commandButton value="Alterar"  type="submit" process="@this"
 											rendered="#{indexClienteBean.verificaTempoCancelamento(horario)}"
-											action="#{indexClienteBean.remover()}" icon="fa fa-trash"
-											styleClass="btn-danger" update="@form">
+											action="#{indexClienteBean.carregarObjeto(horario)}" onclick="PF('inserir').show();"
+											update="dialogAgendar" icon="fa fa-refresh" styleClass="btn-warning" />
+
+										<p:commandButton value="Cancelar" type="submit" process="@this"
+											rendered="#{indexClienteBean.verificaTempoCancelamento(horario)}"
+											action="#{indexClienteBean.remover(horario)}" icon="fa fa-trash"
+											styleClass="btn-danger" update="lista" >
 											<f:setPropertyActionListener value="true"
 												target="#{facesContext.externalContext.flash.keepMessages}" />
 											<p:confirm header="Confirmação"
-												message="Tem certeza que deseja deletar?"
+												message="Tem certeza que deseja cancelar?"
 												icon="ui-icon-danger" />
 										</p:commandButton>
 

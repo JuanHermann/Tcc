@@ -23,9 +23,6 @@ import javax.inject.Inject;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-/**
- * @author rmpestano
- */
 @SpringBootApplication
 public class AdminBootApplication {
 	@Inject

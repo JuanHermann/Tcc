@@ -1,22 +1,13 @@
 package com.github.adminfaces.starter.bean;
 
-import com.github.adminfaces.starter.model.HorarioAgendado;
-import com.github.adminfaces.starter.model.Servico;
-import com.github.adminfaces.starter.model.Usuario;
-import com.github.adminfaces.starter.model.UsuarioServico;
-import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
-import com.github.adminfaces.starter.repository.PermissaoRepository;
-import com.github.adminfaces.starter.repository.ServicoRepository;
-import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
-
-import lombok.Getter;
-import lombok.Setter;
-
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -26,33 +17,55 @@ import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
-import org.primefaces.model.menu.MenuModel;
+import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.ScheduleEntryMoveEvent;
+import org.primefaces.event.ScheduleEntryResizeEvent;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DefaultScheduleEvent;
+import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.ScheduleEvent;
+import org.primefaces.model.ScheduleModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.github.adminfaces.starter.model.Empresa;
+import com.github.adminfaces.starter.model.HorarioAgendado;
+import com.github.adminfaces.starter.model.HorarioLivre;
+import com.github.adminfaces.starter.model.Permissao;
+import com.github.adminfaces.starter.model.Servico;
+import com.github.adminfaces.starter.model.Usuario;
+import com.github.adminfaces.starter.model.UsuarioServico;
+import com.github.adminfaces.starter.repository.EmpresaRepository;
+import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
+import com.github.adminfaces.starter.repository.PermissaoRepository;
+import com.github.adminfaces.starter.repository.ServicoRepository;
+import com.github.adminfaces.starter.repository.UsuarioRepository;
+import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
+
+import lombok.Getter;
+import lombok.Setter;
+
 @Component
+@Scope("view")
 @Getter
 @Setter
-@Scope("view")
-public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, HorarioAgendadoRepository> {
+public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgendadoRepository> {
 	private static LocalTime HORA_INICIO_EMPRESA = LocalTime.of(7, 0, 0);
 	private static LocalTime HORA_INICIO_INTERVALO = LocalTime.of(12, 0, 0);
 	private static LocalTime HORA_FINAL_INTERVALO = LocalTime.of(13, 30, 0);
 	private static LocalTime HORA_FINAL_EMPRESA = LocalTime.of(20, 0, 0);
 	private static LocalTime TEMPO_BUSCA_ENTRE_SERVICOS = LocalTime.of(0, 15, 0);
-	private static LocalTime TEMPO_PARA_CANCELAMENTO = LocalTime.of(23, 0, 0);
 
-	private List<HorarioAgendado> horariosCliente;
-	private Date dataMinima;
+	private boolean isFuncionario;
+
 	private String stringHorario;
 	private TimeZone timeZoneBrasil;
 	private String inicioSchedule;
 	private String finalSchedule;
-	private int inicioHoraCalendar;
-	private int finalHoraCalendar;
-	private LocalDateTime dataInicioBloqueio;
-	private LocalDateTime dataFinalBloqueio;
+	private int tempoMinutosSchedule;
 	private String tipo = "servico";
 	private LocalTime tempoTotalServicos;
 	private List<LocalTime> horarios;
@@ -62,76 +75,115 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	protected ContextBean context;
 
 	@Autowired
-	private UsuarioLogadoBean usuarioLogadoBean;
+	private UsuarioRepository usuarioRepository;
+	private List<Usuario> clientes;
 	private List<Usuario> funcionarios;
-	private Set<Usuario> setFuncionarios;
+	private List<Usuario> setFuncionarios;
+	private List<Usuario> setFuncionariosBloqueio;
+	private List<Usuario> funcionariosAgenda;
 	private Usuario funcionario;
 	private Usuario funcionarioDoList;
+	private Usuario funcionarioDoBloqueio;
+	private Usuario funcionarioDaAgenda;
+	private Usuario cliente;
 
-	@Autowired
-	private HorarioAgendadoRepository horarioAgendadoRepository;
-	private List<HorarioAgendado> horarioAgendados;
-
-	@Autowired
-	private PermissaoRepository permissaoRepository;
-
-	@Autowired
-	private UsuarioServicoRepository usuarioServicoRepository;
-	private List<UsuarioServico> usuarioServicos;
+	private List<HorarioLivre> lista;
 
 	@Autowired
 	private ServicoRepository servicoRepository;
 	private List<Servico> servicos;
 	private List<Servico> servicosSelecionados;
 
-	private MenuModel menuModel;
+	@Autowired
+	private UsuarioServicoRepository usuarioServicoRepository;
+	private List<UsuarioServico> usuarioServicos;
 
-	public IndexClienteBean() {
+	@Autowired
+	private UsuarioLogadoBean usuarioLogadoBean;
+
+	@Autowired
+	private PermissaoRepository permissaoRepository;
+
+	@Autowired
+	private HorarioAgendadoRepository horarioAgendadoRepository;
+	private List<HorarioAgendado> horarioAgendados;
+
+	@Autowired
+	private EmpresaRepository empresaRepository;
+
+	public HorarioBean() {
 		super(HorarioAgendado.class);
+
 	}
 
-	@Override
+	@PostConstruct
 	public void init() throws InstantiationException, IllegalAccessException {
+		verificaPermissao();
+		super.init();
+
+		if (empresaRepository.findAll().size() > 0) {
+			Empresa empresa = empresaRepository.findAll().get(0);
+			HORA_INICIO_EMPRESA = empresa.getHoraAbertura();
+			HORA_INICIO_INTERVALO = empresa.getInicioIntervalo();
+			HORA_FINAL_INTERVALO = empresa.getFinalIntervalo();
+			HORA_FINAL_EMPRESA = empresa.getHoraFechamento();
+			TEMPO_BUSCA_ENTRE_SERVICOS = empresa.getTempoIntervalo();
+		}
 
 		inicioSchedule = HORA_INICIO_EMPRESA.toString();
 		finalSchedule = HORA_FINAL_EMPRESA.toString();
-		inicioHoraCalendar = HORA_INICIO_EMPRESA.getHour();
-		finalHoraCalendar = HORA_FINAL_EMPRESA.getHour();
+		tempoMinutosSchedule = TEMPO_BUSCA_ENTRE_SERVICOS.getMinute();
 
 		timeZoneBrasil = TimeZone.getTimeZone("America/Sao_Paulo");
-
+		clientes = new ArrayList<>();
+		horarioAgendados = new ArrayList<>();
 		servicos = servicoRepository.findByAtivoOrderByNome(true);
 		servicos.remove(servicoRepository.findById(1).get());
 		servicosSelecionados = new ArrayList<>();
-		horarioAgendados = new ArrayList<>();
-
-		dataMinima = Calendar.getInstance().getTime();
 		funcionario = new Usuario();
 		funcionarioDoList = new Usuario();
+		funcionarioDoBloqueio = new Usuario();
+		funcionarioDaAgenda = new Usuario();
 		funcionarios = new ArrayList<>();
-		setFuncionarios = new HashSet<>();
-		stringHorario = "Selecione um Horário";
-		super.init();
-		getObjeto().setCliente(usuarioLogadoBean.getUsuario());
-		getObjeto().setData(LocalDate.now());
-		atualizarLista();
+
+		lista = new ArrayList<>();
+		atualizarSchedule();
 	}
 
+	private void verificaPermissao() {
+		isFuncionario = true;
+		String tipoUsuario = "";
+		if (Usuario.hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario())) {
+			tipoUsuario = "admin";
+			isFuncionario = false;
+		} else if (Usuario.hasRole("ROLE_ATENDENTE", usuarioLogadoBean.getUsuario())) {
+			tipoUsuario = "atendente";
+			isFuncionario = false;
+		}
 
-
-	public void atualizarLista() {
-		horariosCliente = horarioAgendadoRepository
-				.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(), LocalDate.now());
+		if (tipoUsuario == "") {
+			try {
+				FacesContext.getCurrentInstance().getExternalContext().redirect("indexcliente.jsf");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 	}
 
-	public boolean mostrarFuncionario() {
-		return permissaoRepository.findByNome("ROLE_FUNCIONARIO").getUsuarios().size() > 1;
+	public void atualizardataTable() {
+
+		lista.clear();
+		List<String> horarios = new ArrayList<>();
+		for(Usuario u : Usuario.filtraPorRole(usuarioRepository.findByAtivoOrderByNome(true),
+				"ROLE_FUNCIONARIO")) {
+			
+			
+		}
 
 	}
 
 	public void buscarFuncionarios() {
-		if (mostrarFuncionario()) {
 			List<Usuario> funcionariosCorreto = new ArrayList<>();
 			boolean primeiro = true;
 			setFuncionarios.clear();
@@ -151,7 +203,6 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 					}
 				}
 
-			}
 			Usuario u = new Usuario();
 			u.setNome("Sem Preferência");
 			setFuncionarios.add(u);
@@ -170,7 +221,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		horariosLivres(tempoTotalServicos);
 
 	}
-	
+
 	private void horariosLivres(LocalTime TempoTotalServicos) {
 		horarios = new ArrayList<>();
 		LocalTime horaAuxiliar = HORA_INICIO_EMPRESA;
@@ -214,82 +265,10 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		if (horarios.isEmpty()) {
 			stringHorario = "Nenhum Horario disponivel nesta Data";
 		} else {
-			stringHorario = "Selecione um horário";
-		}
-
-	}
-
-	public void salvarAgendamento() {
-			if (funcionarioDoList.getId() == null && mostrarFuncionario()) {
-				pegarFuncionarioCorrespondenteAoHorario();
-			}
-
-			HorarioAgendado agendado = new HorarioAgendado();
-			boolean primeiro = true;
-			LocalTime tempo = LocalTime.of(0, 0, 0);
-			for (Servico servico : servicosSelecionados) {
-				if (getObjeto().getId() == null) {
-					agendado = new HorarioAgendado();
-					agendado.setCliente(usuarioLogadoBean.getUsuario());
-					agendado.setData(getObjeto().getData());
-				}
-				if (primeiro) {
-					if (getObjeto().getId() != null) {
-						agendado = getObjeto();
-					}
-					agendado.setHoraInicio(getObjeto().getHoraInicio());
-
-					tempo = somarLocalTime(getObjeto().getHoraInicio(), servico.getTempo());
-					agendado.setHoraTermino(tempo);
-					primeiro = false;
-				} else {
-					if (getObjeto().getId() != null) {
-						agendado = new HorarioAgendado();
-						agendado.setCliente(usuarioLogadoBean.getUsuario());
-						agendado.setData(getObjeto().getData());
-					}
-					agendado.setHoraInicio(tempo);
-					tempo = somarLocalTime(tempo, servico.getTempo());
-					agendado.setHoraTermino(tempo);
-				}
-				if (mostrarFuncionario()) {
-
-					agendado.setUsuarioServico(usuarioServicoRepository
-							.findByServicoAndUsuarioAndAtivoOrderByUsuario(servico, funcionarioDoList, true));
-
-				} else {
-					agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndAtivo(
-							servico,  true).get(0));
-				}
-				getRepository().save(agendado);
-
-			}
 			stringHorario = "Selecione um horario";
-			setObjeto(new HorarioAgendado());
-			getObjeto().setData(LocalDate.now());
-			if (mostrarFuncionario()) {
-				funcionarioDoList = new Usuario();
-			}
-			servicosSelecionados.clear();
-			atualizarLista();
-			addDetailMessage("Cadastrado com sucesso");
-			context.fecharDialog("inserir");
-
-		
-
-	}
-
-	private boolean verificaEspacoTempo(LocalTime primeiroHorarioLivre, LocalTime tempoTotalServico,
-			LocalTime proximoServico) {
-		LocalTime total = somarLocalTime(primeiroHorarioLivre, tempoTotalServico);
-		if (total.isBefore(proximoServico) || total.equals(proximoServico)) {
-			return true;
 		}
 
-		return false;
 	}
-
-	
 
 	private void retirarHorariosOcupados(LocalTime TempoTotalServicos) {
 
@@ -326,79 +305,26 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	}
 
-	private void pegarFuncionarioCorrespondenteAoHorario() {
-		LocalTime inicio = getObjeto().getHoraInicio(),
-				termino = somarLocalTime(getObjeto().getHoraInicio(), tempoTotalServicos);
-
-		boolean possivel = true;
-		for (Usuario funcionario : setFuncionarios) {
-			if (funcionario.getId() != null) {
-				possivel = true;
-				for (HorarioAgendado ha : horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
-						getObjeto().getData())) {
-					if (ha.getHoraInicio().isBefore(termino) && ha.getHoraTermino().isAfter(inicio)) {
-						possivel = false;
-					}
-				}
-				if (possivel == true) {
-					// possivel fazer outra combinação aqui
-					funcionarioDoList = funcionario;
-				}
-			}
-
+	private boolean verificaEspacoTempo(LocalTime primeiroHorarioLivre, LocalTime tempoTotalServico,
+			LocalTime proximoServico) {
+		LocalTime total = somarLocalTime(primeiroHorarioLivre, tempoTotalServico);
+		if (total.isBefore(proximoServico) || total.equals(proximoServico)) {
+			return true;
 		}
+
+		return false;
 	}
-	private LocalTime subtrairLocalTime(LocalTime tempo, LocalTime tempo2) {
-		tempo = tempo.plusHours(-tempo2.getHour());
-		tempo = tempo.plusMinutes(-tempo2.getMinute());
-		return tempo;
-	}
-	
+
 	private LocalTime somarLocalTime(LocalTime tempo, LocalTime tempo2) {
 		tempo = tempo.plusHours(tempo2.getHour());
 		tempo = tempo.plusMinutes(tempo2.getMinute());
 		return tempo;
 	}
 
-	public void remover(HorarioAgendado horarioAgendado) throws InstantiationException, IllegalAccessException {
-		setObjeto(horarioAgendado);
-		if (verificaTempoCancelamento(getObjeto())) {
-			super.remover();
-			atualizarLista();
-			setObjeto(new HorarioAgendado());
-		}
-
-		
+	private LocalTime subtrairLocalTime(LocalTime tempo, LocalTime tempo2) {
+		tempo = tempo.plusHours(-tempo2.getHour());
+		tempo = tempo.plusMinutes(-tempo2.getMinute());
+		return tempo;
 	}
 
-	public boolean verificaTempoCancelamento(HorarioAgendado horario) {
-		//if (horario.getHoraInicio().isAfter(somarLocalTime(LocalTime.now(),TEMPO_PARA_CANCELAMENTO)))
-			return true;
-
-		//return false;
-	}
-	
-	public boolean verificarCadastroAceito() {
-		//if (usuarioLogadoBean.hasRole("ROLE_CLIENTE") || horarioAgendadoRepository
-		//		.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(), LocalDate.now())
-		//		.size() == 0) 
-			return true;
-		
-		//return false;
-	}
-
-	public void carregarObjeto(HorarioAgendado horarioAgendado) {
-		servicosSelecionados = new ArrayList<>();
-		setObjeto(horarioAgendado);
-		servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
-		buscarHorarios();
-		horarios.add(getObjeto().getHoraInicio());
-		funcionarioDoList = getObjeto().getUsuarioServico().getUsuario();
-
-
-	}
-	
-	public void mostrar(HorarioAgendado horarioAgendado) {
-		System.out.println(horarioAgendado.getHoraInicio());
-	}
 }

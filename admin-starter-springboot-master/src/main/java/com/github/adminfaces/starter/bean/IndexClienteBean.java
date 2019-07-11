@@ -43,6 +43,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	private static LocalTime HORA_FINAL_EMPRESA = LocalTime.of(20, 0, 0);
 	private static LocalTime TEMPO_BUSCA_ENTRE_SERVICOS = LocalTime.of(0, 15, 0);
 	private static LocalTime TEMPO_PARA_CANCELAMENTO = LocalTime.of(23, 0, 0);
+	private static LocalTime TEMPO_PARA_AGENDAMENTO = LocalTime.of(2, 0, 0);
 
 	private List<HorarioAgendado> horariosCliente;
 	private Date dataMinima;
@@ -57,6 +58,9 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	private String tipo = "servico";
 	private LocalTime tempoTotalServicos;
 	private List<LocalTime> horarios;
+	private boolean editar;
+	private boolean mostrarDialog;
+
 	private Date data = Calendar.getInstance().getTime();
 
 	@Autowired
@@ -105,6 +109,8 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		servicos.remove(servicoRepository.findById(1).get());
 		servicosSelecionados = new ArrayList<>();
 		horarioAgendados = new ArrayList<>();
+		editar = false;
+		verificarCadastroAceito();
 
 		dataMinima = Calendar.getInstance().getTime();
 		funcionario = new Usuario();
@@ -117,8 +123,6 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		getObjeto().setData(LocalDate.now());
 		atualizarLista();
 	}
-
-
 
 	public void atualizarLista() {
 		horariosCliente = horarioAgendadoRepository
@@ -171,7 +175,7 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 		horariosLivres(tempoTotalServicos);
 
 	}
-	
+
 	private void horariosLivres(LocalTime TempoTotalServicos) {
 		horarios = new ArrayList<>();
 		LocalTime horaAuxiliar = HORA_INICIO_EMPRESA;
@@ -212,6 +216,9 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 			horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());
 			retirarHorariosOcupados(TempoTotalServicos);
 		}
+		if(LocalDate.now().isEqual(getObjeto().getData())) {
+			retirarHorariosHoje();
+		}
 		if (horarios.isEmpty()) {
 			stringHorario = "Nenhum Horario disponivel nesta Data";
 		} else {
@@ -220,63 +227,71 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	}
 
-	public void salvarAgendamento() {
-			if (funcionarioDoList.getId() == null && mostrarFuncionario()) {
-				pegarFuncionarioCorrespondenteAoHorario();
-			}
+	private void retirarHorariosHoje() {
+		
+		LocalTime horaAux = LocalTime.now(),h = horarios.get(0);
+		horaAux = somarLocalTime(horaAux, TEMPO_PARA_AGENDAMENTO);
+		while(h.isBefore(horaAux)) {
+			horarios.remove(h);
+			h =horarios.get(0);
+		}
+		
+	}
 
-			HorarioAgendado agendado = new HorarioAgendado();
-			boolean primeiro = true;
-			LocalTime tempo = LocalTime.of(0, 0, 0);
-			for (Servico servico : servicosSelecionados) {
-				if (getObjeto().getId() == null) {
+	public void salvarAgendamento() {
+		if (funcionarioDoList.getId() == null && mostrarFuncionario()) {
+			pegarFuncionarioCorrespondenteAoHorario();
+		}
+
+		HorarioAgendado agendado = new HorarioAgendado();
+		boolean primeiro = true;
+		LocalTime tempo = LocalTime.of(0, 0, 0);
+		for (Servico servico : servicosSelecionados) {
+			if (getObjeto().getId() == null) {
+				agendado = new HorarioAgendado();
+				agendado.setCliente(usuarioLogadoBean.getUsuario());
+				agendado.setData(getObjeto().getData());
+			}
+			if (primeiro) {
+				if (getObjeto().getId() != null) {
+					agendado = getObjeto();
+				}
+				agendado.setHoraInicio(getObjeto().getHoraInicio());
+
+				tempo = somarLocalTime(getObjeto().getHoraInicio(), servico.getTempo());
+				agendado.setHoraTermino(tempo);
+				primeiro = false;
+			} else {
+				if (getObjeto().getId() != null) {
 					agendado = new HorarioAgendado();
 					agendado.setCliente(usuarioLogadoBean.getUsuario());
 					agendado.setData(getObjeto().getData());
 				}
-				if (primeiro) {
-					if (getObjeto().getId() != null) {
-						agendado = getObjeto();
-					}
-					agendado.setHoraInicio(getObjeto().getHoraInicio());
-
-					tempo = somarLocalTime(getObjeto().getHoraInicio(), servico.getTempo());
-					agendado.setHoraTermino(tempo);
-					primeiro = false;
-				} else {
-					if (getObjeto().getId() != null) {
-						agendado = new HorarioAgendado();
-						agendado.setCliente(usuarioLogadoBean.getUsuario());
-						agendado.setData(getObjeto().getData());
-					}
-					agendado.setHoraInicio(tempo);
-					tempo = somarLocalTime(tempo, servico.getTempo());
-					agendado.setHoraTermino(tempo);
-				}
-				if (mostrarFuncionario()) {
-
-					agendado.setUsuarioServico(usuarioServicoRepository
-							.findByServicoAndUsuarioAndAtivoOrderByUsuario(servico, funcionarioDoList, true));
-
-				} else {
-					agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndAtivo(
-							servico,  true).get(0));
-				}
-				getRepository().save(agendado);
-
+				agendado.setHoraInicio(tempo);
+				tempo = somarLocalTime(tempo, servico.getTempo());
+				agendado.setHoraTermino(tempo);
 			}
-			stringHorario = "Selecione um horario";
-			setObjeto(new HorarioAgendado());
-			getObjeto().setData(LocalDate.now());
 			if (mostrarFuncionario()) {
-				funcionarioDoList = new Usuario();
-			}
-			servicosSelecionados.clear();
-			atualizarLista();
-			addDetailMessage("Cadastrado com sucesso");
-			context.fecharDialog("inserir");
 
-		
+				agendado.setUsuarioServico(usuarioServicoRepository
+						.findByServicoAndUsuarioAndAtivoOrderByUsuario(servico, funcionarioDoList, true));
+
+			} else {
+				agendado.setUsuarioServico(usuarioServicoRepository.findByServicoAndAtivo(servico, true).get(0));
+			}
+			getRepository().save(agendado);
+
+		}
+		stringHorario = "Selecione um horario";
+		setObjeto(new HorarioAgendado());
+		getObjeto().setData(LocalDate.now());
+		if (mostrarFuncionario()) {
+			funcionarioDoList = new Usuario();
+		}
+		servicosSelecionados.clear();
+		atualizarLista();
+		addDetailMessage("Cadastrado com sucesso");
+		context.fecharDialog("inserir");
 
 	}
 
@@ -289,8 +304,6 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 		return false;
 	}
-
-	
 
 	private void retirarHorariosOcupados(LocalTime TempoTotalServicos) {
 
@@ -349,12 +362,13 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 		}
 	}
+
 	private LocalTime subtrairLocalTime(LocalTime tempo, LocalTime tempo2) {
 		tempo = tempo.plusHours(-tempo2.getHour());
 		tempo = tempo.plusMinutes(-tempo2.getMinute());
 		return tempo;
 	}
-	
+
 	private LocalTime somarLocalTime(LocalTime tempo, LocalTime tempo2) {
 		tempo = tempo.plusHours(tempo2.getHour());
 		tempo = tempo.plusMinutes(tempo2.getMinute());
@@ -369,13 +383,12 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 			setObjeto(new HorarioAgendado());
 		}
 
-		
 	}
 
 	public boolean verificaTempoCancelamento(HorarioAgendado horario) {
 		LocalDateTime tempoServico, tempoMaximo;
-		tempoServico = LocalDateTime.of(horario.getData(),horario.getHoraInicio());
-		tempoMaximo = LocalDateTime.of(LocalDate.now(), LocalTime.now());		
+		tempoServico = LocalDateTime.of(horario.getData(), horario.getHoraInicio());
+		tempoMaximo = LocalDateTime.of(LocalDate.now(), LocalTime.now());
 		tempoMaximo = tempoMaximo.plusHours(TEMPO_PARA_CANCELAMENTO.getHour());
 		tempoMaximo = tempoMaximo.plusMinutes(TEMPO_PARA_CANCELAMENTO.getMinute());
 		if (tempoServico.isAfter(tempoMaximo))
@@ -383,27 +396,40 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 		return false;
 	}
-	
-	public boolean verificarCadastroAceito() {
+
+	public void verificarCadastroAceito() {
 		if (usuarioLogadoBean.hasRole("ROLE_CLIENTE") || horarioAgendadoRepository
 				.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(), LocalDate.now())
-				.size() == 0) 
-			return true;
-		
-		return false;
+				.size() == 0 || editar == true) {
+			if (editar == false) {
+				setObjeto(new HorarioAgendado());
+				getObjeto().setData(LocalDate.now());
+				if (mostrarFuncionario()) {
+					funcionarioDoList = new Usuario();
+				}
+				servicosSelecionados.clear();
+			}
+			editar = false;
+			mostrarDialog = true;
+
+		} else {
+
+			mostrarDialog = false;
+		}
 	}
 
 	public void carregarObjeto(HorarioAgendado horarioAgendado) {
-		servicosSelecionados = new ArrayList<>();
+		servicosSelecionados.clear();
 		setObjeto(horarioAgendado);
 		servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
-		buscarHorarios();
+		buscarFuncionarios();
 		horarios.add(getObjeto().getHoraInicio());
 		funcionarioDoList = getObjeto().getUsuarioServico().getUsuario();
-
+		editar = true;
+		verificarCadastroAceito();
 
 	}
-	
+
 	public void mostrar(HorarioAgendado horarioAgendado) {
 		System.out.println(horarioAgendado.getHoraInicio());
 	}

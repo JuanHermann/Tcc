@@ -29,8 +29,8 @@
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-6">
 							<p:commandButton id="agendar" value="Agendar Novo Horario"
-								update="dialogAgendar" onclick="PF('inserir').show();"
-								type="button" icon="fa fa-plus-square-o" styleClass="btn-info" />
+								update="dialogAgendar" onclick="PF('inserir').show();" action="#{indexClienteBean.verificarCadastroAceito()}"
+								 type="submit" process="@this" icon="fa fa-plus-square-o" styleClass="btn-info" />
 
 						</div>
 
@@ -89,11 +89,11 @@
 
 						<h:panelGrid id="dialogAgendar" columns="1">
 							<p:outputPanel
-								rendered="#{!indexClienteBean.verificarCadastroAceito()}">
+								rendered="#{!indexClienteBean.mostrarDialog}">
 								<p:outputLabel>Seu cadastro não foi aceito ainda, por enquanto voce só pode realizar uma agendamento.</p:outputLabel>
 							</p:outputPanel>
 							<p:outputPanel
-								rendered="#{indexClienteBean.verificarCadastroAceito()}">
+								rendered="#{indexClienteBean.mostrarDialog}">
 								<h:panelGrid columns="1">
 
 									<p:outputLabel for="servico" value="Serviço:" id="lblServico" />

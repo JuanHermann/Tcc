@@ -17,6 +17,7 @@ import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -372,19 +373,24 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	}
 
 	public boolean verificaTempoCancelamento(HorarioAgendado horario) {
-		//if (horario.getHoraInicio().isAfter(somarLocalTime(LocalTime.now(),TEMPO_PARA_CANCELAMENTO)))
+		LocalDateTime tempoServico, tempoMaximo;
+		tempoServico = LocalDateTime.of(horario.getData(),horario.getHoraInicio());
+		tempoMaximo = LocalDateTime.of(LocalDate.now(), LocalTime.now());		
+		tempoMaximo = tempoMaximo.plusHours(TEMPO_PARA_CANCELAMENTO.getHour());
+		tempoMaximo = tempoMaximo.plusMinutes(TEMPO_PARA_CANCELAMENTO.getMinute());
+		if (tempoServico.isAfter(tempoMaximo))
 			return true;
 
-		//return false;
+		return false;
 	}
 	
 	public boolean verificarCadastroAceito() {
-		//if (usuarioLogadoBean.hasRole("ROLE_CLIENTE") || horarioAgendadoRepository
-		//		.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(), LocalDate.now())
-		//		.size() == 0) 
+		if (usuarioLogadoBean.hasRole("ROLE_CLIENTE") || horarioAgendadoRepository
+				.findByClienteAndDataGreaterThanEqualOrderByDataAsc(usuarioLogadoBean.getUsuario(), LocalDate.now())
+				.size() == 0) 
 			return true;
 		
-		//return false;
+		return false;
 	}
 
 	public void carregarObjeto(HorarioAgendado horarioAgendado) {

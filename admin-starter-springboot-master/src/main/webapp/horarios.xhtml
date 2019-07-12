@@ -18,7 +18,7 @@
 	<ui:define name="description">
         horarios livres.
     </ui:define>
-    
+
 	<ui:define name="body">
 
 		<h:form id="form">
@@ -66,32 +66,22 @@
 
 					<p:separator />
 
-
-					<p:dataTable value="#{horarioBean.lista}" var="usuario"
-						id="horarioDT" emptyMessage="Nenhum horario livre"
-						rowKey="#{usuario.id}" widgetVar="table" rows="15"
+					<p:dataTable id="horariosDT" var="lista" value="#{horarioBean.lista}"  emptyMessage="Nenhum horario livre"
+						widgetVar="carsTable" scrollable="true" scrollWidth="90%" rows="15"
 						paginator="true" paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15,20,40">
-
-
-
-
-
-						<p:column headerText="Nome">
-							<p:link value="#{usuario.nome}">
-								<f:param name="id" value="#{usuario.id}" />
-							</p:link>
+						
+						<p:column headerText="Nome" style="width=2000px">
+							<p:outputLabel value="#{lista.nome}" />
 						</p:column>
-
-						<p:column headerText="Email">
-							<p:outputLabel value="#{usuario.email}" />
-						</p:column>
-
-						<p:column headerText="Telefone">
-							<p:outputLabel value="#{usuario.telefone}" />
-						</p:column>
-
+						
+						<p:columns value="#{horarioBean.todosHorarios}" var="horarios" columnIndexVar="colIndex" style="width=100%" >
+							<f:facet name="header" >
+								<h:outputText value="#{horarios}" />
+							</f:facet>
+							<h:outputText value="#{lista.horarios.get(colIndex)}" />
+						</p:columns>
 					</p:dataTable>
 				</div>
 			</div>

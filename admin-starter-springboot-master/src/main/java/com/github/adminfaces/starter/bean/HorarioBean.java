@@ -88,6 +88,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 	private Usuario cliente;
 
 	private List<HorarioLivre> lista;
+	private List<LocalTime> todosHorarios;
 
 	@Autowired
 	private ServicoRepository servicoRepository;
@@ -145,9 +146,29 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 		funcionarioDoBloqueio = new Usuario();
 		funcionarioDaAgenda = new Usuario();
 		funcionarios = new ArrayList<>();
+		setFuncionarios = new ArrayList<>();
 
 		lista = new ArrayList<>();
-		atualizarSchedule();
+		buscarTodosHorarios();
+		atualizardataTable();
+	}
+
+	private void buscarTodosHorarios() {
+		todosHorarios = new ArrayList<>();
+		List<LocalTime> horarios = new ArrayList<>();
+		LocalTime TempoTotalServicos = LocalTime.of(0, 0);
+		LocalTime horaAuxiliar = HORA_INICIO_EMPRESA;
+		while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
+			horarios.add(horaAuxiliar);
+			horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+		}
+		horaAuxiliar = HORA_FINAL_INTERVALO;
+		while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
+			horarios.add(horaAuxiliar);
+			horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+		}
+		todosHorarios = horarios;
+
 	}
 
 	private void verificaPermissao() {
@@ -174,19 +195,18 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 	public void atualizardataTable() {
 
 		lista.clear();
-		List<String> horarios = new ArrayList<>();
-		for(Usuario u : Usuario.filtraPorRole(usuarioRepository.findByAtivoOrderByNome(true),
-				"ROLE_FUNCIONARIO")) {
-			
-			
+		buscarFuncionarios();
+		for (Usuario u : setFuncionarios) {
+			lista.add(new HorarioLivre(u.getNome(), buscarHorarios(u)));
 		}
 
 	}
 
 	public void buscarFuncionarios() {
-			List<Usuario> funcionariosCorreto = new ArrayList<>();
-			boolean primeiro = true;
-			setFuncionarios.clear();
+		List<Usuario> funcionariosCorreto = new ArrayList<>();
+		boolean primeiro = true;
+		setFuncionarios.clear();
+		if (!servicosSelecionados.isEmpty()) {
 			for (Servico servico : servicosSelecionados) {
 				List<Usuario> funcionarios = new ArrayList<>();
 				for (UsuarioServico usuarioServico : usuarioServicoRepository
@@ -203,26 +223,25 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 					}
 				}
 
-			Usuario u = new Usuario();
-			u.setNome("Sem Preferência");
-			setFuncionarios.add(u);
-			setFuncionarios.addAll(funcionariosCorreto);
+				setFuncionarios.addAll(funcionariosCorreto);
+			}
+		} else {
+			setFuncionarios.addAll(Usuario.filtraPorRole(usuarioRepository.findAll(), "ROLE_FUNCIONARIO"));
 		}
-		buscarHorarios();
 	}
 
-	public void buscarHorarios() {
+	public List<LocalTime> buscarHorarios(Usuario funcionario) {
 
 		tempoTotalServicos = LocalTime.of(0, 0, 0);
 		for (Servico servico : servicosSelecionados) {
 			tempoTotalServicos = somarLocalTime(tempoTotalServicos, servico.getTempo());
 		}
 		System.out.println(tempoTotalServicos);
-		horariosLivres(tempoTotalServicos);
+		return horariosLivres(tempoTotalServicos, funcionario);
 
 	}
 
-	private void horariosLivres(LocalTime TempoTotalServicos) {
+	private List<LocalTime> horariosLivres(LocalTime TempoTotalServicos, Usuario funcionario) {
 		horarios = new ArrayList<>();
 		LocalTime horaAuxiliar = HORA_INICIO_EMPRESA;
 		while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
@@ -234,39 +253,12 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 			horarios.add(horaAuxiliar);
 			horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 		}
-		if (mostrarFuncionario()) {
-			if (funcionarioDoList.getId() == null) {
-				System.out.println("nem preferencia");
-				List<LocalTime> auxHorarios = new ArrayList<>();
-				auxHorarios.addAll(horarios);
-				Set<LocalTime> horariosFuncionarios = new HashSet<>();
-				for (Usuario funcionario : setFuncionarios) {
-					if (funcionario.getId() != null) {
-						horarios.clear();
-						horarios.addAll(auxHorarios);
-						horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
-								getObjeto().getData());
-						retirarHorariosOcupados(TempoTotalServicos);
-						horariosFuncionarios.addAll(horarios);
-					}
-				}
-				horarios.clear();
-				horarios.addAll(horariosFuncionarios);
-				Collections.sort(horarios);
-			} else {
-				horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionarioDoList.getId(),
-						getObjeto().getData());
-				retirarHorariosOcupados(TempoTotalServicos);
-			}
-		} else {
-			horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());
-			retirarHorariosOcupados(TempoTotalServicos);
-		}
-		if (horarios.isEmpty()) {
-			stringHorario = "Nenhum Horario disponivel nesta Data";
-		} else {
-			stringHorario = "Selecione um horario";
-		}
+
+		horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
+				LocalDate.now());
+		retirarHorariosOcupados(TempoTotalServicos);
+
+		return horarios;
 
 	}
 
@@ -280,7 +272,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 						&& horarioAgendado.getHoraInicio().isBefore(HORA_INICIO_INTERVALO)) {
 					horaAuxiliar = HORA_INICIO_EMPRESA;
 					while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
-						horarios.remove(horaAuxiliar);
+						horarios.set(horarios.indexOf(horaAuxiliar), LocalTime.of(0, 0)); ////asdasdsadasdsad
 						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 					}
 				}

@@ -129,12 +129,13 @@
 									<p:outputLabel for="data" value="Dia:" id="lblData" />
 
 									<p:calendar id="data" value="#{indexClienteBean.objeto.data}"
-										required="true" pattern="dd/MM/yyyy"
-										converter="#{localDateConverter}">
+										required="true" pattern="dd/MM/yyyy" disabledWeekends="true"																				
+										converter="#{localDateConverter}" >
 										<p:ajax event="dateSelect"
 											listener="#{indexClienteBean.buscarHorarios}"
-											update="horario data lblData" />
+											update="horario data lblData " />
 									</p:calendar>
+									
 
 									<p:outputLabel value="Horário:" for="horario" id="lblHorario" />
 

@@ -118,7 +118,7 @@
 										<p:outputLabel for="data" value="Dia:" id="lblData" />
 
 										<p:calendar id="data" value="#{indexBean.objeto.data}"
-											required="true" pattern="dd/MM/yyyy"
+											required="true" pattern="dd/MM/yyyy" 
 											converter="#{localDateConverter}">
 											<p:ajax event="dateSelect"
 												listener="#{indexBean.buscarHorarios}"
@@ -161,6 +161,7 @@
 											minHour="#{indexBean.inicioHoraCalendar}"
 											maxHour="#{indexBean.finalHoraCalendar}"
 											pattern="dd/MM/yyyy HH:mm"
+											stepMinute="#{indexBean.tempoMinutosSchedule}"
 											converter="#{localDateTimeConverter}" />
 
 
@@ -169,6 +170,7 @@
 											required="true" minHour="#{indexBean.inicioHoraCalendar}"
 											maxHour="#{indexBean.finalHoraCalendar}"
 											pattern="dd/MM/yyyy HH:mm"
+											stepMinute="#{indexBean.tempoMinutosSchedule}"
 											converter="#{localDateTimeConverter}" />
 
 

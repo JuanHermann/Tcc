@@ -166,7 +166,10 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	}
 
 	public void buscarHorarios() {
+		if (getObjeto().getData().isBefore(LocalDate.now())) {
+			getObjeto().setData(LocalDate.now());
 
+		}
 		tempoTotalServicos = LocalTime.of(0, 0, 0);
 		for (Servico servico : servicosSelecionados) {
 			tempoTotalServicos = somarLocalTime(tempoTotalServicos, servico.getTempo());
@@ -216,11 +219,11 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 			horarioAgendados = horarioAgendadoRepository.findByDataOrderByHoraInicio(getObjeto().getData());
 			retirarHorariosOcupados(TempoTotalServicos);
 		}
-		if(LocalDate.now().isEqual(getObjeto().getData())) {
+		if (LocalDate.now().isEqual(getObjeto().getData())) {
 			retirarHorariosHoje();
 		}
 		if (horarios.isEmpty()) {
-			stringHorario = "Nenhum Horario disponivel nesta Data";
+			stringHorario = "Nenhum horário disponivel nesta data";
 		} else {
 			stringHorario = "Selecione um horário";
 		}
@@ -228,14 +231,22 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	}
 
 	private void retirarHorariosHoje() {
-		
-		LocalTime horaAux = LocalTime.now(),h = horarios.get(0);
-		horaAux = somarLocalTime(horaAux, TEMPO_PARA_AGENDAMENTO);
-		while(h.isBefore(horaAux)) {
-			horarios.remove(h);
-			h =horarios.get(0);
+		LocalDateTime tempoServico, tempoMaximo;
+		tempoServico = LocalDateTime.of(getObjeto().getData(), somarLocalTime(TEMPO_PARA_AGENDAMENTO, LocalTime.now()));
+		tempoMaximo = LocalDateTime.of(LocalDate.now(), LocalTime.now());
+		if (tempoServico.getDayOfMonth() != tempoMaximo.getDayOfMonth()) {
+
+			LocalTime horaAux = LocalTime.now(), h = horarios.get(0);
+			horaAux = somarLocalTime(horaAux, TEMPO_PARA_AGENDAMENTO);
+			while (h.isBefore(horaAux) && !horarios.isEmpty()) {
+				horarios.remove(h);
+				if (!horarios.isEmpty()) {
+					h = horarios.get(0);
+				}
+			}
+		} else {
+			horarios.clear();
 		}
-		
 	}
 
 	public void salvarAgendamento() {

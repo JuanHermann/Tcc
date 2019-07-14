@@ -254,8 +254,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 			horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 		}
 
-		horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
-				LocalDate.now());
+		horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(), LocalDate.now());
 		retirarHorariosOcupados(TempoTotalServicos);
 
 		return horarios;
@@ -272,7 +271,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 						&& horarioAgendado.getHoraInicio().isBefore(HORA_INICIO_INTERVALO)) {
 					horaAuxiliar = HORA_INICIO_EMPRESA;
 					while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
-						horarios.set(horarios.indexOf(horaAuxiliar), LocalTime.of(0, 0)); ////asdasdsadasdsad
+						horarios.set(horarios.indexOf(horaAuxiliar), LocalTime.of(0, 0)); //// asdasdsadasdsad
 						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 					}
 				}
@@ -300,11 +299,20 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 	private boolean verificaEspacoTempo(LocalTime primeiroHorarioLivre, LocalTime tempoTotalServico,
 			LocalTime proximoServico) {
 		LocalTime total = somarLocalTime(primeiroHorarioLivre, tempoTotalServico);
-		if (total.isBefore(proximoServico) || total.equals(proximoServico)) {
-			return true;
+		if (tempoTotalServico.equals(LocalTime.of(0, 0))) {
+			if (total.isBefore(proximoServico)) {
+				return true;
+			}
+
+			return false;
+		} else {
+			if (total.isBefore(proximoServico) || total.equals(proximoServico)) {
+				return true;
+			}
+
+			return false;
 		}
 
-		return false;
 	}
 
 	private LocalTime somarLocalTime(LocalTime tempo, LocalTime tempo2) {

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="servicosProcurados" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="75796653-1c56-44cb-9518-ec91df716a69">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="tcc"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<queryString>
+		<![CDATA[select s.nome, COUNT (u.servico_id) as quantidade from horario_agendado h INNER JOIN usuario_servico u ON h.usuario_servico_id = u.id INNER JOIN servico s ON u.servico_id = s.id GROUP BY s.id order by quantidade desc ]]>
+	</queryString>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="servico"/>
+	</field>
+	<field name="quantidade" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="quantidade"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<textField>
+				<reportElement x="183" y="20" width="197" height="30" uuid="12938792-484d-4c8e-a4bd-7de799def71c"/>
+				<textElement textAlignment="Center">
+					<font size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Serviços Prestados"]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="33" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="180" height="30" uuid="ce09382a-575c-4163-b672-b9efbd939d77">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a2c5b6b8-bb74-4020-b5d9-5a646dcd9b53"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="450" y="1" width="100" height="30" uuid="41dbda7d-3722-450d-9f54-34973b275495">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7f80ff2c-38dd-40a3-b31d-35e268e57a0b"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="180" height="30" uuid="23dbeb50-4df9-4af9-8cde-fae26caaf688">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a2c5b6b8-bb74-4020-b5d9-5a646dcd9b53"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="450" y="0" width="100" height="30" uuid="5b997fcf-e33e-43e5-9d0c-dc5fa5960b91">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7f80ff2c-38dd-40a3-b31d-35e268e57a0b"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="420" y="15" width="85" height="31" uuid="cd996d41-7a2c-4365-bce2-467c16ba437e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="505" y="15" width="55" height="31" uuid="a5e54baf-24ea-48d0-88bb-b05430d3cc54"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -21,6 +21,9 @@ public interface HorarioAgendadoRepository extends JpaRepository<HorarioAgendado
 	@Query(value = "select h.id, h.data, h.hora_inicio, h.hora_termino, h.usuario_servico_id, h.usuario_id from horario_agendado h INNER JOIN usuario_servico u ON h.usuario_servico_id = u.id WHERE u.usuario_id = :id", nativeQuery = true)
 	List<HorarioAgendado> findByFuncionario(@Param("id") Integer id);
 	
+	@Query(value = "select s.nome, COUNT (u.servico_id) as quantidade from horario_agendado h INNER JOIN usuario_servico u ON h.usuario_servico_id = u.id INNER JOIN servico s ON u.servico_id = s.id GROUP BY s.id order by quantidade desc", nativeQuery = true)
+	List<HorarioAgendado> findRelatorioByServicoCount();
+	
 	List<HorarioAgendado> findByDataOrderByHoraInicio(LocalDate data);
 	
 	List<HorarioAgendado> findByClienteAndDataGreaterThanEqualOrderByDataAsc(Usuario usuario,LocalDate data);

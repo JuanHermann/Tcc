@@ -3,6 +3,7 @@ package com.github.adminfaces.starter.bean;
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,6 +20,7 @@ import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
@@ -30,6 +32,8 @@ import org.primefaces.model.ScheduleModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.github.adminfaces.starter.model.Empresa;
 import com.github.adminfaces.starter.model.HorarioAgendado;
@@ -44,15 +48,18 @@ import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.ServicoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
+import com.github.adminfaces.starter.util.GerarRelatorio;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 
 @Component
 @Scope("view")
 @Getter
 @Setter
-public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgendadoRepository> {
+public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAgendadoRepository> {
 	private static LocalTime HORA_INICIO_EMPRESA = LocalTime.of(7, 0, 0);
 	private static LocalTime HORA_INICIO_INTERVALO = LocalTime.of(12, 0, 0);
 	private static LocalTime HORA_FINAL_INTERVALO = LocalTime.of(13, 30, 0);
@@ -86,6 +93,10 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 	private Usuario funcionarioDoBloqueio;
 	private Usuario funcionarioDaAgenda;
 	private Usuario cliente;
+	
+	
+    @Autowired
+    private GerarRelatorio gerarRelatorio;
 
 	private List<HorarioLivre> lista;
 	private List<LocalTime> todosHorarios;
@@ -112,7 +123,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 	@Autowired
 	private EmpresaRepository empresaRepository;
 
-	public HorarioBean() {
+	public RelatorioBean() {
 		super(HorarioAgendado.class);
 
 	}
@@ -152,6 +163,31 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 		buscarTodosHorarios();
 		atualizardataTable();
 	}
+	
+	public PDFResponseModel generatePDF(String fileName, String template, String bucketName,
+		    Collection<?> items, Map<String, Object> parameters)
+		    throws ClassNotFoundException, JRException, IOException {
+
+		  JasperPrint jasperPrint;
+		  InputStream inputStream = null;
+
+		  JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
+
+		  try {
+		    inputStream = storageUtil.getInputStream(bucketName, template);
+		    jasperPrint = JasperFillManager.fillReport(JasperCompileManager.compileReport(
+		        inputStream), parameters, beanColDataSource);
+		    byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
+		    return new PDFResponseModel(fileName, pdfBytes);
+		  } catch (ClassNotFoundException | JRException | IOException e) {
+		    xLogger.severe("Failed to generate PDF for file name - ", fileName, e);
+		    throw e;
+		  } finally {
+		    if (inputStream != null) {
+		      inputStream.close();
+		    }
+		  }
+		}
 
 	private void buscarTodosHorarios() {
 		todosHorarios = new ArrayList<>();

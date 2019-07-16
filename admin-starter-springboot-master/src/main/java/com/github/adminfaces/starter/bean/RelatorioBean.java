@@ -3,7 +3,12 @@ package com.github.adminfaces.starter.bean;
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,13 +18,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.primefaces.event.ScheduleEntryMoveEvent;
@@ -30,7 +38,10 @@ import org.primefaces.model.DefaultScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -42,6 +53,7 @@ import com.github.adminfaces.starter.model.Permissao;
 import com.github.adminfaces.starter.model.Servico;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.model.UsuarioServico;
+import com.github.adminfaces.starter.report.SeguroReportService;
 import com.github.adminfaces.starter.repository.EmpresaRepository;
 import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
 import com.github.adminfaces.starter.repository.PermissaoRepository;
@@ -53,7 +65,15 @@ import com.github.adminfaces.starter.util.GerarRelatorio;
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 @Component
 @Scope("view")
@@ -93,10 +113,9 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 	private Usuario funcionarioDoBloqueio;
 	private Usuario funcionarioDaAgenda;
 	private Usuario cliente;
-	
-	
-    @Autowired
-    private GerarRelatorio gerarRelatorio;
+
+	@Autowired
+	private GerarRelatorio gerarRelatorio;
 
 	private List<HorarioLivre> lista;
 	private List<LocalTime> todosHorarios;
@@ -112,6 +131,9 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 
 	@Autowired
 	private UsuarioLogadoBean usuarioLogadoBean;
+	
+    @Autowired
+    private SeguroReportService seguroReportService;
 
 	@Autowired
 	private PermissaoRepository permissaoRepository;
@@ -122,6 +144,13 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 
 	@Autowired
 	private EmpresaRepository empresaRepository;
+	
+	@Autowired
+	private ResourceLoader resourceLoader;
+	
+	@Autowired
+	@Qualifier("jdbcTemplate")
+	private JdbcTemplate jdbcTemplate;
 
 	public RelatorioBean() {
 		super(HorarioAgendado.class);
@@ -160,34 +189,90 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		setFuncionarios = new ArrayList<>();
 
 		lista = new ArrayList<>();
-		buscarTodosHorarios();
-		atualizardataTable();
+		try {
+			gerar("classpath:/reports/ServicosProcurados.jrxml",);
+		} catch (ClassNotFoundException | JRException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 	
-	public PDFResponseModel generatePDF(String fileName, String template, String bucketName,
-		    Collection<?> items, Map<String, Object> parameters)
-		    throws ClassNotFoundException, JRException, IOException {
+	public void gerar(String report,HttpServletResponse response) throws JRException , SQLException, ClassNotFoundException, IOException {
+		
+		String path = resourceLoader.getResource(report).getURI().getPath();
 
-		  JasperPrint jasperPrint;
-		  InputStream inputStream = null;
+		JasperReport jasperReport = JasperCompileManager.compileReport(path);
+		Connection conn = jdbcTemplate.getDataSource().getConnection();
+      
+		//executa o relatório
+		Map parametros = new HashMap<>();
+		parametros.put("nota", new Double(10));
+		JasperPrint impressao = JasperFillManager.fillReport( jasperReport , parametros,    conn );
+		gerarRelatorio.imprimir(response, impressao);
+		//exibe o resultado
+		JasperViewer viewer = new JasperViewer( impressao , true );
+		viewer.show();
+	}
 
-		  JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(items);
+	private String printReport() throws JRException, IOException {
+	 String path = "classpath:/reports/servicosProcurados.jrxml";
+	 InputStream jasperTemplate = FacesContext.getCurrentInstance().
+	getExternalContext().getResourceAsStream(path);
+	
 
-		  try {
-		    inputStream = storageUtil.getInputStream(bucketName, template);
-		    jasperPrint = JasperFillManager.fillReport(JasperCompileManager.compileReport(
-		        inputStream), parameters, beanColDataSource);
-		    byte[] pdfBytes = JasperExportManager.exportReportToPdf(jasperPrint);
-		    return new PDFResponseModel(fileName, pdfBytes);
-		  } catch (ClassNotFoundException | JRException | IOException e) {
-		    xLogger.severe("Failed to generate PDF for file name - ", fileName, e);
-		    throw e;
-		  } finally {
-		    if (inputStream != null) {
-		      inputStream.close();
-		    }
-		  }
-		}
+	 JasperReport jasperReport = JasperCompileManager.compileReport(jasperTemplate);
+
+//	    Map parametros = new HashMap();
+//	    parametros.put("clienteDe", this.codigoClienteDe);
+//	    parametros.put("clienteAte", this.codigoClienteAte);
+	 
+	      Connection conexao = null;
+	      try {
+	        Class.forName("com.postgresql.jdbc.driver");
+	        conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/tcc", "postgres", "1234");
+	      } catch (Exception e) {
+	        // TODO: handle exception
+	      }
+
+	 	JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,null,conexao);
+
+	 HttpServletResponse response = (HttpServletResponse)
+	FacesContext.getCurrentInstance().getExternalContext().getResponse();
+	
+ ServletOutputStream outputStream = response.getOutputStream();
+	
+ response.setContentType("application/pdf");
+	 response.setHeader("Content-Disposition", "attachment; filename=\"relatorio.pdf\"");
+	
+
+	 JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+	 
+	 outputStream.flush();
+	 outputStream.close();
+	 FacesContext.getCurrentInstance().renderResponse();
+	 FacesContext.getCurrentInstance().responseComplete();
+	 
+	 return "";
+	
+	 }
+	
+
+   
+
+    public void export(HttpServletResponse response) throws IOException, JRException, SQLException {
+        String ordem = "";
+        JasperPrint jasperPrint = seguroReportService.generatePromissoria(1L, "Relatorio de Seguros por Cliente", "clientePassa", "classpath:/reports/ClienteSeguroReport.jrxml", ordem, ordem);
+//        if (botao.equalsIgnoreCase("mostrar")) {
+//            gerarRelatorio.imprimir(response, jasperPrint);
+//        } else if (botao.equalsIgnoreCase("baixar")) {
+            gerarRelatorio.baixar("RelatorioCliente.pdf", response, jasperPrint);
+//        }
+
+    }
 
 	private void buscarTodosHorarios() {
 		todosHorarios = new ArrayList<>();

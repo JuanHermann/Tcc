@@ -7,7 +7,6 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import utfpr.edu.br.tcc.converter.MyHttpServletResponseWrapper;
 
 import javax.activation.DataHandler;
 import javax.mail.MessagingException;

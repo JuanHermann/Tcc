@@ -112,6 +112,8 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 	@Autowired
 	private EmpresaRepository empresaRepository;
 	
+	@Autowired
+	private RelatorioServicosPrestados relatorioServicosPrestados;
 	
 
 	public RelatorioBean() {
@@ -152,6 +154,8 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 
 		lista = new ArrayList<>();
 
+		relatorioServicosPrestados.gerarPDF();
+			
 
 	}
 	

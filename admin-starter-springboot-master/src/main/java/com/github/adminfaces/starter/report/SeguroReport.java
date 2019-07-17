@@ -3,6 +3,7 @@ package com.github.adminfaces.starter.report;
 import java.awt.Image;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -60,13 +61,11 @@ public class SeguroReport {
 //		parameters.put("SUBTITULO", sub);
 		
 
-		List<HorarioAgendado> dados = horarioAgendadoRepository.findAll();
-		JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(dados);
-
-		JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, beanCollectionDataSource);
+		JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
 
 		return print;
 	}
+	
 
 	public JasperPrint generateRelatorioData(Long id, String titulo, Date data1, Date data2, String caminho, String sub) throws SQLException, JRException, IOException {
 		Connection conn = jdbcTemplate.getDataSource().getConnection();

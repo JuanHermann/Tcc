@@ -27,10 +27,6 @@ public class RelatorioController {
     @Autowired
     private GerarRelatorio gerarRelatorio;
 
-
-    ModelAndView modelAndView = new ModelAndView("relatorios/relatorioCliente");
-
-
     @GetMapping("/servicos")
     public void export(HttpServletResponse response) throws IOException, JRException, SQLException {
         String ordem = "";

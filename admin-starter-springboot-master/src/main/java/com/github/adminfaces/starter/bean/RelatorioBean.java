@@ -1,5 +1,6 @@
 package com.github.adminfaces.starter.bean;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -10,17 +11,21 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.jca.cci.connection.ConnectionFactoryUtils;
 import org.springframework.stereotype.Component;
 
 import com.github.adminfaces.starter.model.Empresa;
@@ -38,14 +43,18 @@ import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 import com.github.adminfaces.starter.util.GerarRelatorio;
 
+
 import lombok.Getter;
 import lombok.Setter;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 
 @Component
 @Scope("view")
@@ -86,7 +95,6 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 	private Usuario funcionarioDaAgenda;
 	private Usuario cliente;
 
-
 	private List<HorarioLivre> lista;
 	private List<LocalTime> todosHorarios;
 
@@ -101,7 +109,7 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 
 	@Autowired
 	private UsuarioLogadoBean usuarioLogadoBean;
-	
+
 	@Autowired
 	private PermissaoRepository permissaoRepository;
 
@@ -111,10 +119,8 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 
 	@Autowired
 	private EmpresaRepository empresaRepository;
-	
-	@Autowired
+
 	private RelatorioServicosPrestados relatorioServicosPrestados;
-	
 
 	public RelatorioBean() {
 		super(HorarioAgendado.class);
@@ -152,15 +158,23 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new ArrayList<>();
 
-		lista = new ArrayList<>();
-
-		relatorioServicosPrestados.gerarPDF();
-			
+//		lista = new ArrayList<>();
+		relatorioServicosPrestados = new RelatorioServicosPrestados();
+//		relatorioServicosPrestados.setNome("nomeEscrito");
+//		relatorioServicosPrestados.setDescricao("descriçãoEscrita");
+		try {
+			relatorioServicosPrestados.imprimeRelatorio();
+		} catch (IOException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+ 
+		
 
 	}
+
 	
 
-  
 	private void buscarTodosHorarios() {
 		todosHorarios = new ArrayList<>();
 		List<LocalTime> horarios = new ArrayList<>();

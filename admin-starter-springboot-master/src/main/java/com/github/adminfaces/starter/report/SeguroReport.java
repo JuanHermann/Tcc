@@ -44,10 +44,10 @@ public class SeguroReport {
 		// Parameters for report
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("TITULO", titulo);
-		parameters.put("ID", id);
-		parameters.put("DESCRICAO", descricao);
-		parameters.put("ORDEM", ordem);
-		parameters.put("SUBTITULO", sub);
+//		parameters.put("ID", id);
+//		parameters.put("DESCRICAO", descricao);
+//		parameters.put("ORDEM", ordem);
+//		parameters.put("SUBTITULO", sub);
 
 		JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
 

@@ -32,16 +32,15 @@ public class RelatorioController {
 
 
     @GetMapping("/servicos")
-    public void export(HttpServletResponse response, RedirectAttributes attributes) throws IOException, JRException, SQLException {
+    public void export(HttpServletResponse response) throws IOException, JRException, SQLException {
         String ordem = "";
         JasperPrint jasperPrint = seguroReportService.generatePromissoria(1L, "Relatorio de Seguros por Cliente", "cliente", "classpath:/reports/ServicosProcurados.jrxml", ordem, ordem);
-        if (false) {
+        if (true) {
             gerarRelatorio.imprimir(response, jasperPrint);
-        } else if (true) {
+        } else if (false) {
             gerarRelatorio.baixar("RelatorioCliente.pdf", response, jasperPrint);
         }
 
-        attributes.addFlashAttribute("mensagem","Relatorio gerado com sucesso!");
     }
 
 

@@ -24,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.github.adminfaces.starter.model.HorarioAgendado;
 import com.github.adminfaces.starter.report.ReportHelper.FORMATO_RELATORIO;
 import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
+import com.github.adminfaces.starter.util.GerarRelatorio;
 
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -42,6 +44,13 @@ public class RelatorioServicosPrestados extends ReportItem {
 	private HorarioAgendadoRepository horarioAgendadoRepository;
 
 	private Date dataInicial, dataFinal;
+	
+
+    @Autowired
+    private SeguroReportService seguroReportService;
+
+    @Autowired
+    private GerarRelatorio gerarRelatorio;
 
 	@PostConstruct
 	public void init() {
@@ -80,6 +89,20 @@ public class RelatorioServicosPrestados extends ReportItem {
 	public ReportHelper getReportHelper() {
 		return reportHelper;
 	}
+    public void export() throws IOException, JRException, SQLException {
+        String ordem = "";
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+
+		facesContext.responseComplete();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+        JasperPrint jasperPrint = seguroReportService.generatePromissoria(1L, "Relatorio de Seguros por Cliente", "cliente", "classpath:/reports/ServicosProcurados.jrxml", ordem, ordem);
+        if (true) {
+            gerarRelatorio.imprimir(response, jasperPrint);
+        } else if (false) {
+            gerarRelatorio.baixar("RelatorioCliente.pdf", response, jasperPrint);
+        }
+
+    }
 	
 	public void imprimeRelatorio() throws IOException, SQLException {
 

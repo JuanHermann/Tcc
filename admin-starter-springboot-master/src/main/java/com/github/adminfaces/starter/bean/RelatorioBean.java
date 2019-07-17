@@ -163,8 +163,11 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 //		relatorioServicosPrestados.setNome("nomeEscrito");
 //		relatorioServicosPrestados.setDescricao("descriçãoEscrita");
 		try {
-			relatorioServicosPrestados.imprimeRelatorio();
+			relatorioServicosPrestados.export();
 		} catch (IOException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -172,6 +175,8 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		
 
 	}
+	
+
 
 	
 

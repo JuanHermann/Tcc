@@ -34,7 +34,7 @@
 							<p:selectCheckboxMenu id="servico"
 								value="#{relatorioBean.servicosSelecionados}" label="Serviços"
 								multiple="true" filter="true" filterMatchMode="contains"
-								required="true" panelStyle="width:250px">
+								required="false" panelStyle="width:250px">
 								<f:selectItems value="#{relatorioBean.servicos}" var="servico"
 									itemLabel="#{servico.nome}" itemValue="#{servico}" />
 								<p:ajax event="change" update="lblServico"
@@ -54,7 +54,7 @@
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
 							<p:calendar id="data" value="#{relatorioBean.objeto.data}"
-								required="true" pattern="dd/MM/yyyy"
+								required="false" pattern="dd/MM/yyyy"
 								converter="#{localDateConverter}">
 								<p:ajax event="dateSelect"
 									listener="#{relatorioBean.atualizardataTable()}"
@@ -64,22 +64,13 @@
 						</div>
 					</div>
 
-					<p:commandButton value="Visualizar Relatório"
-						action="#{relatorioBean.abrirRelatorio()}" />
-						
+									<p:commandButton type="submit" ajax="false" value="Visualizar Relatório"
+				action="#{relatorioBean.abrirRelatorio()}" />
 
 				</div>
 			</div>
 
-
 		</h:form>
-
-		<h:form target="_blank">
-			<h:commandButton type="submit" value="Abrir em uma nova janela :)"
-				action="#{relatorioBean.abrirRelatorio()}" />
-			<p:commandButton value="Abrir em uma nova janela :)" target="_blank" />
-		</h:form>
-
 
 	</ui:define>
 

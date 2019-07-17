@@ -64,29 +64,17 @@
 						</div>
 					</div>
 
-					<p:separator />
 
-					<p:dataTable id="horariosDT" var="lista" value="#{relatorioBean.lista}"  emptyMessage="Nenhum horario livre"
-						widgetVar="carsTable" scrollable="true" scrollWidth="90%" rows="15"
-						paginator="true" paginatorPosition="bottom"
-						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,15,20,40">
-						
-						<p:column headerText="Nome" style="width=2000px">
-							<p:outputLabel value="#{lista.nome}" />
-						</p:column>
-						
-						<p:columns value="#{relatorioBean.todosHorarios}" var="horarios" columnIndexVar="colIndex" style="width=100%" >
-							<f:facet name="header" >
-								<h:outputText value="#{horarios}" />
-							</f:facet>
-							<h:outputText value="#{lista.horarios.get(colIndex)}" />
-						</p:columns>
-					</p:dataTable>
 				</div>
 			</div>
-
+			<p:commandButton onclick="target = '_blank'" type="submit"
+				value="Visualizar Relatório" ajax="false" update="form"/>
 		</h:form>
+		
+		<h:form target="_blank">
+    ...
+    <h:commandButton value="Abrir em uma nova janela :)" action="#{relatorioBean.abrirRelatorio()}" />
+</h:form>
 
 
 	</ui:define>

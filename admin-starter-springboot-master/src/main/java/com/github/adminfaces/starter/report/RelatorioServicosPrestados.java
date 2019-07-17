@@ -89,20 +89,6 @@ public class RelatorioServicosPrestados extends ReportItem {
 	public ReportHelper getReportHelper() {
 		return reportHelper;
 	}
-    public void export() throws IOException, JRException, SQLException {
-        String ordem = "";
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-
-		facesContext.responseComplete();
-        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-        JasperPrint jasperPrint = seguroReportService.generatePromissoria(1L, "Relatorio de Seguros por Cliente", "cliente", "classpath:/reports/ServicosProcurados.jrxml", ordem, ordem);
-        if (true) {
-            gerarRelatorio.imprimir(response, jasperPrint);
-        } else if (false) {
-            gerarRelatorio.baixar("RelatorioCliente.pdf", response, jasperPrint);
-        }
-
-    }
 	
 	public void imprimeRelatorio() throws IOException, SQLException {
 

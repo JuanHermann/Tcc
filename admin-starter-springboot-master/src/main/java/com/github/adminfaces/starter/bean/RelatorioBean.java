@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -157,27 +158,47 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		funcionarioDaAgenda = new Usuario();
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new ArrayList<>();
-
-//		lista = new ArrayList<>();
-		relatorioServicosPrestados = new RelatorioServicosPrestados();
-//		relatorioServicosPrestados.setNome("nomeEscrito");
-//		relatorioServicosPrestados.setDescricao("descriçãoEscrita");
-		try {
-			relatorioServicosPrestados.export();
-		} catch (IOException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
- 
 		
 
 	}
 	
 
-
+	private void abrirRelatorio() throws IOException {
+		FacesContext.getCurrentInstance().getExternalContext().redirect("indexcliente");
+		
+	}
+	
+	public void executeReport() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+ 
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+ 
+        InputStream reportStream = facesContext.getExternalContext().getResourceAsStream("caminho_arquivo.jasper");
+ 
+        response.setContentType("application/pdf");
+ 
+        response.setHeader("Content-disposition", "inline;filename=relatorio.pdf");
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+		params.put("titulo", "top");
+ 
+        try {
+            ServletOutputStream servletOutputStream = response.getOutputStream();
+ 
+            JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(arrayList);
+ 
+            JasperRunManager.runReportToPdfStream(reportStream, servletOutputStream, parameters, datasource);
+ 
+            servletOutputStream.flush();
+            servletOutputStream.close();
+        } catch (JRException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally{
+            facesContext.responseComplete();
+        }
+    }
 	
 
 	private void buscarTodosHorarios() {

@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -18,11 +20,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.adminfaces.starter.model.HorarioAgendado;
+import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
+
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Transactional
 @Repository
@@ -34,6 +41,9 @@ public class SeguroReport {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
+	
+	@Autowired
+	private HorarioAgendadoRepository horarioAgendadoRepository;
 
 	public JasperPrint generatePromissoria(Long id, String titulo, String descricao, String caminho, String ordem, String sub) throws SQLException, JRException, IOException {
 		Connection conn = jdbcTemplate.getDataSource().getConnection();
@@ -48,8 +58,12 @@ public class SeguroReport {
 //		parameters.put("DESCRICAO", descricao);
 //		parameters.put("ORDEM", ordem);
 //		parameters.put("SUBTITULO", sub);
+		
 
-		JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
+		List<HorarioAgendado> dados = horarioAgendadoRepository.findAll();
+		JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(dados);
+
+		JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, beanCollectionDataSource);
 
 		return print;
 	}

@@ -47,6 +47,7 @@ import com.github.adminfaces.starter.util.GerarRelatorio;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -54,6 +55,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 
@@ -159,12 +161,13 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		funcionarios = new ArrayList<>();
 		setFuncionarios = new ArrayList<>();
 		
+		
 
 	}
 	
 
-	private void abrirRelatorio() throws IOException {
-		FacesContext.getCurrentInstance().getExternalContext().redirect("indexcliente");
+	public void abrirRelatorio() throws IOException {
+		FacesContext.getCurrentInstance().getExternalContext().redirect("relatorio/servicos?data1=17-07-2019&data2=17-07-2019");
 		
 	}
 	
@@ -173,21 +176,19 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
  
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
  
-        InputStream reportStream = facesContext.getExternalContext().getResourceAsStream("caminho_arquivo.jasper");
+        InputStream reportStream = facesContext.getExternalContext().getResourceAsStream("/reports/ServicosProcurados.jasper");
  
         response.setContentType("application/pdf");
  
         response.setHeader("Content-disposition", "inline;filename=relatorio.pdf");
         
-        Map<String, Object> params = new HashMap<String, Object>();
-		params.put("titulo", "top");
+        Map<String, Object> parameters = new HashMap<>();
+		parameters.put("TITULO", "titulo");
  
         try {
             ServletOutputStream servletOutputStream = response.getOutputStream();
- 
-            JRBeanCollectionDataSource datasource = new JRBeanCollectionDataSource(arrayList);
- 
-            JasperRunManager.runReportToPdfStream(reportStream, servletOutputStream, parameters, datasource);
+  
+            JasperRunManager.runReportToPdfStream(reportStream, servletOutputStream, parameters);
  
             servletOutputStream.flush();
             servletOutputStream.close();

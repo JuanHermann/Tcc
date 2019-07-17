@@ -47,9 +47,6 @@ public class RelatorioServicosPrestados extends ReportItem {
 	
 
     @Autowired
-    private SeguroReportService seguroReportService;
-
-    @Autowired
     private GerarRelatorio gerarRelatorio;
 
 	@PostConstruct

@@ -66,22 +66,45 @@
 
 					<p:separator />
 
-					<p:dataTable id="horariosDT" var="lista" value="#{horarioBean.lista}"  emptyMessage="Nenhum horario livre"
-						widgetVar="carsTable" scrollable="true" scrollWidth="90%" rows="15"
-						paginator="true" paginatorPosition="bottom"
+					<p:dataTable id="horariosDT" var="lista"
+						value="#{horarioBean.lista}" emptyMessage="Nenhum horario livre"
+						tableStyle="width:auto" widgetVar="carsTable" scrollable="true"
+						scrollWidth="90%" rows="15" paginator="true"
+						paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15,20,40">
-						
-						<p:column headerText="Nome" style="width=2000px">
+
+						<p:column headerText="Nome">
 							<p:outputLabel value="#{lista.nome}" />
 						</p:column>
-						
-						<p:columns value="#{horarioBean.todosHorarios}" var="horarios" columnIndexVar="colIndex" style="width=100%" >
-							<f:facet name="header" >
+
+						<p:columns value="#{horarioBean.todosHorarios}" var="horarios"
+							columnIndexVar="colIndex" style="width=100%">
+							<f:facet name="header">
 								<h:outputText value="#{horarios}" />
 							</f:facet>
 							<h:outputText value="#{lista.horarios.get(colIndex)}" />
 						</p:columns>
+					</p:dataTable>
+
+					<p:dataTable var="lista" value="#{horarioBean.lista}">
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column rowspan="3" headerText="Nome" />
+								<p:column colspan="4" headerText="Horários" />
+							</p:row>
+
+						</p:columnGroup>
+
+						<p:column>
+							<h:outputText value="#{lista.nome}" />
+						</p:column>
+						<p:columns value="#{lista.horarios}" var="hora">
+							<h:outputText value="#{lista.horarios.get(hora)}" />
+						</p:columns>
+
+
+
 					</p:dataTable>
 				</div>
 			</div>

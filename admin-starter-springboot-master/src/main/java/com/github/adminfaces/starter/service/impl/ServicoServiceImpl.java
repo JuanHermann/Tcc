@@ -2,26 +2,18 @@ package com.github.adminfaces.starter.service.impl;
 
 import com.github.adminfaces.starter.infra.model.Filter;
 import com.github.adminfaces.starter.infra.model.SortOrder;
-import com.github.adminfaces.starter.model.Car;
 import com.github.adminfaces.starter.model.Servico;
-import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.repository.ServicoRepository;
-import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.service.ServicoService;
-import com.github.adminfaces.starter.service.UsuarioService;
-import com.github.adminfaces.template.exception.BusinessException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import javax.inject.Inject;
 
 import static com.github.adminfaces.template.util.Assert.has;
 

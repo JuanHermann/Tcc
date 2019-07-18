@@ -2,14 +2,10 @@ package com.github.adminfaces.starter.service;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.function.Predicate;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import com.github.adminfaces.starter.infra.model.Filter;
-import com.github.adminfaces.starter.model.Car;
 
 public interface CrudService <T, ID extends Serializable> {
 

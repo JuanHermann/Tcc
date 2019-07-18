@@ -1,42 +1,28 @@
 package com.github.adminfaces.starter.util;
 
-import com.github.adminfaces.starter.model.Car;
-import com.github.adminfaces.starter.model.Servico;
 
 import org.omnifaces.util.Messages;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
 import javax.faces.application.FacesMessage;
 import java.io.Serializable;
-import java.util.*;
-import java.util.stream.IntStream;
 import javax.inject.Named;
 
-/**
- * Created by rmpestano on 07/02/17.
- */
 @Named
 @ApplicationScoped
 public class Utils implements Serializable {
 
-	private List<Car> cars;
-	private List<Servico> servicos;
-
-	@PostConstruct
-	public void init() {
-		cars = new ArrayList<>();
-		servicos = new ArrayList<>();
-		IntStream.rangeClosed(1, 50).forEach(i -> cars.add(create(i)));
-	}
-
-	private static Car create(int i) {
-		return new Car(i).model("model " + i).name("name" + i).price(Double.valueOf(i));
-	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public static void addDetailMessage(String message) {
 		addDetailMessage(message, null);
+	}
+
+	public static void addErrorMessage(String message) {
+		addDetailMessage(message, FacesMessage.SEVERITY_ERROR);
 	}
 
 	public static void addDetailMessage(String message, FacesMessage.Severity severity) {
@@ -46,11 +32,6 @@ public class Utils implements Serializable {
 			facesMessage.setSeverity(severity);
 		}
 		Messages.add(null, facesMessage);
-	}
-
-	@Produces
-	public List<Car> getCars() {
-		return cars;
 	}
 
 }

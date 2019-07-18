@@ -271,7 +271,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 						&& horarioAgendado.getHoraInicio().isBefore(HORA_INICIO_INTERVALO)) {
 					horaAuxiliar = HORA_INICIO_EMPRESA;
 					while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
-						horarios.set(horarios.indexOf(horaAuxiliar), LocalTime.of(0, 0));
+						horarios.remove(horaAuxiliar);
 						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 					}
 				}
@@ -280,18 +280,21 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 						&& horarioAgendado.getHoraInicio().isAfter(HORA_FINAL_INTERVALO)) {
 					horaAuxiliar = HORA_FINAL_INTERVALO;
 					while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
-						horarios.set(horarios.indexOf(horaAuxiliar), LocalTime.of(0, 0));
+						horarios.remove(horaAuxiliar);
 						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 					}
 				} else {
 					horaAuxiliar = subtrairLocalTime(horarioAgendado.getHoraInicio(), TempoTotalServicos);
 					horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 					while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
-						horarios.set(horarios.indexOf(horaAuxiliar), LocalTime.of(0, 0));
+						horarios.remove(horaAuxiliar);
 						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 					}
 				}
 			}
+		}
+		while(todosHorarios.size()>horarios.size()) {
+			horarios.add(LocalTime.of(0, 0));
 		}
 
 	}

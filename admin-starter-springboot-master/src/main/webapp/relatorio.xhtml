@@ -13,10 +13,10 @@
 	</ui:define>
 
 	<ui:define name="title">
-         Horarios livres
+         Relatório
     </ui:define>
 	<ui:define name="description">
-        horarios livres.
+        Quantidade de serviços prestados.
     </ui:define>
 
 	<ui:define name="body">
@@ -26,46 +26,32 @@
 				<div class="box-header with-border">
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
-							<p:outputLabel for="servico" value="Serviço:" id="lblServico" />
+							<p:outputLabel for="data1" value="Data Inicio:" />
 						</div>
 					</div>
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:selectCheckboxMenu id="servico"
-								value="#{relatorioBean.servicosSelecionados}" label="Serviços"
-								multiple="true" filter="true" filterMatchMode="contains"
-								required="false" panelStyle="width:250px">
-								<f:selectItems value="#{relatorioBean.servicos}" var="servico"
-									itemLabel="#{servico.nome}" itemValue="#{servico}" />
-								<p:ajax event="change" update="lblServico"
-									listener="#{relatorioBean.atualizardataTable()}" />
-							</p:selectCheckboxMenu>
-
-
+							<p:calendar id="data1" value="#{relatorioBean.dataInicio}"
+								pattern="dd/MM/yyyy" converter="#{localDateConverter}" />
 						</div>
 					</div>
 
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 
-							<p:outputLabel for="data" value="Dia:" id="lblData" />
+							<p:outputLabel for="data2" value="Data Final:" />
 						</div>
 					</div>
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-4 ui-lg-5">
-							<p:calendar id="data" value="#{relatorioBean.objeto.data}"
-								required="false" pattern="dd/MM/yyyy"
-								converter="#{localDateConverter}">
-								<p:ajax event="dateSelect"
-									listener="#{relatorioBean.atualizardataTable()}"
-									update=" data lblData" />
-							</p:calendar>
-
+							<p:calendar id="data2" value="#{relatorioBean.dataFinal}"
+								pattern="dd/MM/yyyy" converter="#{localDateConverter}" />
 						</div>
 					</div>
 
-									<p:commandButton type="submit" ajax="false" value="Visualizar Relatório"
-				action="#{relatorioBean.abrirRelatorio()}" />
+					<p:commandButton type="submit" ajax="false"
+						value="Visualizar Relatório"
+						action="#{relatorioBean.abrirRelatorio()}" />
 
 				</div>
 			</div>

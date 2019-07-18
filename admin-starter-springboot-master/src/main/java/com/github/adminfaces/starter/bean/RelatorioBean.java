@@ -79,6 +79,8 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 	private int tempoMinutosSchedule;
 	private String tipo = "servico";
 	private LocalTime tempoTotalServicos;
+	private LocalDate dataInicio;
+	private LocalDate dataFinal;
 	private List<LocalTime> horarios;
 	private Date data = Calendar.getInstance().getTime();
 
@@ -162,12 +164,18 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		setFuncionarios = new ArrayList<>();
 		
 		
-
+		
 	}
 	
 
 	public void abrirRelatorio() throws IOException {
-		FacesContext.getCurrentInstance().getExternalContext().redirect("relatorio/servicos?data1=17-07-2019&data2=17-07-2019");
+		LocalDate d = LocalDate.now();
+		if(dataInicio==null) {
+			dataInicio = LocalDate.of(d.getYear(), d.getMonth(), 1);
+		}if(dataFinal==null) {
+			dataFinal=d;
+		}
+		FacesContext.getCurrentInstance().getExternalContext().redirect("relatorio/servicos?data1="+dataInicio+"&data2="+dataFinal);
 		
 	}
 	

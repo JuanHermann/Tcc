@@ -3,7 +3,7 @@ package com.github.adminfaces.starter.report;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +31,7 @@ public class ServicosReport {
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	public JasperPrint generateRelatorio(String titulo, String caminho, LocalDate data1,LocalDate data2) throws SQLException, JRException, IOException {
+	public JasperPrint generateRelatorio(String titulo,String subtitulo, String caminho, Date data1,Date data2) throws SQLException, JRException, IOException {
 		Connection conn = jdbcTemplate.getDataSource().getConnection();
 
 		String path = resourceLoader.getResource(caminho).getURI().getPath();
@@ -40,6 +40,7 @@ public class ServicosReport {
 		// Parameters for report
 		Map<String, Object> parameters = new HashMap<>();
 		parameters.put("TITULO", titulo);
+		parameters.put("SUBTITULO", subtitulo);
 		parameters.put("data1", data1);
 		parameters.put("data2", data2);
 		

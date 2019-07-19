@@ -34,10 +34,10 @@
 							<p:selectCheckboxMenu id="servico"
 								value="#{horarioBean.servicosSelecionados}" label="Serviços"
 								multiple="true" filter="true" filterMatchMode="contains"
-								required="true" panelStyle="width:250px">
+								required="false" panelStyle="width:250px">
 								<f:selectItems value="#{horarioBean.servicos}" var="servico"
 									itemLabel="#{servico.nome}" itemValue="#{servico}" />
-								<p:ajax event="change" update="lblServico"
+								<p:ajax event="change" update="lblServico horariosDT"
 									listener="#{horarioBean.atualizardataTable()}" />
 							</p:selectCheckboxMenu>
 
@@ -58,7 +58,7 @@
 								converter="#{localDateConverter}">
 								<p:ajax event="dateSelect"
 									listener="#{horarioBean.atualizardataTable()}"
-									update=" data lblData" />
+									update="horariosDT data lblData" />
 							</p:calendar>
 
 						</div>
@@ -67,31 +67,19 @@
 					<p:separator />
 
 					<p:dataTable id="horariosDT" var="lista"
-						value="#{horarioBean.lista}" emptyMessage="Nenhum horario livre"
-						tableStyle="width:auto" widgetVar="carsTable" scrollable="true"
-						scrollWidth="90%" rows="15" paginator="true"
-						paginatorPosition="bottom"
+						value="#{horarioBean.lista}" tableStyle="width:auto" rows="15"
+						paginator="true" paginatorPosition="bottom"
 						paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,15,20,40">
-
-						<p:column headerText="Nome">
-							<p:outputLabel value="#{lista.nome}" />
-						</p:column>
-
-						<p:columns value="#{horarioBean.todosHorarios}" var="horarios"
-							columnIndexVar="colIndex" style="width=100%">
-							<f:facet name="header">
-								<h:outputText value="#{horarios}" />
-							</f:facet>
-							<h:outputText value="#{lista.horarios.get(colIndex)}" />
-						</p:columns>
-					</p:dataTable>
-
-					<p:dataTable var="lista" value="#{horarioBean.lista}">
 						<p:columnGroup type="header">
 							<p:row>
-								<p:column rowspan="3" headerText="Nome" />
-								<p:column colspan="4" headerText="Horários" />
+								<p:column rowspan="2" headerText="Nome" />
+								<p:column colspan="#{horarioBean.todosHorarios.size()}"
+									headerText="Horários" />
+							</p:row>
+							<p:row>
+								<p:columns value="#{horarioBean.todosHorarios}" var="horarios"
+									headerText="#{horarios}" />
 							</p:row>
 
 						</p:columnGroup>
@@ -99,13 +87,17 @@
 						<p:column>
 							<h:outputText value="#{lista.nome}" />
 						</p:column>
-						<p:columns value="#{lista.horarios}" var="hora">
-							<h:outputText value="#{lista.horarios.get(hora)}" />
+
+						<p:columns value="#{horarioBean.todosHorarios}" var="horarios"
+							columnIndexVar="colIndex">
+							<f:facet name="header">
+								<h:outputText value="#{horarios}" />
+							</f:facet>
+							<h:outputText value="#{lista.horarios.get(colIndex)}" />
 						</p:columns>
 
-
-
 					</p:dataTable>
+
 				</div>
 			</div>
 

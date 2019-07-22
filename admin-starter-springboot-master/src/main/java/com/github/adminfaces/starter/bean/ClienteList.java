@@ -4,6 +4,7 @@ import com.github.adminfaces.starter.model.Permissao;
 import com.github.adminfaces.starter.model.Servico;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.model.UsuarioServico;
+import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
 import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.ServicoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
@@ -30,6 +31,8 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 	private ServicoRepository servicoRepository;
 	@Autowired
 	private UsuarioServicoRepository usuarioServicoRepository;
+	@Autowired
+	private HorarioAgendadoRepository horarioAgendadoRepository;
 
 	private Usuario usuario;
 
@@ -77,4 +80,21 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 
 	}
 
+	@Override
+	public void deletarSelecionados() {
+		int num = 0;
+		for (Usuario usuario : getRegistrosSelecionados()) {
+			if (horarioAgendadoRepository.findByCliente(usuario).isEmpty()) {
+				usuarioRepository.delete(usuario);
+			} else {
+				usuario.setAtivo(false);
+				usuarioRepository.save(usuario);
+				num++;
+			}
+		}
+		getRegistrosSelecionados().clear();
+		addDetailMessage(num + " Registros deletados com sucesso!");
+		listar();
+
+	}
 }

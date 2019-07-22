@@ -27,4 +27,6 @@ public interface HorarioAgendadoRepository extends JpaRepository<HorarioAgendado
 	List<HorarioAgendado> findByDataOrderByHoraInicio(LocalDate data);
 	
 	List<HorarioAgendado> findByClienteAndDataGreaterThanEqualOrderByDataAsc(Usuario usuario,LocalDate data);
+
+	List<HorarioAgendado> findByCliente(Usuario usuario);
 }

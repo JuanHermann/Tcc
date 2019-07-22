@@ -200,19 +200,29 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 			setFuncionarios.clear();
 			setFuncionarios.addAll(funcionariosCorreto);
 		} else {
+			setFuncionarios.clear();
 			setFuncionarios
 					.addAll(Usuario.filtraPorRole(usuarioRepository.findByAtivoOrderByNome(true), "ROLE_FUNCIONARIO"));
 		}
 	}
 
 	public List<LocalTime> buscarHorarios(Usuario funcionario) {
+		if (!servicosSelecionados.isEmpty()) {
+			tempoTotalServicos = LocalTime.of(0, 0, 0);
+			for (Servico servico : servicosSelecionados) {
+				tempoTotalServicos = somarLocalTime(tempoTotalServicos, servico.getTempo());
+			}
+			System.out.println(tempoTotalServicos);
+			return horariosLivres(tempoTotalServicos, funcionario);
+		} else {
+			horarios.clear();
+			horarios.addAll(todosHorarios);
 
-		tempoTotalServicos = LocalTime.of(0, 0, 0);
-		for (Servico servico : servicosSelecionados) {
-			tempoTotalServicos = somarLocalTime(tempoTotalServicos, servico.getTempo());
+			horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
+					getObjeto().getData());
+			retirarHorariosOcupadosSemServico();
+			return horarios;
 		}
-		System.out.println(tempoTotalServicos);
-		return horariosLivres(tempoTotalServicos, funcionario);
 
 	}
 
@@ -222,27 +232,44 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 
 		horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
 				getObjeto().getData());
-		retirarHorariosOcupados(TempoTotalServicos);
+		retirarHorariosOcupadosComServico(TempoTotalServicos);
 
 		return horarios;
 
 	}
 
-	private void retirarHorariosOcupados(LocalTime TempoTotalServicos) {
+	private void retirarHorariosOcupadosSemServico() {
+
+		LocalTime horaAuxiliar;
+		if (!horarioAgendados.isEmpty()) {
+			for (HorarioAgendado horarioAgendado : horarioAgendados) {
+				horaAuxiliar = horarioAgendado.getHoraInicio();
+
+				while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
+					if (horarios.contains(horaAuxiliar))
+						horarios.set(horarios.indexOf(horaAuxiliar), null);
+
+					horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+
+				}
+			}
+
+		}
+
+	}
+
+	private void retirarHorariosOcupadosComServico(LocalTime TempoTotalServicos) {
 
 		LocalTime horaAuxiliar = HORA_INICIO_EMPRESA;
 		if (!horarioAgendados.isEmpty()) {
 			for (HorarioAgendado horarioAgendado : horarioAgendados) {
-				if(servicosSelecionados.isEmpty()) {
-					horarios.set(horarios.indexOf(horarioAgendado.getHoraInicio()), null);
-				}
 				if (verificaEspacoTempo(HORA_INICIO_EMPRESA, TempoTotalServicos,
 						horarioAgendado.getHoraInicio()) == false
 						&& horarioAgendado.getHoraInicio().isBefore(HORA_INICIO_INTERVALO)) {
 					horaAuxiliar = HORA_INICIO_EMPRESA;
 					while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
-						if(!horarios.get(horarios.indexOf(horaAuxiliar)).equals(null))
-						horarios.set(horarios.indexOf(horaAuxiliar),null);
+						if (!horarios.get(horarios.indexOf(horaAuxiliar)).equals(null))
+							horarios.set(horarios.indexOf(horaAuxiliar), null);
 						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 					}
 				}
@@ -264,9 +291,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 					}
 				}
 			}
-			
 		}
-		System.out.println("asdsa");
 
 	}
 

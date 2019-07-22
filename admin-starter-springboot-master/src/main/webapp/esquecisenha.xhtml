@@ -87,6 +87,7 @@ cover
 	</div>
 
 
+
 	<div class="login-box">
 		<div class="login-logo">
 			<p:link href="index.xhtml">
@@ -96,7 +97,7 @@ cover
 		<div class="box login-box-body">
 			<h:form>
 				<p class="login-box-msg">Esqueci minha senha</p>
-				<p:messages id="messages" showDetail="true" closable="true"/>
+				<p:messages id="messages" showDetail="false" closable="true"/>
 
 				<div class="form-group has-feedback">
 					<p:inputText id="email" value="#{esqueciSenha.email}" type="email"
@@ -107,15 +108,15 @@ cover
 							pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 
 					</p:inputText>
-					<p:message for="email" />
+					<p:message for="email" display="text" />
 				</div>
 
 				<div class="row">
 
 					<div class="col-xs-12">
 						<p:commandButton styleClass="btn btn-success btn-block"
-							action="#{esqueciSenha.novaSenha}" update="@form"
-							value="Enviar Email" />
+							action="#{esqueciSenha.novaSenha}" update="@form" ajax="false"
+							value="Enviar Email"  />
 					</div>
 
 					<p:spacer height="2" />

@@ -82,7 +82,7 @@ public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> 
 			Faces.getExternalContext().getFlash().setKeepMessages(true);
         } catch (Exception e) {
             e.printStackTrace();
-			addDetailMessage("Falha ao enviar o Email!");
+			addDetailMessage("Falha ao enviar o Email!",FacesMessage.SEVERITY_ERROR);
 			Faces.getExternalContext().getFlash().setKeepMessages(true);
         }
     }

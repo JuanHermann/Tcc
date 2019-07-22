@@ -1,14 +1,12 @@
 package com.github.adminfaces.starter.bean;
 
-import com.github.adminfaces.starter.model.Permissao;
+import com.github.adminfaces.starter.model.HorarioAgendado;
 import com.github.adminfaces.starter.model.Usuario;
+import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
 import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -18,6 +16,8 @@ import org.springframework.stereotype.Component;
 @Scope("view")
 public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> {
 
+	@Autowired
+	private HorarioAgendadoRepository horarioAgendadoRepository;
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	@Autowired
@@ -68,6 +68,9 @@ public class CadastroList extends AbastractListBean<Usuario, UsuarioRepository> 
 		int num =0;
 		for (int i = 0; i < getRegistrosSelecionados().size(); i++) {
 			
+			for(HorarioAgendado h : horarioAgendadoRepository.findByCliente(getRegistrosSelecionados().get(i))){
+				horarioAgendadoRepository.delete(h);
+			}
 			usuarioRepository.delete(getRegistrosSelecionados().get(i));
 			
 			num++;

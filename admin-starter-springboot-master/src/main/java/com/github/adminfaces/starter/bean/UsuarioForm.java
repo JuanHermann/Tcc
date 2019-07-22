@@ -9,7 +9,6 @@ import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 import java.io.IOException;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
 import org.omnifaces.util.Faces;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,8 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 			addDetailMessage("Cadastro criado com sucesso!");
 			Faces.redirect("index.jsf");
 		} else {
-			 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "Email já cadastrado"));
+			addDetailMessage("Email já cadastrado", FacesMessage.SEVERITY_INFO);
+			Faces.getExternalContext().getFlash().setKeepMessages(true);
 		}
 	}
 

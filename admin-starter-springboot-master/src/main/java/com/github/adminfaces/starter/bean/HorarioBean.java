@@ -45,6 +45,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 	private boolean isFuncionario;
 	private LocalTime tempoTotalServicos;
 	private List<LocalTime> horarios;
+	private List<LocalTime> todosHorarios;
 
 	@Autowired
 	protected ContextBean context;
@@ -55,7 +56,6 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 	private Usuario cliente;
 
 	private List<HorarioLivre> lista;
-	private List<LocalTime> todosHorarios;
 
 	@Autowired
 	private ServicoRepository servicoRepository;
@@ -106,25 +106,36 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 		setFuncionarios = new ArrayList<>();
 		horarios = new ArrayList<>();
 		lista = new ArrayList<>();
-		buscarTodosHorarios();
+		todosHorarios = buscarTodosHorarios(LocalTime.of(0, 0));
 		atualizardataTable();
 	}
 
-	private void buscarTodosHorarios() {
-		todosHorarios = new ArrayList<>();
+	private List<LocalTime> buscarTodosHorarios(LocalTime TempoTotalServicos ) {
 		List<LocalTime> horarios = new ArrayList<>();
-		LocalTime TempoTotalServicos = LocalTime.of(0, 0);
 		LocalTime horaAuxiliar = HORA_INICIO_EMPRESA;
 		while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_INICIO_INTERVALO) == true) {
 			horarios.add(horaAuxiliar);
 			horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+		}
+		if(horaAuxiliar.isBefore(HORA_INICIO_INTERVALO)) {
+			while(horaAuxiliar.isBefore(HORA_INICIO_INTERVALO)) {
+				horarios.add(null);
+				horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+			}
 		}
 		horaAuxiliar = HORA_FINAL_INTERVALO;
 		while (verificaEspacoTempo(horaAuxiliar, TempoTotalServicos, HORA_FINAL_EMPRESA) == true) {
 			horarios.add(horaAuxiliar);
 			horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 		}
-		todosHorarios = horarios;
+		if(horaAuxiliar.isBefore(HORA_FINAL_EMPRESA)) {
+			while(horaAuxiliar.isBefore(HORA_FINAL_EMPRESA)) {
+				horarios.add(null);
+				horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
+			}
+		}
+		
+		return horarios;
 
 	}
 
@@ -150,15 +161,14 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 	}
 
 	public void atualizardataTable() {
-
 		lista.clear();
 		buscarFuncionarios();
 		List<LocalTime> h;
 		for (Usuario u : setFuncionarios) {
-			h = buscarHorarios(u);
-			lista.add(new HorarioLivre(u.getNome(), h));
+			h = new ArrayList<>();
+			h.addAll(buscarHorarios(u));
+			lista.add(new HorarioLivre(u.getNome(),h));
 		}
-
 	}
 
 	public void buscarFuncionarios() {
@@ -197,11 +207,11 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 			for (Servico servico : servicosSelecionados) {
 				tempoTotalServicos = somarLocalTime(tempoTotalServicos, servico.getTempo());
 			}
-			System.out.println(tempoTotalServicos);
+			
 			return horariosLivres(tempoTotalServicos, funcionario);
 		} else {
 			horarios.clear();
-			horarios.addAll(todosHorarios);
+			horarios.addAll(buscarTodosHorarios(LocalTime.of(0, 0)));
 
 			horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
 					getObjeto().getData());
@@ -213,7 +223,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 
 	private List<LocalTime> horariosLivres(LocalTime TempoTotalServicos, Usuario funcionario) {
 		horarios.clear();
-		horarios.addAll(todosHorarios);
+		horarios.addAll(buscarTodosHorarios(TempoTotalServicos));
 
 		horarioAgendados = horarioAgendadoRepository.findByFuncionarioAndData(funcionario.getId(),
 				getObjeto().getData());
@@ -253,7 +263,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 						&& horarioAgendado.getHoraInicio().isBefore(HORA_INICIO_INTERVALO)) {
 					horaAuxiliar = HORA_INICIO_EMPRESA;
 					while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
-						if (!horarios.get(horarios.indexOf(horaAuxiliar)).equals(null))
+						if (horarios.contains(horaAuxiliar) && !horarios.get(horarios.indexOf(horaAuxiliar)).equals(null) )
 							horarios.set(horarios.indexOf(horaAuxiliar), null);
 						horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
 					}

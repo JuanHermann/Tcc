@@ -14,8 +14,10 @@ public class HorarioLivre {
 	private List<LocalTime> horarios;
 	
 	
-	public HorarioLivre(String nome, List<LocalTime> horarios) {
-		super();
+	public HorarioLivre() {
+	}
+	
+	public HorarioLivre(String nome, List<LocalTime> horarios) {		
 		this.nome = nome;
 		this.horarios = horarios;
 	}

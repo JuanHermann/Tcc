@@ -4,29 +4,13 @@ import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.event.ScheduleEntryMoveEvent;
-import org.primefaces.event.ScheduleEntryResizeEvent;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultScheduleEvent;
-import org.primefaces.model.DefaultScheduleModel;
-import org.primefaces.model.ScheduleEvent;
-import org.primefaces.model.ScheduleModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -34,7 +18,6 @@ import org.springframework.stereotype.Component;
 import com.github.adminfaces.starter.model.Empresa;
 import com.github.adminfaces.starter.model.HorarioAgendado;
 import com.github.adminfaces.starter.model.HorarioLivre;
-import com.github.adminfaces.starter.model.Permissao;
 import com.github.adminfaces.starter.model.Servico;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.model.UsuarioServico;
@@ -170,8 +153,10 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 
 		lista.clear();
 		buscarFuncionarios();
+		List<LocalTime> h;
 		for (Usuario u : setFuncionarios) {
-			lista.add(new HorarioLivre(u.getNome(), buscarHorarios(u)));
+			h = buscarHorarios(u);
+			lista.add(new HorarioLivre(u.getNome(), h));
 		}
 
 	}

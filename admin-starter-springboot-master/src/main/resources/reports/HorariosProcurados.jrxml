@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="servicosProcurados" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="75796653-1c56-44cb-9518-ec91df716a69">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="tcc"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="278"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="711"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="740"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="246"/>
+	<parameter name="TITULO" class="java.lang.String"/>
+	<parameter name="data1" class="java.sql.Date"/>
+	<parameter name="data2" class="java.sql.Date"/>
+	<parameter name="SUBTITULO" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select h.hora_inicio, COUNT (h.hora_inicio) as quantidade from horario_agendado h  WHERE h.data BETWEEN $P{data1} AND  $P{data2} GROUP BY h.hora_inicio order by quantidade desc]]>
+	</queryString>
+	<field name="hora_inicio" class="java.sql.Time">
+		<property name="com.jaspersoft.studio.field.label" value="hora_inicio"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="horario_agendado"/>
+	</field>
+	<field name="quantidade" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="quantidade"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="74" splitType="Stretch">
+			<textField>
+				<reportElement x="180" y="10" width="200" height="30" uuid="b61fb609-dffb-42ed-ad68-c7eb7eff1ba7"/>
+				<textElement textAlignment="Center">
+					<font size="20"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TITULO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="50" width="340" height="18" uuid="8befc867-9e34-41ca-ac6c-360cb5d33877"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{SUBTITULO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="29" splitType="Stretch">
+			<staticText>
+				<reportElement x="450" y="1" width="100" height="19" uuid="41dbda7d-3722-450d-9f54-34973b275495">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7f80ff2c-38dd-40a3-b31d-35e268e57a0b"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<line>
+				<reportElement x="2" y="20" width="550" height="2" uuid="44d38c14-fab2-4e54-bef3-0393fac60350"/>
+			</line>
+			<staticText>
+				<reportElement x="3" y="0" width="177" height="20" uuid="5c07d010-2a4d-4502-949e-dc4bb3fb4bab">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="13a4597f-a73c-4bc4-8886-796bf2a04d48"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Horário]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="450" y="0" width="100" height="30" uuid="5b997fcf-e33e-43e5-9d0c-dc5fa5960b91">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7f80ff2c-38dd-40a3-b31d-35e268e57a0b"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="0" width="177" height="20" uuid="c993159f-1a36-4c3e-8a13-d51049a70415">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="13a4597f-a73c-4bc4-8886-796bf2a04d48"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{hora_inicio}.getHours() +":"+$F{hora_inicio}.getMinutes()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="420" y="15" width="85" height="31" uuid="cd996d41-7a2c-4365-bce2-467c16ba437e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Pagina " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="505" y="15" width="55" height="31" uuid="a5e54baf-24ea-48d0-88bb-b05430d3cc54"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<noData>
+		<band height="50">
+			<printWhenExpression><![CDATA[$F{quantidade}.equals( null )]]></printWhenExpression>
+			<textField>
+				<reportElement x="80" y="14" width="401" height="21" uuid="a321bc5a-ec46-488c-bef4-28e3e7ee7765"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Nenhum Serviço Prestado"]]></textFieldExpression>
+			</textField>
+		</band>
+	</noData>
+</jasperReport>

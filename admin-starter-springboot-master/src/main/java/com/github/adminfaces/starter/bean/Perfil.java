@@ -4,9 +4,15 @@ import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.service.UsuarioService;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
+import javax.faces.application.FacesMessage;
+
 import org.omnifaces.util.Faces;
+import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,6 +20,8 @@ import org.springframework.stereotype.Component;
 
 
 @Component
+@Getter
+@Setter
 @Scope("view")
 public class Perfil extends AbastractFormBean<Usuario, UsuarioRepository> {
 
@@ -49,32 +57,26 @@ public class Perfil extends AbastractFormBean<Usuario, UsuarioRepository> {
 			getRepository().save(getObjeto());			
 			usuarioLogadoBean.setUsuario(getObjeto()); 
 			addDetailMessage("Senha Atualizada com sucesso!");
-			System.out.println("senha alterada");
-			Faces.getExternalContext().getFlash().setKeepMessages(true);		
+			Faces.getExternalContext().getFlash().setKeepMessages(true);	
+			setNovaSenha("");
+			setSenhaAtual("");
+			fecharSenha();
 			
 		}else {
-			System.out.println("senhas não conferem");
-		}
-		
+			addDetailMessage("Senha atual incorreta.",FacesMessage.SEVERITY_ERROR);
+			Faces.getExternalContext().getFlash().setKeepMessages(true);	
+		}		
 		       
 	}
 	
-	
-	public String getSenhaAtual() {
-		return senhaAtual;
+	public void fecharSenha() {
+		PrimeFaces.current().executeScript(String.format("document.getElementById('senhaSumir').style.display = 'none';"));
+		PrimeFaces.current().executeScript(String.format("window.scrollTo(0, 0);"));
 	}
-	public void setSenhaAtual(String senhaAtual) {
-		this.senhaAtual = senhaAtual;
+	public void abrirSenha() {
+		PrimeFaces.current().executeScript(String.format("document.getElementById('senhaSumir').style.display = 'block';"));
+		PrimeFaces.current().executeScript(String.format("window.location.href='#foo';"));
 	}
-	public String getNovaSenha() {
-		return novaSenha;
-	}
-	public void setNovaSenha(String novaSenha) {
-		this.novaSenha = novaSenha;
-	}
-	
-	
-
 	
 
    

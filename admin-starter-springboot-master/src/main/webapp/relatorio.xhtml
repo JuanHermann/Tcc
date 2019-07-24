@@ -16,7 +16,7 @@
          Relatório
     </ui:define>
 	<ui:define name="description">
-        Quantidade de serviços prestados.
+        Escolha seu relatorio.
     </ui:define>
 
 	<ui:define name="body">
@@ -24,6 +24,21 @@
 		<h:form target="_blank">
 			<div class="box box-primary">
 				<div class="box-header with-border">
+					<div class="ui-g ui-fluid">
+						<div class="ui-sm-12 ui-md-2 ui-lg-1">
+							<p:outputLabel for="relatorio" value="Relatório:" />
+						</div>
+					</div>
+					<div class="ui-g ui-fluid">
+						<div class="ui-sm-12 ui-md-4 ui-lg-5">
+							<p:selectOneMenu id="relatorio" value="#{relatorioBean.relatorio}">
+
+								<f:selectItems value="#{relatorioBean.relatorios}" var="relatorio"
+									itemLabel="#{relatorio}"  />
+								<p:ajax event="change" update="" />
+							</p:selectOneMenu>
+						</div>
+					</div>
 					<div class="ui-g ui-fluid">
 						<div class="ui-sm-12 ui-md-2 ui-lg-1">
 							<p:outputLabel for="data1" value="Data Inicio:" />

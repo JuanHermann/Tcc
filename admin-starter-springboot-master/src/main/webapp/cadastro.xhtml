@@ -94,7 +94,7 @@ background-size
 
 
 				<p class="login-box-msg">Informe seus dados para o Cadastro</p>
-				<p:messages id="messages" showDetail="false" closable="true" rendered="true"/>
+				<p:messages id="messagesId" showDetail="false" closable="true" style="display: none;"/>
 				
 				<div class="form-group has-feedback">
 					<p:outputLabel value="Nome:" for="nome" id="lblNome"/>
@@ -141,7 +141,7 @@ background-size
 						styleClass="form-control" placeholder="Informe sua Senha"
 						required="false" match="pw2" requiredMessage="Senha é obrigatória."
 						redisplay="true" validatorMessage="Senhas não conferem">
-						<f:ajax event="change" render="senha msgSenha1 lblSenha1" />
+						<f:ajax event="" render="senha msgSenha1 lblSenha1" />
 					</p:password>
 					<i class="fa fa-lock form-control-feedback" style="font-size: 18px"></i>
 					<p:message id="msgSenha1" for="senha" display="text" />

@@ -11,6 +11,7 @@ import java.io.IOException;
 import javax.faces.application.FacesMessage;
 
 import org.omnifaces.util.Faces;
+import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -49,6 +50,7 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 	}
 
 	public void novoCadastro() throws IOException {
+		PrimeFaces.current().executeScript(String.format("document.getElementById('messagesId').style.display = 'block';"));
 		if (usuarioRepository.findByEmail(getObjeto().getEmail()) == null) {
 			getObjeto().setAtivo(true);
 			getObjeto().setAceito(false);
@@ -56,8 +58,8 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 			getRepository().save(getObjeto());
 			getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_CADASTRADO"));
 			getRepository().save(getObjeto());
-			Faces.getExternalContext().getFlash().setKeepMessages(true);
 			addDetailMessage("Cadastro criado com sucesso!");
+			Faces.getExternalContext().getFlash().setKeepMessages(true);
 			Faces.redirect("index.jsf");
 		} else {
 			addDetailMessage("Email já cadastrado", FacesMessage.SEVERITY_INFO);

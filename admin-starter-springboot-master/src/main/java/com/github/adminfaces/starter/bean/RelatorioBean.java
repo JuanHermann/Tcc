@@ -76,7 +76,6 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 			FacesContext.getCurrentInstance().getExternalContext()
 					.redirect("relatorio/servicos?data1=" + dataInicio + "&data2=" + dataFinal);
 		} else if (relatorio.equals(relatorioB)) {
-
 			FacesContext.getCurrentInstance().getExternalContext()
 					.redirect("relatorio/horarios?data1=" + dataInicio + "&data2=" + dataFinal);
 		}

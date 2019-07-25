@@ -11,7 +11,7 @@
 
 
 	<ui:define name="title">
-		<h2  class="align-center">Agenda</h2>
+		<h2 class="align-center">Agenda</h2>
 	</ui:define>
 	<ui:define name="head-end">
 		<ui:param name="renderBreadCrumb" value="false" />
@@ -27,10 +27,10 @@
 				<p:selectOneMenu id="funcionarioSchedule" required="false"
 					value="#{indexBean.funcionarioDaAgenda}"
 					converter="#{usuarioConverter}">
-					<f:selectItems value="#{indexBean.funcionariosAgenda}" var="usuario"
-						itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
+					<f:selectItems value="#{indexBean.funcionariosAgenda}"
+						var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}" />
 					<p:ajax event="change" update="schedule"
-													listener="#{indexBean.atualizarSchedule()}" />
+						listener="#{indexBean.atualizarSchedule()}" />
 				</p:selectOneMenu>
 			</p:outputPanel>
 
@@ -118,7 +118,7 @@
 										<p:outputLabel for="data" value="Dia:" id="lblData" />
 
 										<p:calendar id="data" value="#{indexBean.objeto.data}"
-											required="true" pattern="dd/MM/yyyy" 
+											required="true" pattern="dd/MM/yyyy"
 											converter="#{localDateConverter}">
 											<p:ajax event="dateSelect"
 												listener="#{indexBean.buscarHorarios}"

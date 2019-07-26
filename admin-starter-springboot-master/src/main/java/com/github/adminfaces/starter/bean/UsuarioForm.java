@@ -37,20 +37,17 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 
-	private String senha2;
-
 	public UsuarioForm() {
 		super(Usuario.class);
 	}
 
 	@Override
 	public void init() throws InstantiationException, IllegalAccessException {
-		senha2 = "";
 		super.init();
 	}
 
 	public void novoCadastro() throws IOException {
-		PrimeFaces.current().executeScript(String.format("document.getElementById('messagesId').style.display = 'block';"));
+		//PrimeFaces.current().executeScript(String.format("document.getElementById('messagesId').style.display = 'block';"));
 		if (usuarioRepository.findByEmail(getObjeto().getEmail()) == null) {
 			getObjeto().setAtivo(true);
 			getObjeto().setAceito(false);
@@ -62,8 +59,7 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 			Faces.getExternalContext().getFlash().setKeepMessages(true);
 			Faces.redirect("index.jsf");
 		} else {
-			addDetailMessage("Email já cadastrado", FacesMessage.SEVERITY_INFO);
-			Faces.getExternalContext().getFlash().setKeepMessages(true);
+			addDetailMessage("Email já cadastrado");
 		}
 	}
 

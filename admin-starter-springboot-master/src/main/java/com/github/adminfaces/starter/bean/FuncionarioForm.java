@@ -74,6 +74,7 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 
 	public void carregarLista() {
 		setLista(servicoRepository.findByAtivoOrderByNome(true));
+
 	}
 
 	public void carregarServicos() {

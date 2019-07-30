@@ -1,3 +1,5 @@
 codigo do servico 1 é sempre o bloqueio
 
+WHERE h.data BETWEEN $P{data1} AND  $P{data2}
+
 atividades prestadas por funcionário, serviços mais procurados, horários mais requisitados, entrada mensal, serviços realizados por cada funcionário.

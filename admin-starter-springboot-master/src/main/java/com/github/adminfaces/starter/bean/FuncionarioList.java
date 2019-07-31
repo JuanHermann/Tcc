@@ -3,6 +3,7 @@ package com.github.adminfaces.starter.bean;
 import com.github.adminfaces.starter.model.Permissao;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.model.UsuarioServico;
+import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 
@@ -24,6 +25,8 @@ public class FuncionarioList extends AbastractListBean<Usuario, UsuarioRepositor
 
 	@Autowired
 	private UsuarioServicoRepository usuarioServicoRepository;
+	@Autowired
+	private PermissaoRepository permissaoRepository;
 
 	private boolean role;
 
@@ -76,13 +79,14 @@ public class FuncionarioList extends AbastractListBean<Usuario, UsuarioRepositor
 		for (Usuario funcionario : getRegistrosSelecionados()) {
 			funcionario.setAtivo(false);
 			funcionario.getPermissoes().clear();
+			funcionario.addPermissao(permissaoRepository.findByNome("ROLE_CLIENTE"));
 			getRepository().save(getObjeto());
-				for (UsuarioServico us : usuarioServicoRepository.findByUsuarioAndAtivo(funcionario, true)) {
-					us.setAtivo(false);
-					usuarioServicoRepository.save(us);
-				}
+			for (UsuarioServico us : usuarioServicoRepository.findByUsuarioAndAtivo(funcionario, true)) {
+				us.setAtivo(false);
+				usuarioServicoRepository.save(us);
+			}
 
-		num++;	
+			num++;
 		}
 		getRegistrosSelecionados().clear();
 		addDetailMessage(num + " Registros deletado com sucesso!");

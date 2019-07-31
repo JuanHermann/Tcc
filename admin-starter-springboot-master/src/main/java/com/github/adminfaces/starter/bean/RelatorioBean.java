@@ -35,6 +35,7 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 
 	private static String relatorioA = "Serviços Prestados";
 	private static String relatorioB = "Horários Preferidos";
+	private static String relatorioC = "Entrada Mensal";
 
 	private boolean isFuncionario;
 
@@ -61,6 +62,7 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		relatorios = new ArrayList<>();
 		relatorios.add(relatorioA);
 		relatorios.add(relatorioB);
+		relatorios.add(relatorioC);
 
 	}
 
@@ -78,7 +80,10 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		} else if (relatorio.equals(relatorioB)) {
 			FacesContext.getCurrentInstance().getExternalContext()
 					.redirect("relatorio/horarios?data1=" + dataInicio + "&data2=" + dataFinal);
-		}
+		}else if (relatorio.equals(relatorioC)) {
+			FacesContext.getCurrentInstance().getExternalContext()
+			.redirect("relatorio/entradas?data1=" + dataInicio + "&data2=" + dataFinal);
+}
 	}
 
 	public void executeReport() {

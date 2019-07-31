@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="servicosProcurados" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="75796653-1c56-44cb-9518-ec91df716a69">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="tcc"/>
+	<property name="com.jaspersoft.studio.data.sql.tables">
+		<![CDATA[dXN1YXJpb19zZXJ2aWNvICwxOTYsNDEsOWFmMzIxMjMtNWE1Mi00YWJhLWJkZTctZGRhODIzZjNl
+ODEyO2hvcmFyaW9fYWdlbmRhZG8gLDE1LDE1LGJjOWQxNWQ5LWQ2ODQtNDZkOC1hNThjLTEyYTc3
+Y2FlY2MzNztzZXJ2aWNvICwzMzUsMTYsZWY4NTMwMWUtYzQ1Ny00Y2VmLThiNGQtMmE1NmEwNzM5
+YjExOw==]]>
+	</property>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="278"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="711"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="740"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="246"/>
+	<parameter name="TITULO" class="java.lang.String"/>
+	<parameter name="data1" class="java.sql.Date"/>
+	<parameter name="data2" class="java.sql.Date"/>
+	<parameter name="SUBTITULO" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT h.data,
+	s.nome,
+	s.valor
+FROM horario_agendado h
+	INNER JOIN usuario_servico u ON 
+	 h.usuario_servico_id = u.id 
+	INNER JOIN servico s ON 
+	 u.servico_id = s.id 
+WHERE 
+	 h.data BETWEEN $P{data1} AND $P{data2} 
+ORDER BY h.data ASC]]>
+	</queryString>
+	<field name="data" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.label" value="data"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="horario_agendado"/>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="servico"/>
+	</field>
+	<field name="valor" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="valor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="servico"/>
+	</field>
+	<variable name="Somar" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{valor}]]></variableExpression>
+		<initialValueExpression><![CDATA[new Double(0)]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="74" splitType="Stretch">
+			<textField>
+				<reportElement x="80" y="10" width="399" height="30" uuid="b61fb609-dffb-42ed-ad68-c7eb7eff1ba7"/>
+				<textElement textAlignment="Center">
+					<font size="20"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{TITULO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="50" width="399" height="18" uuid="8befc867-9e34-41ca-ac6c-360cb5d33877"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+					<paragraph lineSpacing="Double"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{SUBTITULO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="26" splitType="Stretch">
+			<line>
+				<reportElement x="2" y="20" width="550" height="2" uuid="44d38c14-fab2-4e54-bef3-0393fac60350"/>
+			</line>
+			<staticText>
+				<reportElement x="2" y="0" width="78" height="20" uuid="9ef080c4-e728-4b51-9166-d41093712019">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="999cff0e-5701-439c-9c45-328f2ea45b22"/>
+				</reportElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="100" height="20" uuid="865099bb-44ad-4e24-a021-a89dbfa0e14f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="11939e38-e02d-476c-a968-8b128e8beefd"/>
+				</reportElement>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="483" y="0" width="68" height="20" uuid="36db3c99-8cc3-4582-bb0a-29a904796df0">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="88d06801-a9e6-4aed-85f7-9711d6bc2cea"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Valor]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<textField pattern="dd/MM/yy">
+				<reportElement x="2" y="0" width="78" height="24" uuid="ff8c366e-29ca-4a9f-a34b-a750ea2a96d6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="999cff0e-5701-439c-9c45-328f2ea45b22"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{data}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="300" height="24" uuid="b43d5a17-0a6b-44a6-aec6-8b7fd49c87e4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="11939e38-e02d-476c-a968-8b128e8beefd"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField pattern="R$ #,##0.00">
+				<reportElement x="480" y="0" width="70" height="24" uuid="09805218-bde8-4fb7-9ea7-96d99f629f74">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="88d06801-a9e6-4aed-85f7-9711d6bc2cea"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="27" splitType="Stretch">
+			<textField>
+				<reportElement x="440" y="6" width="80" height="20" uuid="cd996d41-7a2c-4365-bce2-467c16ba437e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="520" y="6" width="32" height="20" uuid="a5e54baf-24ea-48d0-88bb-b05430d3cc54"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="2" y="0" width="550" height="2" uuid="c1a522b3-1d41-4922-8c40-3247984037b4"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="27">
+			<textField pattern="Total: R$ #,##0.00">
+				<reportElement x="420" y="5" width="130" height="20" uuid="2cac2c5f-533b-4a2c-a3d3-f502954d8e80"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Somar}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="2" y="0" width="550" height="2" uuid="bd418662-9a52-4080-bbe5-ea455eaec765"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

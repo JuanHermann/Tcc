@@ -61,7 +61,7 @@ public class Usuario implements UserDetails {
 		return auto;
 	}
 	
-	public static boolean hasRole(String role,Usuario usuario) {		
+	public static boolean hasRole(String role,Usuario usuario) {
 		for(Permissao p : usuario.getPermissoes()) {
 			if(p.getNome().equals(role)) {
 				return true;

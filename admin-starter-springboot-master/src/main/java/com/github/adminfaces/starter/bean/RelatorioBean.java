@@ -33,9 +33,10 @@ import net.sf.jasperreports.engine.JasperRunManager;
 @Setter
 public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAgendadoRepository> {
 
-	private static String relatorioA = "Serviços Prestados";
+	private static String relatorioA = "Numero de Serviços Prestados";
 	private static String relatorioB = "Horários Preferidos";
 	private static String relatorioC = "Entrada Mensal";
+	private static String relatorioD = "Serviços Realizados";
 
 	private boolean isFuncionario;
 
@@ -63,6 +64,7 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		relatorios.add(relatorioA);
 		relatorios.add(relatorioB);
 		relatorios.add(relatorioC);
+		relatorios.add(relatorioD);
 
 	}
 
@@ -80,10 +82,13 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		} else if (relatorio.equals(relatorioB)) {
 			FacesContext.getCurrentInstance().getExternalContext()
 					.redirect("relatorio/horarios?data1=" + dataInicio + "&data2=" + dataFinal);
-		}else if (relatorio.equals(relatorioC)) {
+		} else if (relatorio.equals(relatorioC)) {
 			FacesContext.getCurrentInstance().getExternalContext()
-			.redirect("relatorio/entradas?data1=" + dataInicio + "&data2=" + dataFinal);
-}
+					.redirect("relatorio/entradas?data1=" + dataInicio + "&data2=" + dataFinal);
+		} else if (relatorio.equals(relatorioD)) {
+			FacesContext.getCurrentInstance().getExternalContext()
+					.redirect("relatorio/funcionarios?data1=" + dataInicio + "&data2=" + dataFinal);
+		}
 	}
 
 	public void executeReport() {

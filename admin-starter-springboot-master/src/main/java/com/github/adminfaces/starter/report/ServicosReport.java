@@ -31,7 +31,8 @@ public class ServicosReport {
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	public JasperPrint generateRelatorio(String titulo,String subtitulo, String caminho, Date data1,Date data2) throws SQLException, JRException, IOException {
+	public JasperPrint generateRelatorio(String titulo, String subtitulo, String caminho, Date data1, Date data2,
+			String subReport) throws SQLException, JRException, IOException {
 		Connection conn = jdbcTemplate.getDataSource().getConnection();
 
 		String path = resourceLoader.getResource(caminho).getURI().getPath();
@@ -39,11 +40,16 @@ public class ServicosReport {
 		JasperReport jasperReport = JasperCompileManager.compileReport(path);
 		// Parameters for report
 		Map<String, Object> parameters = new HashMap<>();
+
+		if (!subReport.equals("")) {
+
+			String path2 = resourceLoader.getResource(subReport).getURI().getPath();
+			parameters.put("subReport", path2);
+		}
 		parameters.put("TITULO", titulo);
 		parameters.put("SUBTITULO", subtitulo);
 		parameters.put("data1", data1);
 		parameters.put("data2", data2);
-		
 
 		JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, conn);
 

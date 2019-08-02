@@ -4,8 +4,8 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Tcc"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="TITULO" class="java.lang.String"/>
-	<parameter name="data1" class="java.sql.Date"/>
-	<parameter name="data2" class="java.sql.Date"/>
+	<parameter name="data1" class="java.util.Date"/>
+	<parameter name="data2" class="java.util.Date"/>
 	<parameter name="SUBTITULO" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[select s.nome, COUNT (u.servico_id) as quantidade from horario_agendado h INNER JOIN usuario_servico u ON h.usuario_servico_id = u.id INNER JOIN servico s ON u.servico_id = s.id WHERE	s.ativo=true AND h.data BETWEEN $P{data1} AND  $P{data2} GROUP BY s.id order by quantidade desc]]>

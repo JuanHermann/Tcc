@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="servicosProcurados" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="75796653-1c56-44cb-9518-ec91df716a69">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="servicosFuncionarios" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="75796653-1c56-44cb-9518-ec91df716a69">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="tcc"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="278"/>
@@ -8,8 +8,8 @@
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="740"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="246"/>
 	<parameter name="TITULO" class="java.lang.String"/>
-	<parameter name="data1" class="java.sql.Date"/>
-	<parameter name="data2" class="java.sql.Date"/>
+	<parameter name="data1" class="java.util.Date"/>
+	<parameter name="data2" class="java.util.Date"/>
 	<parameter name="SUBTITULO" class="java.lang.String"/>
 	<parameter name="parametroId" class="java.lang.Integer">
 		<defaultValueExpression><![CDATA[7]]></defaultValueExpression>

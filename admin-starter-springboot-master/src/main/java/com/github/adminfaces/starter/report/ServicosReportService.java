@@ -16,8 +16,10 @@ public class ServicosReportService {
 	@Autowired
 	private ServicosReport servicosReport;
 
-	public JasperPrint generateRelatorioData(String titulo,String subtitulo, String caminho, Date data1,Date data2) throws SQLException, JRException, IOException {
-		return servicosReport.generateRelatorio(titulo,subtitulo, caminho, data1, data2);
+
+	
+	public JasperPrint generateRelatorioData(String titulo,String subtitulo, String caminho, Date data1,Date data2,String subReport) throws SQLException, JRException, IOException {
+		return servicosReport.generateRelatorio(titulo, subtitulo, caminho, data1, data2, subReport);
 	}
 
 

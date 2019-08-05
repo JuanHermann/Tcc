@@ -3,8 +3,6 @@ package com.github.adminfaces.starter.converter;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 
@@ -17,7 +15,7 @@ import javax.faces.convert.ConverterException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TimeConverter implements Converter {
+public class TimeConverter implements Converter<Object> {
 
 	private SimpleDateFormat formatador = new SimpleDateFormat("HH:mm");
 

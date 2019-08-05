@@ -2,7 +2,6 @@ package com.github.adminfaces.starter.repository;
 
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,23 +1,10 @@
 package com.github.adminfaces.starter.bean;
 
-import com.github.adminfaces.starter.model.HorarioAgendado;
-import com.github.adminfaces.starter.model.Servico;
-import com.github.adminfaces.starter.model.Usuario;
-import com.github.adminfaces.starter.model.UsuarioServico;
-import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
-import com.github.adminfaces.starter.repository.PermissaoRepository;
-import com.github.adminfaces.starter.repository.ServicoRepository;
-import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
-
-import lombok.Getter;
-import lombok.Setter;
-
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -31,6 +18,18 @@ import org.primefaces.model.menu.MenuModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import com.github.adminfaces.starter.model.HorarioAgendado;
+import com.github.adminfaces.starter.model.Servico;
+import com.github.adminfaces.starter.model.Usuario;
+import com.github.adminfaces.starter.model.UsuarioServico;
+import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
+import com.github.adminfaces.starter.repository.PermissaoRepository;
+import com.github.adminfaces.starter.repository.ServicoRepository;
+import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Component
 @Getter

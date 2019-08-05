@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import com.github.adminfaces.starter.model.HorarioAgendado;
 import com.github.adminfaces.starter.model.Usuario;
-import com.github.adminfaces.starter.report.RelatorioServicosPrestados;
 import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
 
 import lombok.Getter;
@@ -49,7 +48,6 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 	@Autowired
 	private UsuarioLogadoBean usuarioLogadoBean;
 
-	private RelatorioServicosPrestados relatorioServicosPrestados;
 
 	public RelatorioBean() {
 		super(HorarioAgendado.class);

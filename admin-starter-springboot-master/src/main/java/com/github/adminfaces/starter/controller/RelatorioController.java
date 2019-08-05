@@ -34,11 +34,11 @@ public class RelatorioController {
     public void exportServicos(@RequestParam("data1") @DateTimeFormat(pattern="yyyy-MM-dd") Date data1,@RequestParam("data2") @DateTimeFormat(pattern="yyyy-MM-dd") Date data2,HttpServletResponse response) throws IOException, JRException, SQLException {
     	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         JasperPrint jasperPrint = servicosReportService.generateRelatorioData("Número de Serviços Prestados","Entre as datas "+sdf.format(data1) +" e "+ sdf.format(data2), "classpath:/reports/ServicosProcurados.jrxml",data1,data2,"");
-        if (true) {
+//        if (true) {
             gerarRelatorio.imprimir(response, jasperPrint);
-        } else if (false) {
-            gerarRelatorio.baixar("ServicosProcurados.pdf", response, jasperPrint);
-        }
+//        } else if (false) {
+//            gerarRelatorio.baixar("ServicosProcurados.pdf", response, jasperPrint);
+//        }
 
     }
     

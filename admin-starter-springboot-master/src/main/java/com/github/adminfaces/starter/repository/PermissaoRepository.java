@@ -1,7 +1,5 @@
 package com.github.adminfaces.starter.repository;
 
-import java.util.List;
-
 import org.springframework.data.repository.CrudRepository;
 
 import com.github.adminfaces.starter.model.Permissao;

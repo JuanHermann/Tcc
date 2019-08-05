@@ -1,7 +1,5 @@
 package com.github.adminfaces.starter.bean;
 
-import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,15 +1,12 @@
 package com.github.adminfaces.starter.bean;
 
-import com.github.adminfaces.starter.model.HorarioAgendado;
-import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
-
-import java.sql.Time;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import com.github.adminfaces.starter.model.HorarioAgendado;
+import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
 
 
 @Component
@@ -27,17 +24,9 @@ public class BloquearAgendaForm extends AbastractFormBean<HorarioAgendado, Horar
 	public void salvar() throws InstantiationException, IllegalAccessException {
 		System.out.println("--------");
 		System.out.println(data.format(inicio));
-		Date data = new Date();
-		try {
-			data = hora.parse(inicio);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Time time = new Time(data.getTime());
-	
-		System.out.println(termino);
-		System.out.println("--------");
+		System.out.println(hora.format(inicio));
+
+
 	}
 	public String getInicio() {
 		return inicio;

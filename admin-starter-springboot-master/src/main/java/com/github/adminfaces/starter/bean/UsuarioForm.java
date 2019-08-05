@@ -8,10 +8,7 @@ import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.io.IOException;
 
-import javax.faces.application.FacesMessage;
-
 import org.omnifaces.util.Faces;
-import org.primefaces.PrimeFaces;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

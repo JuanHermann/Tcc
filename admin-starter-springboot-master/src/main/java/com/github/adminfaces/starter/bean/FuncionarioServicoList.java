@@ -1,13 +1,11 @@
 package com.github.adminfaces.starter.bean;
 
-import com.github.adminfaces.starter.model.Servico;
-import com.github.adminfaces.starter.model.UsuarioServico;
-import com.github.adminfaces.starter.repository.ServicoRepository;
-import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import com.github.adminfaces.starter.model.UsuarioServico;
+import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 
 @Component
 @Scope("view")

@@ -142,9 +142,8 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		finalHoraCalendar = HORA_FINAL_EMPRESA.getHour();
 
 		timeZoneBrasil = TimeZone.getTimeZone("America/Sao_Paulo");
-		clientes = new ArrayList<>();
+		clientes = permissaoRepository.findByNome("ROLE_CLIENTE").getUsuarios();
 		horarioAgendados = new ArrayList<>();
-		buscarClientes();
 		servicos = servicoRepository.findByAtivoOrderByNome(true);
 		servicos.remove(servicoRepository.findById(1).get());
 		servicosSelecionados = new ArrayList<>();
@@ -167,8 +166,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 		Usuario u = new Usuario();
 		u.setNome("Todos");
 		funcionariosAgenda.add(u);
-		funcionariosAgenda.addAll(Usuario.filtraPorRole(usuarioRepository.findByAtivoOrderByNome(true), "ROLE_FUNCIONARIO"));
-		
+		funcionariosAgenda
+				.addAll(Usuario.filtraPorRole(usuarioRepository.findByAtivoOrderByNome(true), "ROLE_FUNCIONARIO"));
+
 	}
 
 	private void verificaPermissao() {
@@ -196,16 +196,14 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 	}
 
 	public void atualizarSchedule() {
-
-		if (mostrarFuncionario()) {
-			if(funcionarioDaAgenda.getId() == null) {
+		boolean maisFuncionario = mostrarFuncionario();
+		if (maisFuncionario) {
+			if (funcionarioDaAgenda.getId() == null) {
 				horarioAgendados = horarioAgendadoRepository.findAll();
-				
-			}else {
+			} else {
 				horarioAgendados = horarioAgendadoRepository.findByFuncionario(funcionarioDaAgenda.getId());
-				
 			}
-		}else {
+		} else {
 			horarioAgendados = horarioAgendadoRepository.findByFuncionario(usuarioLogadoBean.getUsuario().getId());
 		}
 		eventModel = new DefaultScheduleModel();
@@ -217,64 +215,22 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			dataFinal = Date.from(localDataFinal.toInstant(ZoneOffset.UTC));
 			String titulo = "";
 			if (horario.getCliente() == null) {
-
-				if (mostrarFuncionario()) {
-					titulo = "Bloqueio do " + horario.getUsuarioServico().getUsuario().getNome();
-					DefaultScheduleEvent df = new DefaultScheduleEvent(titulo, dataInicio, dataFinal, horario);
-					df.setStyleClass("btn-danger");
-					eventModel.addEvent(df);
-				} else {
-					DefaultScheduleEvent df = new DefaultScheduleEvent("Bloqueio", dataInicio, dataFinal, horario);
-					df.setStyleClass("btn-danger");
-					eventModel.addEvent(df);
+				titulo = "Bloqueio";
+				if (maisFuncionario) {
+					titulo = titulo + " do " + horario.getUsuarioServico().getUsuario().getNome();
 				}
+				DefaultScheduleEvent df = new DefaultScheduleEvent(titulo, dataInicio, dataFinal, horario);
+				df.setStyleClass("btn-danger");
+				eventModel.addEvent(df);
 
 			} else {
-
-				if (mostrarFuncionario()) {
-					titulo = "F: " + horario.getUsuarioServico().getUsuario().getNome() + " - C: "
-							+ horario.getCliente().getNome() + " - "
-							+ horario.getUsuarioServico().getServico().getNome();
-				} else {
-					titulo = horario.getCliente().getNome() + " - "
-							+ horario.getUsuarioServico().getServico().getNome();
+				titulo = horario.getCliente().getNome() + " - " + horario.getUsuarioServico().getServico().getNome();
+				if (maisFuncionario) {
+					titulo = "F: " + horario.getUsuarioServico().getUsuario().getNome() + " - C: " + titulo;
 				}
 				eventModel.addEvent(new DefaultScheduleEvent(titulo, dataInicio, dataFinal, horario));
 			}
-
 		}
-
-	}
-
-	private void buscarClientes() {
-		Permissao permissao = permissaoRepository.findByNome("ROLE_CLIENTE");
-		clientes = filtrarCliente(permissao.getUsuarios());
-	}
-
-	private List<Usuario> filtrarCliente(List<Usuario> lista) {
-		List<Usuario> usuarios = lista;
-		List<Usuario> pesquisa = new ArrayList<>();
-		for (Usuario usuario : usuarios) {
-			List<Permissao> permissoes = usuario.getPermissoes();
-			boolean role = false;
-			for (Permissao p : permissoes) {
-				if (p.getNome().equals("ROLE_ATENDENTE")) {
-					role = false;
-					break;
-				} else if (p.getNome().equals("ROLE_FUNCIONARIO")) {
-					role = false;
-					break;
-				} else if (p.getNome().equals("ROLE_CLIENTE")) {
-					role = true;
-					break;
-				}
-			}
-			if (role == true) {
-				pesquisa.add(usuario);
-			}
-		}
-
-		return pesquisa;
 	}
 
 	public void buscarFuncionarios() {
@@ -359,9 +315,9 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			retirarHorariosOcupados(TempoTotalServicos);
 		}
 		if (horarios.isEmpty()) {
-			stringHorario = "Nenhum Horario disponivel nesta Data";
+			stringHorario = "Nenhum Horário disponivel nesta Data";
 		} else {
-			stringHorario = "Selecione um horario";
+			stringHorario = "Selecione um horário";
 		}
 
 	}
@@ -473,12 +429,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 				getRepository().save(agendado);
 
 			}
-			try {
-				novo();
-			} catch (InstantiationException | IllegalAccessException e) {
-
-				e.printStackTrace();
-			}
+			setObjeto(new HorarioAgendado());
 			if (mostrarFuncionario()) {
 				funcionarioDoList = new Usuario();
 			}
@@ -595,9 +546,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
 	public void onEventSelect(SelectEvent selectEvent) {
 		stringHorario = "Selecione um horario";
-
 		servicosSelecionados = new ArrayList<>();
-
 		event = (ScheduleEvent) selectEvent.getObject();
 		setObjeto((HorarioAgendado) event.getData());
 		if (getObjeto().getCliente() == null) {
@@ -611,7 +560,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			servicosSelecionados.add(getObjeto().getUsuarioServico().getServico());
 			buscarHorarios();
 			horarios.add(getObjeto().getHoraInicio());
-
 		}
 
 	}

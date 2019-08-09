@@ -131,7 +131,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 			HORA_INICIO_INTERVALO = empresa.getInicioIntervalo();
 			HORA_FINAL_INTERVALO = empresa.getFinalIntervalo();
 			HORA_FINAL_EMPRESA = empresa.getHoraFechamento();
-			TEMPO_BUSCA_ENTRE_SERVICOS = empresa.getTempoIntervalo();
+			TEMPO_BUSCA_ENTRE_SERVICOS = empresa.getTempoMinServico();
 		}
 
 		inicioSchedule = HORA_INICIO_EMPRESA.toString();

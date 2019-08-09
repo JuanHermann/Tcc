@@ -63,6 +63,9 @@ public class RelatorioBean extends AbastractFormBean<HorarioAgendado, HorarioAge
 		relatorios.add(relatorioB);
 		relatorios.add(relatorioC);
 		relatorios.add(relatorioD);
+		LocalDate d = LocalDate.now();
+		dataInicio = LocalDate.of(d.getYear(), d.getMonth(), 1);
+		dataFinal = d;
 
 	}
 

@@ -12,16 +12,15 @@ import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.faces.context.FacesContext;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import javax.faces.context.FacesContext;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 @Component
 @Getter

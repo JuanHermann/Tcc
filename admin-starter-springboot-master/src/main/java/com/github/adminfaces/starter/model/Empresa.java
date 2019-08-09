@@ -36,7 +36,7 @@ public class Empresa {
     private LocalTime tempoCancelamento;
 
     @Column(nullable = false)
-    private LocalTime tempoIntervalo;
+    private LocalTime tempoMinServico;
 
 
 }

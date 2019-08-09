@@ -94,7 +94,7 @@ public class HorarioBean extends AbastractFormBean<HorarioAgendado, HorarioAgend
 			HORA_INICIO_INTERVALO = empresa.getInicioIntervalo();
 			HORA_FINAL_INTERVALO = empresa.getFinalIntervalo();
 			HORA_FINAL_EMPRESA = empresa.getHoraFechamento();
-			TEMPO_BUSCA_ENTRE_SERVICOS = empresa.getTempoIntervalo();
+			TEMPO_BUSCA_ENTRE_SERVICOS = empresa.getTempoMinServico();
 		}
 
 		horarioAgendados = new ArrayList<>();

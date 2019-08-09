@@ -47,7 +47,7 @@ public class EmpresaBean extends AbastractFormBean<Empresa, EmpresaRepository> {
 	}
 	
 	private void verificaPermissao() {
-		if (Usuario.hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario())) {
+		if (!Usuario.hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario())) {
 			try {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("indexcliente.jsf");
 			} catch (IOException e) {

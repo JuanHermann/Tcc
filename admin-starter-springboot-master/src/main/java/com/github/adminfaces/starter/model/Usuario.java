@@ -44,9 +44,6 @@ public class Usuario implements UserDetails {
 	private String telefone;
 
 	@Column(nullable = false)
-	private boolean aceito;// novo cadastro de usuario
-
-	@Column(nullable = false)
 	private boolean ativo; // futuro cadastro de um empregado que foi despedido
 
 	@ManyToMany( fetch = FetchType.EAGER)

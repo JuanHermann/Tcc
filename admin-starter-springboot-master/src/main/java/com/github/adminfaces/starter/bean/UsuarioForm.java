@@ -47,7 +47,6 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 		//PrimeFaces.current().executeScript(String.format("document.getElementById('messagesId').style.display = 'block';"));
 		if (usuarioRepository.findByEmail(getObjeto().getEmail()) == null) {
 			getObjeto().setAtivo(true);
-			getObjeto().setAceito(false);
 			usuarioService.criptografarSenha(getObjeto());
 			getRepository().save(getObjeto());
 			getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_CADASTRADO"));

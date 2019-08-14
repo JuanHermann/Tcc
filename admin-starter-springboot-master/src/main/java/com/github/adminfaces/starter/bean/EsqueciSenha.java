@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.UsuarioRepository;
-import com.github.adminfaces.starter.service.MailService;
 import com.github.adminfaces.starter.service.UsuarioService;
 
 import lombok.Getter;
@@ -34,8 +33,6 @@ import lombok.Setter;
 @Scope("view")
 public class EsqueciSenha extends AbastractFormBean<Usuario, UsuarioRepository> {
 
-	@Autowired
-	private MailService service;
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 	

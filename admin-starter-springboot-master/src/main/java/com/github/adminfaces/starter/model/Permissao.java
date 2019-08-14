@@ -7,6 +7,11 @@ import javax.persistence.*;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 public class Permissao implements GrantedAuthority {
 	private static final long serialVersionUID = 1L;
@@ -27,28 +32,6 @@ public class Permissao implements GrantedAuthority {
 	@JoinTable(name = "usuario_permissao", joinColumns = @JoinColumn(name = "permissao_id"), inverseJoinColumns = @JoinColumn(name = "usuario_id"))
 	private List<Usuario> usuarios = new ArrayList<>();
 
-	public Long getId() {
-		return id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public List<Usuario> getUsuarios() {
-		return usuarios;
-	}
-
-	public void setUsuarios(List<Usuario> usuarios) {
-		this.usuarios = usuarios;
-	}
 	
 }

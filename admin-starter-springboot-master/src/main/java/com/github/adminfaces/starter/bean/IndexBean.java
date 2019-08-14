@@ -33,7 +33,6 @@ import org.springframework.stereotype.Component;
 
 import com.github.adminfaces.starter.model.Empresa;
 import com.github.adminfaces.starter.model.HorarioAgendado;
-import com.github.adminfaces.starter.model.Permissao;
 import com.github.adminfaces.starter.model.Servico;
 import com.github.adminfaces.starter.model.Usuario;
 import com.github.adminfaces.starter.model.UsuarioServico;

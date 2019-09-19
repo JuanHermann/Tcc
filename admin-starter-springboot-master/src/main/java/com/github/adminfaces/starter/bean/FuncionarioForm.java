@@ -61,7 +61,7 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 
 		permissaoSelecionados = permissaoToString(getObjeto().getPermissoes());
 		permissoes = new ArrayList<>();
-		permissoes.add("Funcionario");
+		permissoes.add("Profissional");
 		permissoes.add("Atendente");
 		permissoes.add("Administrador");
 

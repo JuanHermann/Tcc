@@ -38,7 +38,6 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 		objeto = modelClass.newInstance();
 	}
 
-
 	public void remover() throws InstantiationException, IllegalAccessException {
 		if (objeto == null) {
 			addDetailMessage("Nenhum registro para Excluir");
@@ -60,7 +59,4 @@ public abstract class AbastractListBean<M, R extends JpaRepository<M, Integer>> 
 		addDetailMessage(num + " Registros deletado com sucesso!");
 		listar();
 	}
-
-	
-	
 }

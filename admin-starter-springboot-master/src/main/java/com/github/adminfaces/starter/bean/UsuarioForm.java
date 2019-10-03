@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.github.adminfaces.starter.bean;
 
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
@@ -43,20 +39,19 @@ public class UsuarioForm extends AbastractFormBean<Usuario, UsuarioRepository> {
 		super.init();
 	}
 
-	public void novoCadastro() throws IOException {
-		//PrimeFaces.current().executeScript(String.format("document.getElementById('messagesId').style.display = 'block';"));
-		if (usuarioRepository.findByEmail(getObjeto().getEmail()) == null) {
-			getObjeto().setAtivo(true);
-			usuarioService.criptografarSenha(getObjeto());
-			getRepository().save(getObjeto());
-			getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_CADASTRADO"));
-			getRepository().save(getObjeto());
-			addDetailMessage("Cadastro criado com sucesso!");
-			Faces.getExternalContext().getFlash().setKeepMessages(true);
-			Faces.redirect("index.jsf");
-		} else {
-			addDetailMessage("Email já cadastrado");
-		}
+public void novoCadastro() throws IOException {
+	if (usuarioRepository.findByEmail(getObjeto().getEmail()) == null) {
+		getObjeto().setAtivo(true);
+		usuarioService.criptografarSenha(getObjeto());
+		getRepository().save(getObjeto());
+		getObjeto().addPermissao(permissaoRepository.findByNome("ROLE_CADASTRADO"));
+		getRepository().save(getObjeto());
+		addDetailMessage("Cadastro criado com sucesso!");
+		Faces.getExternalContext().getFlash().setKeepMessages(true);
+		Faces.redirect("index.jsf");
+	} else {
+		addDetailMessage("Email já cadastrado");
 	}
+}
 
 }

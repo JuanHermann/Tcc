@@ -568,6 +568,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
         setObjeto(new HorarioAgendado());
         servicosSelecionados = new ArrayList<>();
         funcionarioDaAgenda = new Usuario();
+        funcionarioDoList = new Usuario();
         Date dataSelecionada = (Date) selectEvent.getObject();
         event = new DefaultScheduleEvent("", dataSelecionada, dataSelecionada);
         getObjeto().setData(dataSelecionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());

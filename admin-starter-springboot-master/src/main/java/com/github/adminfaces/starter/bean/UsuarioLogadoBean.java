@@ -42,6 +42,22 @@ public class UsuarioLogadoBean {
 		}
 		return false;
 	}
+	
+	public boolean isAdmAtendente() {
+		int a = 0;
+		for(Permissao p : usuario.getPermissoes()) {
+			if(p.getNome().equals("ROLE_ADMIN")) {
+				a++;
+			}
+			if(p.getNome().equals("ROLE_ATENDENTE")) {
+				a++;
+			}
+		}
+		if(a>0) {
+			return true;
+		}
+		return false;
+	}
 
 }
 

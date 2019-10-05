@@ -67,7 +67,6 @@ public class Usuario implements UserDetails {
 		return false;
 	}
 	
-
 	public void addPermissao(Permissao permissao) {
 		if (permissoes == null) {
 			permissoes = new ArrayList<>();

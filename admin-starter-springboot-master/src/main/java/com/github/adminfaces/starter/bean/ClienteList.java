@@ -32,8 +32,6 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 	@Autowired
 	private HorarioAgendadoRepository horarioAgendadoRepository;
 
-	private Usuario usuario;
-
 	public ClienteList() {
 		super(Usuario.class);
 	}
@@ -41,7 +39,7 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 	public void buscar() {
 
 		if (getNome() != "") {
-			setLista(usuario.filtraPorClientes(
+			setLista(Usuario.filtraPorClientes(
 					usuarioRepository.findByNomeLikeAndAtivoOrderByNome("%" + getNome() + "%", true)));
 		} else {
 			listar();
@@ -68,13 +66,13 @@ public class ClienteList extends AbastractListBean<Usuario, UsuarioRepository> {
 			}
 		}
 		addDetailMessage("Cliente atualizado para funcionario");
+		listar();
 
 	}
 
 	@Override
 	public void listar() {
-		usuario = new Usuario();
-		setLista(usuario.filtraPorClientes(usuarioRepository.findByAtivoOrderByNome(true)));
+		setLista(Usuario.filtraPorClientes(usuarioRepository.findByAtivoOrderByNome(true)));
 
 	}
 

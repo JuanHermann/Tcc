@@ -64,6 +64,8 @@ public class FuncionarioList extends AbastractListBean<Usuario, UsuarioRepositor
 					role = true;
 				} else if (p.getNome().equals("ROLE_FUNCIONARIO")) {
 					role = true;
+				}else if (p.getNome().equals("ROLE_ADMIN")) {
+					role = true;
 				}
 			}
 			if (role == true) {

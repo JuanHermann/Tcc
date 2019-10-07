@@ -98,9 +98,10 @@ public class Usuario implements UserDetails {
 		return lista;
 	}
 	
-	public List<Usuario> filtraPorClientes(List<Usuario> listalGeral){
+	public static List<Usuario> filtraPorClientes(List<Usuario> listalGeral){
 		List<Usuario> lista = new ArrayList<>();
-		boolean tem;
+		List<Usuario> lista2 = new ArrayList<>();
+		boolean tem,role;
 		for(Usuario usuario: listalGeral) {
 			tem = false;
 			for(Permissao permissao: usuario.getPermissoes()) {
@@ -112,8 +113,24 @@ public class Usuario implements UserDetails {
 				lista.add(usuario);
 			}
 		}
+		for (Usuario usuario : lista) {
+			List<Permissao> permissoes = usuario.getPermissoes();
+			role = false;
+			for (Permissao p : permissoes) {
+				if (p.getNome().equals("ROLE_ATENDENTE")) {
+					role = true;
+				} else if (p.getNome().equals("ROLE_FUNCIONARIO")) {
+					role = true;
+				}else if (p.getNome().equals("ROLE_ADMIN")) {
+					role = true;
+				}
+			}
+			if (role == false) {
+				lista2.add(usuario);
+			}
+		}
 		
-		return lista;
+		return lista2;
 	}
 	
 	public static List<Usuario> filtraPorRole(List<Usuario> listalGeral,String nomeRole){

@@ -3,6 +3,7 @@ package com.github.adminfaces.starter.bean;
 import static com.github.adminfaces.starter.util.Utils.addDetailMessage;
 
 import java.io.IOException;
+import java.time.LocalTime;
 
 import javax.faces.context.FacesContext;
 
@@ -35,9 +36,17 @@ public class EmpresaBean extends AbastractFormBean<Empresa, EmpresaRepository> {
 		verificaPermissao();
 		if (!empresaRepository.findAll().isEmpty()) {
 			setId(empresaRepository.findAll().get(0).getId());
+			super.init();
+		} else {
+			setObjeto(new Empresa());
+			getObjeto().setHoraAbertura(LocalTime.of(7, 0, 0));
+			getObjeto().setInicioIntervalo(LocalTime.of(12, 0, 0));
+			getObjeto().setFinalIntervalo(LocalTime.of(13, 30, 0));
+			getObjeto().setHoraFechamento(LocalTime.of(20, 0, 0));
+			getObjeto().setTempoMinServico(LocalTime.of(0, 15, 0));
+			getObjeto().setTempoCancelamento(LocalTime.of(23, 0, 0));
 		}
 
-		super.init();
 	}
 
 	public void atualizar() {
@@ -45,7 +54,7 @@ public class EmpresaBean extends AbastractFormBean<Empresa, EmpresaRepository> {
 		addDetailMessage("Cadastro Atualizado com sucesso!");
 		Faces.getExternalContext().getFlash().setKeepMessages(true);
 	}
-	
+
 	private void verificaPermissao() {
 		if (!Usuario.hasRole("ROLE_ADMIN", usuarioLogadoBean.getUsuario())) {
 			try {

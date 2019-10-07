@@ -40,7 +40,7 @@
 						slotMinutes="#{indexBean.tempoMinutosSchedule}"
 						minTime="#{indexBean.inicioSchedule}"
 						maxTime="#{indexBean.finalSchedule}" widgetVar="myschedule"
-						timeFormat="HH:mm" view="agendaWeek">
+						timeFormat="HH:mm" axisFormat="HH:mm"  view="agendaWeek">
 
 						<p:ajax event="dateSelect" listener="#{indexBean.onDateSelect}"
 							update="eventDetails" oncomplete="PF('inserir').show();" />

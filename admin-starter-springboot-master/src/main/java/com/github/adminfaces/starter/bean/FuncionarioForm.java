@@ -72,7 +72,9 @@ public class FuncionarioForm extends AbastractFormBean<Usuario, UsuarioRepositor
 	}
 
 	public void carregarLista() {
-		setLista(servicoRepository.findByAtivoOrderByNome(true));
+		List<Servico> servicos = servicoRepository.findByAtivoOrderByNome(true);
+		servicos.remove(servicoRepository.findById(1).get());
+		setLista(servicos);
 
 	}
 

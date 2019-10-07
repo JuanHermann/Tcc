@@ -26,6 +26,7 @@ import com.github.adminfaces.starter.model.UsuarioServico;
 import com.github.adminfaces.starter.repository.HorarioAgendadoRepository;
 import com.github.adminfaces.starter.repository.PermissaoRepository;
 import com.github.adminfaces.starter.repository.ServicoRepository;
+import com.github.adminfaces.starter.repository.UsuarioRepository;
 import com.github.adminfaces.starter.repository.UsuarioServicoRepository;
 
 import lombok.Getter;
@@ -87,6 +88,9 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 	private ServicoRepository servicoRepository;
 	private List<Servico> servicos;
 	private List<Servico> servicosSelecionados;
+	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
 	private MenuModel menuModel;
 
@@ -96,7 +100,9 @@ public class IndexClienteBean extends AbastractFormBean<HorarioAgendado, Horario
 
 	@Override
 	public void init() throws InstantiationException, IllegalAccessException {
-
+		usuarioLogadoBean.setUsuario( usuarioRepository.findById(usuarioLogadoBean.getUsuario().getId()).get());
+		
+		
 		inicioSchedule = HORA_INICIO_EMPRESA.toString();
 		finalSchedule = HORA_FINAL_EMPRESA.toString();
 		inicioHoraCalendar = HORA_INICIO_EMPRESA.getHour();

@@ -232,7 +232,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
         }
     }
 
-    public void buscarFuncionarios() {
+    public void buscarProfissionais() {
         if (mostrarFuncionario()) {
             List<Usuario> funcionariosCorreto = new ArrayList<>();
             boolean primeiro = true;
@@ -287,7 +287,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
         }
         if (mostrarFuncionario()) {
             if (funcionarioDoList.getId() == null) {
-                System.out.println("nem preferencia");
+                System.out.println("sem preferencia");
                 List<LocalTime> auxHorarios = new ArrayList<>();
                 auxHorarios.addAll(horarios);
                 Set<LocalTime> horariosFuncionarios = new HashSet<>();
@@ -325,7 +325,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
         LocalTime horaAuxiliar = HORA_INICIO_EMPRESA;
         if (!horarioAgendados.isEmpty()) {
-            for (HorarioAgendado horarioAgendado : horarioAgendados) {
+            for (HorarioAgendado horarioAgendado : horarioAgendados) {//verifica se tem espaço entre o inicio do periodo da manha até o serviço, se não tiver espaço ele retira os horarios
                 if (verificaEspacoTempo(HORA_INICIO_EMPRESA, TempoTotalServicos,
                         horarioAgendado.getHoraInicio()) == false
                         && horarioAgendado.getHoraInicio().isBefore(HORA_INICIO_INTERVALO)) {
@@ -337,7 +337,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
                 }
                 if (verificaEspacoTempo(HORA_FINAL_INTERVALO, TempoTotalServicos,
                         horarioAgendado.getHoraInicio()) == false
-                        && horarioAgendado.getHoraInicio().isAfter(HORA_FINAL_INTERVALO)) {
+                        && horarioAgendado.getHoraInicio().isAfter(HORA_FINAL_INTERVALO)) {//verifica se tem espaço entre o inicio do periodo da tarde até o serviço, se não tiver espaço ele retira os horarios
                     horaAuxiliar = HORA_FINAL_INTERVALO;
                     while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
                         horarios.remove(horaAuxiliar);
@@ -346,7 +346,7 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
                 } else {
                     horaAuxiliar = subtrairLocalTime(horarioAgendado.getHoraInicio(), TempoTotalServicos);
                     horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
-                    while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {
+                    while (horaAuxiliar.isBefore(horarioAgendado.getHoraTermino())) {//retira os horarios indisponiveis
                         horarios.remove(horaAuxiliar);
                         horaAuxiliar = somarLocalTime(horaAuxiliar, TEMPO_BUSCA_ENTRE_SERVICOS);
                     }
@@ -542,6 +542,19 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
 
         event = new DefaultScheduleEvent();
     }
+    
+    public void onDateSelect(SelectEvent selectEvent) {
+        stringHorario = "Selecione um horario";
+        setObjeto(new HorarioAgendado());
+        servicosSelecionados = new ArrayList<>();
+        funcionarioDaAgenda = new Usuario();
+        funcionarioDoList = new Usuario();
+        Date dataSelecionada = (Date) selectEvent.getObject();
+        event = new DefaultScheduleEvent("", dataSelecionada, dataSelecionada);
+        getObjeto().setData(dataSelecionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        dataInicioBloqueio = LocalDateTime.of(getObjeto().getData(), HORA_INICIO_EMPRESA);
+        dataFinalBloqueio = LocalDateTime.of(getObjeto().getData(), HORA_FINAL_EMPRESA);
+    }
 
     public void onEventSelect(SelectEvent selectEvent) {
         stringHorario = "Selecione um horario";
@@ -561,19 +574,6 @@ public class IndexBean extends AbastractFormBean<HorarioAgendado, HorarioAgendad
             horarios.add(getObjeto().getHoraInicio());
         }
 
-    }
-
-    public void onDateSelect(SelectEvent selectEvent) {
-        stringHorario = "Selecione um horario";
-        setObjeto(new HorarioAgendado());
-        servicosSelecionados = new ArrayList<>();
-        funcionarioDaAgenda = new Usuario();
-        funcionarioDoList = new Usuario();
-        Date dataSelecionada = (Date) selectEvent.getObject();
-        event = new DefaultScheduleEvent("", dataSelecionada, dataSelecionada);
-        getObjeto().setData(dataSelecionada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-        dataInicioBloqueio = LocalDateTime.of(getObjeto().getData(), HORA_INICIO_EMPRESA);
-        dataFinalBloqueio = LocalDateTime.of(getObjeto().getData(), HORA_FINAL_EMPRESA);
     }
 
     public void onEventMove(ScheduleEntryMoveEvent event) {

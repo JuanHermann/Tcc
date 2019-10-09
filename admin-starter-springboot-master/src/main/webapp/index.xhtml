@@ -58,6 +58,7 @@
 						header="Cadastrar Horário" showEffect="clip" hideEffect="clip">
 
 						<h:panelGrid id="eventDetails" columns="1">
+						<p:outputPanel rendered="#{indexBean.mostrarFuncionario()}">
 							<p:outputLabel for="tipo" value="Tipo:" />
 							<p:selectOneRadio id="tipo" value="#{indexBean.tipo}"
 								unselectable="true">
@@ -67,6 +68,7 @@
 									id="radioBloqueio" />
 								<p:ajax event="change" process="@this" update="idGeral" />
 							</p:selectOneRadio>
+							</p:outputPanel>
 							<p:outputPanel id="idGeral">
 								<p:outputPanel rendered="#{indexBean.mostrarForm()}">
 									<h:panelGrid columns="1">

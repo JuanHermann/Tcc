@@ -58,7 +58,7 @@
 						header="Cadastrar Horário" showEffect="clip" hideEffect="clip">
 
 						<h:panelGrid id="eventDetails" columns="1">
-						<p:outputPanel rendered="#{indexBean.mostrarFuncionario()}">
+						<p:outputPanel rendered="#{usuarioLogadoBean.isAdmAtendente()}">
 							<p:outputLabel for="tipo" value="Tipo:" />
 							<p:selectOneRadio id="tipo" value="#{indexBean.tipo}"
 								unselectable="true">
